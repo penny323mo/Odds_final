@@ -1,186 +1,208 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<title>足球賠率篩選工具</title>
-<link rel="stylesheet" href="style.css" />
-<style>
-body { margin:0; background:#f8fafd; font-family:"Microsoft JhengHei",sans-serif; }
-.header { background:#1666c1; color:#fff; padding:36px 0 20px 0; text-align:center; }
-.header h1 { margin:0; font-size:2.1em; letter-spacing:2px; }
-.header .desc { margin-top:7px; font-size:1.04em; font-weight:300; }
-.tabbar { display:flex; justify-content:center; background:#e7f0fb; border-bottom:2px solid #dbe7f5; }
-.tabbar button { flex:1; padding:15px; font-size:1.1em; font-weight:bold; background:none; border:none; border-bottom:4px solid transparent; cursor:pointer; transition:.2s; }
-.tabbar button.active { color:#1666c1; border-bottom:4px solid #1666c1; background:#fff; }
-.tabcontent { max-width:900px; margin:25px auto 0 auto; background:#fff; border-radius:8px; padding:22px; box-shadow:0 3px 18px #8ab3e929; }
-.timestamp { text-align:center; color:#444; margin-top:10px; margin-bottom:8px; font-size:1.02em; letter-spacing:2px; }
-@media (max-width:650px) {
-  .tabbar button { font-size:0.98em; padding:10px 3px; }
-  .tabcontent { padding:7px 2vw; }
-  .header h1 { font-size:1.23em; }
-}
-</style>
+  <meta charset="UTF-8" />
+  <title>足球賠率篩選工具</title>
+
+  <!-- ⬇⬇⬇  CSS  ⬇⬇⬇ -->
+  <style>
+  body{background:#f8fafd;font-family:"Microsoft JhengHei",sans-serif;margin:0}
+  .header{background:#1666c1;color:#fff;text-align:center;padding:36px 0 20px}
+  .header h1{margin:0;font-size:2.1em;letter-spacing:2px}
+  .header .desc{margin-top:7px;font-size:1.04em;font-weight:300}
+  .tabbar{display:flex;justify-content:center;background:#e7f0fb;border-bottom:2px solid #dbe7f5}
+  .tabbar button{flex:1;padding:15px;font-size:1.1em;font-weight:bold;background:none;border:none;border-bottom:4px solid transparent;cursor:pointer;transition:.2s}
+  .tabbar button.active{color:#1666c1;border-bottom:4px solid #1666c1;background:#fff}
+  .timestamp{text-align:center;color:#444;margin:10px 0;font-size:1.02em}
+  .tabcontent{max-width:920px;margin:25px auto;background:#fff;border-radius:8px;padding:22px;box-shadow:0 3px 18px #8ab3e929}
+  fieldset{margin-bottom:12px;border:1.5px solid #c3daf7;border-radius:6px;background:#f9fcff}
+  legend{color:#1666c1;font-weight:bold}
+  input,select{border:1px solid #b8cef1;border-radius:4px;padding:4px 6px;margin:3px 2px}
+  button.search{padding:7px 24px;border:none;border-radius:4px;background:#1666c1;color:#fff;font-size:1em;margin-top:8px;cursor:pointer}
+  button.search:hover{background:#205b98}
+  table{width:100%;border-collapse:collapse;background:#fff;margin-top:10px}
+  th,td{border:1px solid #e5e5e5;padding:6px 4px;text-align:center}
+  th{background:#f2f6fb}
+  @media(max-width:650px){
+    .tabbar button{font-size:.95em;padding:11px 2px}
+    .tabcontent{padding:14px 3vw}
+    .header h1{font-size:1.4em}
+  }
+  </style>
 </head>
+
 <body>
+<!-- ＝＝＝＝＝＝ Banner ＝＝＝＝＝＝ -->
 <div class="header">
-    <h1>足球賠率篩選工具</h1>
-    <div class="desc">根據初盤、終盤所有條件組合快速篩選比賽，並精確統計每一項百分比。</div>
+  <h1>足球賠率篩選工具</h1>
+  <div class="desc">根據初盤、終盤所有條件組合快速篩選比賽，並精確統計每一項百分比。</div>
 </div>
+
+<!-- ＝＝＝＝ Tab Bar ＝＝＝＝ -->
 <div class="tabbar">
-    <button id="tab1" class="active" onclick="showTab(0)">亞洲盤查詢</button>
-    <button id="tab2" onclick="showTab(1)">大小球查詢</button>
-    <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
+  <button id="tab1" class="active" onclick="showTab(0)">亞洲盤查詢</button>
+  <button id="tab2" onclick="showTab(1)">大小球查詢</button>
+  <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
 </div>
-<div class="timestamp">版本時間：2025/07/27 下午 13:59 (GMT+8)</div>
-<div class="tabcontent" id="tabcontent1">
-<form id="asian-form">
-    <fieldset>
-        <legend>初盤條件</legend>
-        精確讓球盤口：
-        <select id="exactOpenHandicap">
-            <option value="">--請選擇--</option>
-            <option value="-3.25">-3.25</option>
-<option value="-3.0">-3.0</option>
-<option value="-2.75">-2.75</option>
-<option value="-2.5">-2.5</option>
-<option value="-2.25">-2.25</option>
-<option value="-2.0">-2.0</option>
-<option value="-1.75">-1.75</option>
-<option value="-1.5">-1.5</option>
-<option value="-1.25">-1.25</option>
-<option value="-1.0">-1.0</option>
-<option value="-0.75">-0.75</option>
-<option value="-0.5">-0.5</option>
-<option value="-0.25">-0.25</option>
-<option value="0.0">0.0</option>
-<option value="0.25">0.25</option>
-<option value="0.5">0.5</option>
-<option value="0.75">0.75</option>
-<option value="1.0">1.0</option>
-<option value="1.25">1.25</option>
-<option value="1.5">1.5</option>
-<option value="1.75">1.75</option>
-<option value="2.0">2.0</option>
-<option value="2.25">2.25</option>
-<option value="2.5">2.5</option>
-<option value="2.75">2.75</option>
-        </select><br/>
-        主隊賠率範圍：
-        <input type="number" step="0.01" id="openHomeMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="openHomeMax" placeholder="最高"><br/>
-        客隊賠率範圍：
-        <input type="number" step="0.01" id="openAwayMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="openAwayMax" placeholder="最高"><br/>
+<div class="timestamp" id="ts"></div>
+
+<!-- ＝＝＝＝＝ 亞洲盤分頁 ＝＝＝＝＝ -->
+<div class="tabcontent" id="tc1">
+  <form>
+    <fieldset><legend>初盤</legend>
+      盤口：<select id="AO"></select><br/>
+      主隊賠率：<input type="number" step="0.01" id="OHH" placeholder="最低"> – 
+      <input type="number" step="0.01" id="OHX" placeholder="最高"><br/>
+      客隊賠率：<input type="number" step="0.01" id="OAH" placeholder="最低"> – 
+      <input type="number" step="0.01" id="OAX" placeholder="最高">
     </fieldset>
-    <fieldset>
-        <legend>終盤條件</legend>
-        精確讓球盤口：
-        <select id="exactCloseHandicap">
-            <option value="">--請選擇--</option>
-            <option value="-3.75">-3.75</option>
-<option value="-3.25">-3.25</option>
-<option value="-3.0">-3.0</option>
-<option value="-2.75">-2.75</option>
-<option value="-2.5">-2.5</option>
-<option value="-2.25">-2.25</option>
-<option value="-2.0">-2.0</option>
-<option value="-1.75">-1.75</option>
-<option value="-1.5">-1.5</option>
-<option value="-1.25">-1.25</option>
-<option value="-1.0">-1.0</option>
-<option value="-0.75">-0.75</option>
-<option value="-0.5">-0.5</option>
-<option value="-0.25">-0.25</option>
-<option value="0.0">0.0</option>
-<option value="0.25">0.25</option>
-<option value="0.5">0.5</option>
-<option value="0.75">0.75</option>
-<option value="1.0">1.0</option>
-<option value="1.25">1.25</option>
-<option value="1.5">1.5</option>
-<option value="1.75">1.75</option>
-<option value="2.0">2.0</option>
-<option value="2.25">2.25</option>
-<option value="2.5">2.5</option>
-<option value="2.75">2.75</option>
-<option value="3.0">3.0</option>
-        </select><br/>
-        主隊賠率範圍：
-        <input type="number" step="0.01" id="closeHomeMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="closeHomeMax" placeholder="最高"><br/>
-        客隊賠率範圍：
-        <input type="number" step="0.01" id="closeAwayMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="closeAwayMax" placeholder="最高"><br/>
+    <fieldset><legend>終盤</legend>
+      盤口：<select id="AC"></select><br/>
+      主隊賠率：<input type="number" step="0.01" id="CHH" placeholder="最低"> – 
+      <input type="number" step="0.01" id="CHX" placeholder="最高"><br/>
+      客隊賠率：<input type="number" step="0.01" id="CAH" placeholder="最低"> – 
+      <input type="number" step="0.01" id="CAX" placeholder="最高">
     </fieldset>
-    <button type="button" onclick="asianSearch()">搜尋</button>
-</form>
-<div id="asian_stats"></div>
-<table id="asian_results" border="1" style="width:100%">
-    <thead>
-        <tr><th>比賽</th><th>盤口變化</th><th>盤口勝負</th></tr>
-    </thead>
-    <tbody></tbody>
-</table>
+    <button type="button" class="search" onclick="asianSearch()">搜尋</button>
+  </form>
+  <div id="aStat"></div>
+  <table id="aTbl"><thead><tr><th>比賽</th><th>盤口變化</th><th>盤口勝負</th></tr></thead><tbody></tbody></table>
 </div>
-<div class="tabcontent" id="tabcontent2" style="display:none">
-<form id="over-form">
-    <fieldset>
-        <legend>條件</legend>
-        精確盤口（初盤）：<input type="number" step="0.25" id="exactLine" placeholder="如 2.5、2.75"><br/>
-        初盤大球賠率範圍：<input type="number" step="0.01" id="overMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="overMax" placeholder="最高"><br/>
-        初盤細球賠率範圍：<input type="number" step="0.01" id="underMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="underMax" placeholder="最高"><br/>
-    </fieldset>
-    <button type="button" onclick="overSearch()">搜尋</button>
-</form>
-<div id="over_stats"></div>
-<table id="over_results" border="1" style="width:100%">
-    <thead>
-        <tr><th>比賽</th><th>盤口</th><th>結果</th></tr>
-    </thead>
-    <tbody></tbody>
-</table>
+
+<!-- ＝＝＝＝＝ 大小球分頁 ＝＝＝＝＝ -->
+<div class="tabcontent" id="tc2" style="display:none">
+  <form>
+    盤口：<input type="number" step="0.25" id="OUline"><br/>
+    大球賠率：<input type="number" step="0.01" id="OUOM" placeholder="最低"> – 
+    <input type="number" step="0.01" id="OUOX" placeholder="最高"><br/>
+    細球賠率：<input type="number" step="0.01" id="OUUM" placeholder="最低"> – 
+    <input type="number" step="0.01" id="OUUX" placeholder="最高"><br/>
+    <button type="button" class="search" onclick="overSearch()">搜尋</button>
+  </form>
+  <div id="oStat"></div>
+  <table id="oTbl"><thead><tr><th>比賽</th><th>盤口</th><th>結果</th></tr></thead><tbody></tbody></table>
 </div>
-<div class="tabcontent" id="tabcontent3" style="display:none">
-<form id="euro-form">
-    <fieldset>
-        <legend>條件</legend>
-        初盤主勝賠率：<input type="number" step="0.01" id="homeOpenMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="homeOpenMax" placeholder="最高"><br/>
-        終盤主勝賠率：<input type="number" step="0.01" id="homeCloseMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="homeCloseMax" placeholder="最高"><br/>
-        初盤和局賠率：<input type="number" step="0.01" id="drawOpenMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="drawOpenMax" placeholder="最高"><br/>
-        終盤和局賠率：<input type="number" step="0.01" id="drawCloseMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="drawCloseMax" placeholder="最高"><br/>
-        初盤客勝賠率：<input type="number" step="0.01" id="awayOpenMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="awayOpenMax" placeholder="最高"><br/>
-        終盤客勝賠率：<input type="number" step="0.01" id="awayCloseMin" placeholder="最低"> -
-        <input type="number" step="0.01" id="awayCloseMax" placeholder="最高"><br/>
-    </fieldset>
-    <button type="button" onclick="euroSearch()">搜尋</button>
-</form>
-<div id="euro_stats"></div>
-<table id="euro_results" border="1" style="width:100%">
-    <thead>
-        <tr><th>比賽</th><th>比分</th><th>勝負</th><th>淨勝球</th></tr>
-    </thead>
-    <tbody></tbody>
-</table>
+
+<!-- ＝＝＝＝＝ 歐洲盤分頁 ＝＝＝＝＝ -->
+<div class="tabcontent" id="tc3" style="display:none">
+  <form>
+    主勝賠率：<input type="number" step="0.01" id="EHOM" placeholder="最低"> – 
+    <input type="number" step="0.01" id="EHOX" placeholder="最高"><br/>
+    和局賠率：<input type="number" step="0.01" id="EDRM" placeholder="最低"> – 
+    <input type="number" step="0.01" id="EDRX" placeholder="最高"><br/>
+    客勝賠率：<input type="number" step="0.01" id="EAWM" placeholder="最低"> – 
+    <input type="number" step="0.01" id="EAWX" placeholder="最高"><br/>
+    <button type="button" class="search" onclick="euroSearch()">搜尋</button>
+  </form>
+  <div id="eStat"></div>
+  <table id="eTbl"><thead><tr><th>比賽</th><th>比分</th><th>勝負</th><th>淨勝球</th></tr></thead><tbody></tbody></table>
 </div>
+
+<!-- ＝＝＝＝＝ JavaScript ＝＝＝＝＝ -->
 <script>
-// Tab 切換
-function showTab(idx) {
-    for(let i=1;i<=3;i++) {
-        document.getElementById('tab'+i).classList.remove('active');
-        document.getElementById('tabcontent'+i).style.display = 'none';
-    }
-    document.getElementById('tab'+(idx+1)).classList.add('active');
-    document.getElementById('tabcontent'+(idx+1)).style.display = '';
+const ts=document.getElementById("ts");
+ts.textContent="版本時間："+new Date().toLocaleString("zh-HK",{hour12:false})+" (GMT+8)";
+
+let AData=[],OData=[],EData=[];
+Promise.all([
+ fetch("asian_handicap.json").then(r=>r.json()).then(j=>AData=j),
+ fetch("over_under.json").then(r=>r.json()).then(j=>OData=j),
+ fetch("european_odds.json").then(r=>r.json()).then(j=>EData=j)
+]).then(()=>initAsian());
+
+function showTab(i){
+ ["tab1","tab2","tab3"].forEach((t,idx)=>{
+   document.getElementById(t).classList.toggle("active",idx===i);
+   document.getElementById("tc"+(idx+1)).style.display=idx===i?"":"none";
+ });
 }
-// (以下查詢功能略，此處只構建外觀結構)
+function pct(n,t){return t?((n/t*100).toFixed(1)+"%"):"0%";}
+
+/* ---------- ① 亞洲盤 ---------- */
+function initAsian(){
+ const oSet=new Set(),cSet=new Set();
+ AData.forEach(r=>{
+   if(typeof r.AH_open_handicap==="number")oSet.add(r.AH_open_handicap);
+   if(typeof r.AH_close_handicap==="number")cSet.add(r.AH_close_handicap);
+ });
+ genSel("AO",[...oSet]);genSel("AC",[...cSet]);
+}
+function genSel(id,arr){
+ document.getElementById(id).innerHTML='<option value="">--</option>'+arr.sort((a,b)=>a-b).map(v=>`<option>${v}</option>`).join("");
+}
+function asianSearch(){
+ const v=q=>parseFloat(document.getElementById(q).value);
+ let res=AData.filter(r=>{
+   if(document.getElementById("AO").value&&r.AH_open_handicap!=v("AO"))return false;
+   if(document.getElementById("AC").value&&r.AH_close_handicap!=v("AC"))return false;
+   if(!isNaN(v("OHH"))&&r.AH_open_home_odds<v("OHH"))return false;
+   if(!isNaN(v("OHX"))&&r.AH_open_home_odds>v("OHX"))return false;
+   if(!isNaN(v("OAH"))&&r.AH_open_away_odds<v("OAH"))return false;
+   if(!isNaN(v("OAX"))&&r.AH_open_away_odds>v("OAX"))return false;
+   if(!isNaN(v("CHH"))&&r.AH_close_home_odds<v("CHH"))return false;
+   if(!isNaN(v("CHX"))&&r.AH_close_home_odds>v("CHX"))return false;
+   if(!isNaN(v("CAH"))&&r.AH_close_away_odds<v("CAH"))return false;
+   if(!isNaN(v("CAX"))&&r.AH_close_away_odds>v("CAX"))return false;
+   return true;
+ });
+ let win=0,draw=0,lose=0,tbody=document.querySelector("#aTbl tbody");tbody.innerHTML="";
+ res.forEach(r=>{
+   const [h,a]=r.ft_score.split("-").map(Number),diff=(h+r.AH_close_handicap)-a;
+   const out=diff>0?"贏盤":diff<0?"輸盤":"和盤";
+   if(out==="贏盤")win++;else if(out==="輸盤")lose++;else draw++;
+   tbody.insertAdjacentHTML("beforeend",`<tr><td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td><td>${r.AH_movement}</td><td>${out}</td></tr>`);
+ });
+ const tot=res.length;
+ document.getElementById("aStat").innerHTML=`總場數：${tot}<br/>主隊贏盤：${win} (${pct(win,tot)})　主隊輸盤：${lose} (${pct(lose,tot)})　和盤：${draw} (${pct(draw,tot)})`;
+}
+
+/* ---------- ② 大小球 ---------- */
+function overSearch(){
+ const line=parseFloat(document.getElementById("OUline").value);
+ const oMin=parseFloat(document.getElementById("OUOM").value),oMax=parseFloat(document.getElementById("OUOX").value);
+ const uMin=parseFloat(document.getElementById("OUUM").value),uMax=parseFloat(document.getElementById("OUUX").value);
+ let res=OData.filter(r=>{
+   if(!isNaN(line)&&r.OU_line!=line)return false;
+   if(!isNaN(oMin)&&r.OU_open_over_odds<oMin)return false;
+   if(!isNaN(oMax)&&r.OU_open_over_odds>oMax)return false;
+   if(!isNaN(uMin)&&r.OU_open_under_odds<uMin)return false;
+   if(!isNaN(uMax)&&r.OU_open_under_odds>uMax)return false;
+   return true;
+ });
+ let over=0,under=0,tbody=document.querySelector("#oTbl tbody");tbody.innerHTML="";
+ res.forEach(r=>{
+   const goals=r.ft_score.split("-").reduce((a,b)=>parseInt(a)+parseInt(b));
+   const out=goals>r.OU_line?"Over":goals<r.OU_line?"Under":"Push";
+   if(out==="Over")over++;else if(out==="Under")under++;
+   tbody.insertAdjacentHTML("beforeend",`<tr><td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td><td>${r.OU_line}</td><td>${out}</td></tr>`);
+ });
+ const tot=res.length;
+ document.getElementById("oStat").innerHTML=`總場數：${tot}<br/>Over：${over} (${pct(over,tot)})　Under：${under} (${pct(under,tot)})`;
+}
+
+/* ---------- ③ 歐洲盤 ---------- */
+function euroSearch(){
+ const v=id=>parseFloat(document.getElementById(id).value);
+ let res=EData.filter(r=>{
+   if(!isNaN(v("EHOM"))&&r["1X2_open_home_odds"]<v("EHOM"))return false;
+   if(!isNaN(v("EHOX"))&&r["1X2_open_home_odds"]>v("EHOX"))return false;
+   if(!isNaN(v("EDRM"))&&r["1X2_open_draw_odds"]<v("EDRM"))return false;
+   if(!isNaN(v("EDRX"))&&r["1X2_open_draw_odds"]>v("EDRX"))return false;
+   if(!isNaN(v("EAWM"))&&r["1X2_open_away_odds"]<v("EAWM"))return false;
+   if(!isNaN(v("EAWX"))&&r["1X2_open_away_odds"]>v("EAWX"))return false;
+   return true;
+ });
+ let home=0,draw=0,away=0,d1=0,d2=0,d3=0,tbody=document.querySelector("#eTbl tbody");tbody.innerHTML="";
+ res.forEach(r=>{
+   const [h,a]=r.ft_score.split("-").map(Number),diff=h-a;
+   if(diff>0){home++;if(diff==1)d1++;else if(diff==2)d2++;else d3++;}
+   else if(diff<0)away++;else draw++;
+   tbody.insertAdjacentHTML("beforeend",`<tr><td>${r.home_team} vs ${r.away_team}</td><td>${r.ft_score}</td><td>${r.ft_result}</td><td>${diff}</td></tr>`);
+ });
+ const tot=res.length;
+ document.getElementById("eStat").innerHTML=
+   `總場數：${tot}<br/>主勝：${home} (${pct(home,tot)})　和局：${draw} (${pct(draw,tot)})　客勝：${away} (${pct(away,tot)})<br/>主勝淨勝球 ➜ 1球:${d1}  2球:${d2}  3+球:${d3}`;
+}
 </script>
 </body>
 </html>
