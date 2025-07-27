@@ -1,0 +1,10 @@
+
+body { background: #f8fafd; font-family: "Microsoft JhengHei",sans-serif; }
+table { border-collapse:collapse; width:100%; background:#fff; }
+th,td { border:1px solid #eee; padding:8px 4px; }
+th { background:#f2f6fb; }
+fieldset { margin-bottom:10px; border-radius:6px; border:1.6px solid #c3daf7; background:#f9fcff; }
+legend { font-weight:bold; color:#1666c1; }
+button[type="button"] { padding:7px 23px; border:none; border-radius:4px; background:#1666c1; color:#fff; font-size:1em; margin-top:10px; cursor:pointer; }
+button[type="button"]:hover { background:#205b98; }
+input,select { border:1px solid #b8cef1; border-radius:4px; padding:4px 8px; margin:3px 2px 3px 0; }
