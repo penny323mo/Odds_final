@@ -24,9 +24,8 @@ button.search:hover{background:#205b98}
 table{width:100%;border-collapse:collapse;background:#fff;margin-top:10px}
 th,td{border:1px solid #e5e5e5;padding:6px 4px;text-align:center}
 th{background:#f2f6fb}
-.stat-chart-wrap {display:flex;justify-content:center;align-items:center;margin:16px 0;}
-.stat-chart-item {margin:0 18px;text-align:center;}
-.stat-chart-item canvas {max-width:78px;max-height:78px;}
+.pie-wrap{display:flex;align-items:center;gap:24px;margin:16px 0;}
+.pie-wrap canvas{max-width:150px;width:32vw;height:32vw;min-width:100px;min-height:100px;}
 @media(max-width:650px){
  .tabbar button{font-size:.95em;padding:11px 2px}
  .tabcontent{padding:14px 3vw}
@@ -34,12 +33,10 @@ th{background:#f2f6fb}
  .row label{width:90px;}
  .input-wrap{gap:6px;}
  input,select{width:70px;font-size:.95em}
- .stat-chart-wrap{flex-direction:column;}
- .stat-chart-item{margin:8px 0;}
+ .pie-wrap{flex-direction:column;gap:6px;}
+ .pie-wrap canvas{width:100px;height:100px;}
 }
 </style>
-<!-- 引 Chart.js CDN  -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="header">
@@ -102,13 +99,7 @@ th{background:#f2f6fb}
     </fieldset>
     <button type="button" class="search" onclick="asianSearch()">搜尋</button>
   </form>
-  <div id="aStat"></div>
-  <!-- 圓形統計圖 -->
-  <div class="stat-chart-wrap" id="aChartBox" style="display:none">
-    <div class="stat-chart-item"><canvas id="aPieWin"></canvas><div>贏盤</div></div>
-    <div class="stat-chart-item"><canvas id="aPieDraw"></canvas><div>和盤</div></div>
-    <div class="stat-chart-item"><canvas id="aPieLose"></canvas><div>輸盤</div></div>
-  </div>
+  <div class="pie-wrap"><canvas id="aPie"></canvas><div id="aStat"></div></div>
   <table id="aTbl"><thead>
     <tr>
       <th>比賽日期</th>
@@ -164,11 +155,7 @@ th{background:#f2f6fb}
     </fieldset>
     <button type="button" class="search" onclick="overSearch()">搜尋</button>
   </form>
-  <div id="oStat"></div>
-  <div class="stat-chart-wrap" id="oChartBox" style="display:none">
-    <div class="stat-chart-item"><canvas id="oPieOver"></canvas><div>Over</div></div>
-    <div class="stat-chart-item"><canvas id="oPieUnder"></canvas><div>Under</div></div>
-  </div>
+  <div class="pie-wrap"><canvas id="oPie"></canvas><div id="oStat"></div></div>
   <table id="oTbl"><thead>
     <tr>
       <th>比賽日期</th>
@@ -240,12 +227,7 @@ th{background:#f2f6fb}
     </fieldset>
     <button type="button" class="search" onclick="euroSearch()">搜尋</button>
   </form>
-  <div id="eStat"></div>
-  <div class="stat-chart-wrap" id="eChartBox" style="display:none">
-    <div class="stat-chart-item"><canvas id="ePieHome"></canvas><div>主勝</div></div>
-    <div class="stat-chart-item"><canvas id="ePieDraw"></canvas><div>和局</div></div>
-    <div class="stat-chart-item"><canvas id="ePieAway"></canvas><div>客勝</div></div>
-  </div>
+  <div class="pie-wrap"><canvas id="ePie"></canvas><div id="eStat"></div></div>
   <table id="eTbl"><thead>
     <tr>
       <th>比賽日期</th>
@@ -258,23 +240,18 @@ th{background:#f2f6fb}
     </tr>
   </thead><tbody></tbody></table>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const ts=document.getElementById("ts");
 ts.textContent="版本時間："+new Date().toLocaleString("zh-HK",{hour12:false})+" (GMT+8)";
 const pct=(n,t)=>t?((n/t*100).toFixed(1)+"%"):"0%";
-
-/* －－ 資料預載 －－ */
 let AData=[],OData=[],EData=[];
 Promise.all([
  fetch("asian_handicap.json").then(r=>r.json()).then(j=>AData=j),
  fetch("over_under.json").then(r=>r.json()).then(j=>OData=j),
  fetch("european_odds.json").then(r=>r.json()).then(j=>EData=j)
 ]).then(()=>{initAsian();initOU();});
-
-/* －－ Tab 切換 －－ */
 function showTab(i){["tab1","tab2","tab3"].forEach((t,idx)=>{document.getElementById(t).classList.toggle("active",idx===i);document.getElementById("tc"+(idx+1)).style.display=idx===i?"":"none";});}
-
-/* ===== ① 亞洲盤 ===== */
 function initAsian(){
  const oSet=new Set(),cSet=new Set();
  AData.forEach(r=>{if(typeof r.AH_open_handicap==="number")oSet.add(r.AH_open_handicap);if(typeof r.AH_close_handicap==="number")cSet.add(r.AH_close_handicap);});
@@ -291,7 +268,7 @@ function getDate(r){
   if(typeof d === "string" && /^\d{4}-\d{2}-\d{2}/.test(d)) return d;
   return d;
 }
-let aPieWin,aPieDraw,aPieLose;
+let aPieChart=null, oPieChart=null, ePieChart=null;
 function asianSearch(){
  const v=id=>parseFloat(document.getElementById(id).value);
  let res=AData.filter(r=>{
@@ -321,23 +298,28 @@ function asianSearch(){
  const tot=res.length;
  document.getElementById("aStat").innerHTML=`總場數：${tot}<br/>主隊贏盤：${win} (${pct(win,tot)})　主隊輸盤：${lose} (${pct(lose,tot)})　和盤：${draw} (${pct(draw,tot)})`;
  // Pie Chart
- if(!aPieWin){aPieWin=new Chart(document.getElementById('aPieWin').getContext('2d'),{type:'doughnut',data:{labels:["贏盤","其他"],datasets:[{data:[win,tot-win],backgroundColor:["#2176d3","#dbe7f5"]}]},options:{cutout:'70%',plugins:{legend:{display:false}}}});}
- else{aPieWin.data.datasets[0].data=[win,tot-win];aPieWin.update();}
- if(!aPieDraw){aPieDraw=new Chart(document.getElementById('aPieDraw').getContext('2d'),{type:'doughnut',data:{labels:["和盤","其他"],datasets:[{data:[draw,tot-draw],backgroundColor:["#3786aa","#dbe7f5"]}]},options:{cutout:'70%',plugins:{legend:{display:false}}}});}
- else{aPieDraw.data.datasets[0].data=[draw,tot-draw];aPieDraw.update();}
- if(!aPieLose){aPieLose=new Chart(document.getElementById('aPieLose').getContext('2d'),{type:'doughnut',data:{labels:["輸盤","其他"],datasets:[{data:[lose,tot-lose],backgroundColor:["#c13e3e","#dbe7f5"]}]},options:{cutout:'70%',plugins:{legend:{display:false}}}});}
- else{aPieLose.data.datasets[0].data=[lose,tot-lose];aPieLose.update();}
- document.getElementById("aChartBox").style.display="flex";
+ if(aPieChart){aPieChart.destroy();}
+ aPieChart = new Chart(document.getElementById('aPie'), {
+   type: 'pie',
+   data: {
+     labels: ['贏盤','和盤','輸盤'],
+     datasets: [{
+       data: [win,draw,lose],
+       backgroundColor: ['#2471f7','#bbb','#fa6565']
+     }]
+   },
+   options: {
+     plugins: { legend: { display:true, position: 'right', labels:{font:{size:14}} }, tooltip: { enabled:true } },
+     responsive:true, animation:true
+   }
+ });
 }
-
-/* ===== ② 大小球 ===== */
 function initOU(){
  const set=new Set(OData.map(r=>r.OU_line));
  const arr=[...set].sort((a,b)=>a-b);
  const sel=document.getElementById("OUlineSel");
  sel.innerHTML=arr.map(v=>`<option${v==2.5?" selected":""}>${v}</option>`).join("");
 }
-let oPieOver,oPieUnder;
 function overSearch(){
  const sel=document.getElementById("OUlineSel").value;
  const oMin=parseFloat(document.getElementById("OUoMin").value),
@@ -380,15 +362,22 @@ function overSearch(){
  const tot=res.length;
  document.getElementById("oStat").innerHTML=`總場數：${tot}　Over：${over} (${pct(over,tot)})　Under：${under} (${pct(under,tot)})`;
  // Pie Chart
- if(!oPieOver){oPieOver=new Chart(document.getElementById('oPieOver').getContext('2d'),{type:'doughnut',data:{labels:["Over","其他"],datasets:[{data:[over,tot-over],backgroundColor:["#2176d3","#dbe7f5"]}]},options:{cutout:'70%',plugins:{legend:{display:false}}}});}
- else{oPieOver.data.datasets[0].data=[over,tot-over];oPieOver.update();}
- if(!oPieUnder){oPieUnder=new Chart(document.getElementById('oPieUnder').getContext('2d'),{type:'doughnut',data:{labels:["Under","其他"],datasets:[{data:[under,tot-under],backgroundColor:["#3786aa","#dbe7f5"]}]},options:{cutout:'70%',plugins:{legend:{display:false}}}});}
- else{oPieUnder.data.datasets[0].data=[under,tot-under];oPieUnder.update();}
- document.getElementById("oChartBox").style.display="flex";
+ if(oPieChart){oPieChart.destroy();}
+ oPieChart = new Chart(document.getElementById('oPie'), {
+   type: 'pie',
+   data: {
+     labels: ['Over','Under'],
+     datasets: [{
+       data: [over, under],
+       backgroundColor: ['#2471f7','#fa6565']
+     }]
+   },
+   options: {
+     plugins: { legend: { display:true, position: 'right', labels:{font:{size:14}} }, tooltip: { enabled:true } },
+     responsive:true, animation:true
+   }
+ });
 }
-
-/* ===== ③ 歐洲盤 ===== */
-let ePieHome,ePieDraw,ePieAway;
 function euroSearch(){
  const v=id=>parseFloat(document.getElementById(id).value);
  const cv=id=>parseFloat(document.getElementById("C"+id).value);
@@ -425,13 +414,21 @@ function euroSearch(){
    `總場數：${tot}<br/>主勝：${home} (${pct(home,tot)})　和局：${draw} (${pct(draw,tot)})　客勝：${away} (${pct(away,tot)})<br/>
     主勝淨勝球 ➜ 1球:${d1}  2球:${d2}  3+球:${d3}`;
  // Pie Chart
- if(!ePieHome){ePieHome=new Chart(document.getElementById('ePieHome').getContext('2d'),{type:'doughnut',data:{labels:["主勝","其他"],datasets:[{data:[home,tot-home],backgroundColor:["#2176d3","#dbe7f5"]}]},options:{cutout:'70%',plugins:{legend:{display:false}}}});}
- else{ePieHome.data.datasets[0].data=[home,tot-home];ePieHome.update();}
- if(!ePieDraw){ePieDraw=new Chart(document.getElementById('ePieDraw').getContext('2d'),{type:'doughnut',data:{labels:["和局","其他"],datasets:[{data:[draw,tot-draw],backgroundColor:["#3786aa","#dbe7f5"]}]},options:{cutout:'70%',plugins:{legend:{display:false}}}});}
- else{ePieDraw.data.datasets[0].data=[draw,tot-draw];ePieDraw.update();}
- if(!ePieAway){ePieAway=new Chart(document.getElementById('ePieAway').getContext('2d'),{type:'doughnut',data:{labels:["客勝","其他"],datasets:[{data:[away,tot-away],backgroundColor:["#c13e3e","#dbe7f5"]}]},options:{cutout:'70%',plugins:{legend:{display:false}}}});}
- else{ePieAway.data.datasets[0].data=[away,tot-away];ePieAway.update();}
- document.getElementById("eChartBox").style.display="flex";
+ if(ePieChart){ePieChart.destroy();}
+ ePieChart = new Chart(document.getElementById('ePie'), {
+   type: 'pie',
+   data: {
+     labels: ['主勝','和局','客勝'],
+     datasets: [{
+       data: [home, draw, away],
+       backgroundColor: ['#2471f7','#bbb','#fa6565']
+     }]
+   },
+   options: {
+     plugins: { legend: { display:true, position: 'right', labels:{font:{size:14}} }, tooltip: { enabled:true } },
+     responsive:true, animation:true
+   }
+ });
 }
 </script>
 </body>
