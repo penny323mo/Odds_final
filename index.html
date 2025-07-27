@@ -3,10 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <title>足球賠率篩選工具</title>
-
-<!-- ========== CSS ========== -->
 <style>
-body{margin:0;background:#f8fafd;font-family:"Microsoft JhengHei",sans-serif}
+body{background:#f8fafd;font-family:"Microsoft JhengHei",sans-serif;margin:0}
 .header{background:#1666c1;color:#fff;text-align:center;padding:36px 0 20px}
 .header h1{margin:0;font-size:2.1em;letter-spacing:2px}
 .header .desc{margin-top:7px;font-size:1.04em;font-weight:300}
@@ -17,7 +15,7 @@ body{margin:0;background:#f8fafd;font-family:"Microsoft JhengHei",sans-serif}
 .tabcontent{max-width:920px;margin:25px auto;background:#fff;border-radius:8px;padding:22px;box-shadow:0 3px 18px #8ab3e929}
 fieldset{margin-bottom:12px;border:1.5px solid #c3daf7;border-radius:6px;background:#f9fcff}
 legend{color:#1666c1;font-weight:bold}
-input,select{border:1px solid #b8cef1;border-radius:4px;padding:4px 6px;margin:3px 2px;width:100px}
+input,select{border:1px solid #b8cef1;border-radius:4px;padding:4px 6px;margin:3px 2px;width:110px}
 button.search{padding:7px 24px;border:none;border-radius:4px;background:#1666c1;color:#fff;font-size:1em;margin-top:8px;cursor:pointer}
 button.search:hover{background:#205b98}
 table{width:100%;border-collapse:collapse;background:#fff;margin-top:10px}
@@ -31,15 +29,11 @@ th{background:#f2f6fb}
 }
 </style>
 </head>
-
 <body>
-<!-- ===== Banner ===== -->
 <div class="header">
   <h1>足球賠率篩選工具</h1>
   <div class="desc">根據初盤、終盤所有條件組合快速篩選比賽，並精確統計每一項百分比。</div>
 </div>
-
-<!-- ===== Tab Bar ===== -->
 <div class="tabbar">
   <button id="tab1" class="active" onclick="showTab(0)">亞洲盤查詢</button>
   <button id="tab2" onclick="showTab(1)">大小球查詢</button>
@@ -66,26 +60,40 @@ th{background:#f2f6fb}
   <table id="aTbl"><thead><tr><th>比賽</th><th>盤口變化</th><th>盤口勝負</th></tr></thead><tbody></tbody></table>
 </div>
 
-<!-- ===== 2. 大小球 ===== -->
+<!-- ===== 2. 大小球（有終盤賠率，盤口下拉且預選2.5） ===== -->
 <div class="tabcontent" id="tc2" style="display:none">
   <form>
-    <fieldset><legend>初盤條件</legend>
-      盤口：<select id="OUlineSel"></select>
+    <fieldset><legend>初盤</legend>
+      盤口：
+      <select id="OUlineSel"></select>
       大：<input type="number" step="0.01" id="OUoMin" placeholder="低">–<input type="number" step="0.01" id="OUoMax" placeholder="高">
       細：<input type="number" step="0.01" id="OUuMin" placeholder="低">–<input type="number" step="0.01" id="OUuMax" placeholder="高">
+    </fieldset>
+    <fieldset><legend>終盤賠率</legend>
+      大：<input type="number" step="0.01" id="OUoMinC" placeholder="低">–<input type="number" step="0.01" id="OUoMaxC" placeholder="高">
+      細：<input type="number" step="0.01" id="OUuMinC" placeholder="低">–<input type="number" step="0.01" id="OUuMaxC" placeholder="高">
     </fieldset>
     <button type="button" class="search" onclick="overSearch()">搜尋</button>
   </form>
   <div id="oStat"></div>
-  <table id="oTbl"><thead><tr><th>比賽</th><th>盤口</th><th>結果</th></tr></thead><tbody></tbody></table>
+  <table id="oTbl"><thead><tr>
+    <th>比賽</th><th>盤口</th><th>初盤大</th><th>初盤細</th><th>終盤大</th><th>終盤細</th><th>結果</th>
+  </tr></thead><tbody></tbody></table>
 </div>
 
-<!-- ===== 3. 歐洲盤 ===== -->
+<!-- ===== 3. 歐洲盤（可輸入初盤/終盤三賠率範圍） ===== -->
 <div class="tabcontent" id="tc3" style="display:none">
   <form>
-    主勝：<input type="number" step="0.01" id="EHOM" placeholder="低">–<input type="number" step="0.01" id="EHOX" placeholder="高">
-    和局：<input type="number" step="0.01" id="EDRM" placeholder="低">–<input type="number" step="0.01" id="EDRX" placeholder="高">
-    客勝：<input type="number" step="0.01" id="EAWM" placeholder="低">–<input type="number" step="0.01" id="EAWX" placeholder="高">
+    <fieldset><legend>初盤</legend>
+      主勝：<input type="number" step="0.01" id="EHOM" placeholder="低">–<input type="number" step="0.01" id="EHOX" placeholder="高">
+      和局：<input type="number" step="0.01" id="EDRM" placeholder="低">–<input type="number" step="0.01" id="EDRX" placeholder="高">
+      客勝：<input type="number" step="0.01" id="EAWM" placeholder="低">–<input type="number" step="0.01" id="EAWX" placeholder="高">
+    </fieldset>
+    <fieldset><legend>終盤</legend>
+      主勝：<input type="number" step="0.01" id="CEHOM" placeholder="低">–<input type="number" step="0.01" id="CEHOX" placeholder="高">
+      和局：<input type="number" step="0.01" id="CEDRM" placeholder="低">–<input type="number" step="0.01" id="CEDRX" placeholder="高">
+      客勝：<input type="number" step="0.01" id="CEAWM" placeholder="低">–<input type="number" step="0.01" id="CEAWX" placeholder="高">
+    </fieldset>
     <button type="button" class="search" onclick="euroSearch()">搜尋</button>
   </form>
   <div id="eStat"></div>
@@ -94,7 +102,6 @@ th{background:#f2f6fb}
   </tr></thead><tbody></tbody></table>
 </div>
 
-<!-- ========== JavaScript ========== -->
 <script>
 const ts=document.getElementById("ts");
 ts.textContent="版本時間："+new Date().toLocaleString("zh-HK",{hour12:false})+" (GMT+8)";
@@ -147,20 +154,30 @@ function asianSearch(){
 /* ===== ② 大小球 ===== */
 function initOU(){
  const set=new Set(OData.map(r=>r.OU_line));
- document.getElementById("OUlineSel").innerHTML='<option value="">--</option>'+[...set].sort((a,b)=>a-b).map(v=>`<option>${v}</option>`).join("");
+ const arr=[...set].sort((a,b)=>a-b);
+ const sel=document.getElementById("OUlineSel");
+ sel.innerHTML=arr.map(v=>`<option${v==2.5?" selected":""}>${v}</option>`).join(""); //預設選2.5
 }
 function overSearch(){
- const s=document.getElementById("OUlineSel").value;
+ const sel=document.getElementById("OUlineSel").value;
  const oMin=parseFloat(document.getElementById("OUoMin").value),
        oMax=parseFloat(document.getElementById("OUoMax").value),
        uMin=parseFloat(document.getElementById("OUuMin").value),
-       uMax=parseFloat(document.getElementById("OUuMax").value);
+       uMax=parseFloat(document.getElementById("OUuMax").value),
+       oMinC=parseFloat(document.getElementById("OUoMinC").value),
+       oMaxC=parseFloat(document.getElementById("OUoMaxC").value),
+       uMinC=parseFloat(document.getElementById("OUuMinC").value),
+       uMaxC=parseFloat(document.getElementById("OUuMaxC").value);
  let res=OData.filter(r=>{
-   if(s && r.OU_line!=parseFloat(s))return false;
+   if(sel && r.OU_line!=parseFloat(sel))return false;
    if(!isNaN(oMin)&&r.OU_open_over_odds<oMin)return false;
    if(!isNaN(oMax)&&r.OU_open_over_odds>oMax)return false;
    if(!isNaN(uMin)&&r.OU_open_under_odds<uMin)return false;
    if(!isNaN(uMax)&&r.OU_open_under_odds>uMax)return false;
+   if(!isNaN(oMinC)&&r.OU_close_over_odds<oMinC)return false;
+   if(!isNaN(oMaxC)&&r.OU_close_over_odds>oMaxC)return false;
+   if(!isNaN(uMinC)&&r.OU_close_under_odds<uMinC)return false;
+   if(!isNaN(uMaxC)&&r.OU_close_under_odds>uMaxC)return false;
    return true;
  });
  let over=0,under=0,tb=document.querySelector("#oTbl tbody");tb.innerHTML="";
@@ -168,7 +185,15 @@ function overSearch(){
    const goals=r.ft_score.split("-").reduce((a,b)=>parseInt(a)+parseInt(b));
    const out=goals>r.OU_line?"Over":goals<r.OU_line?"Under":"Push";
    if(out==="Over")over++;else if(out==="Under")under++;
-   tb.insertAdjacentHTML("beforeend",`<tr><td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td><td>${r.OU_line}</td><td>${out}</td></tr>`);
+   tb.insertAdjacentHTML("beforeend",
+     `<tr><td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+          <td>${r.OU_line}</td>
+          <td>${r.OU_open_over_odds??""}</td>
+          <td>${r.OU_open_under_odds??""}</td>
+          <td>${r.OU_close_over_odds??""}</td>
+          <td>${r.OU_close_under_odds??""}</td>
+          <td>${out}</td>
+      </tr>`);
  });
  const tot=res.length;
  document.getElementById("oStat").innerHTML=`總場數：${tot}　Over：${over} (${pct(over,tot)})　Under：${under} (${pct(under,tot)})`;
@@ -177,13 +202,22 @@ function overSearch(){
 /* ===== ③ 歐洲盤 ===== */
 function euroSearch(){
  const v=id=>parseFloat(document.getElementById(id).value);
+ const cv=id=>parseFloat(document.getElementById("C"+id).value); //終盤欄位
  let res=EData.filter(r=>{
+   // 初盤
    if(!isNaN(v("EHOM"))&&r["1X2_open_home_odds"]<v("EHOM"))return false;
    if(!isNaN(v("EHOX"))&&r["1X2_open_home_odds"]>v("EHOX"))return false;
    if(!isNaN(v("EDRM"))&&r["1X2_open_draw_odds"]<v("EDRM"))return false;
    if(!isNaN(v("EDRX"))&&r["1X2_open_draw_odds"]>v("EDRX"))return false;
    if(!isNaN(v("EAWM"))&&r["1X2_open_away_odds"]<v("EAWM"))return false;
    if(!isNaN(v("EAWX"))&&r["1X2_open_away_odds"]>v("EAWX"))return false;
+   // 終盤
+   if(!isNaN(cv("EHOM"))&&r["1X2_close_home_odds"]<cv("EHOM"))return false;
+   if(!isNaN(cv("EHOX"))&&r["1X2_close_home_odds"]>cv("EHOX"))return false;
+   if(!isNaN(cv("EDRM"))&&r["1X2_close_draw_odds"]<cv("EDRM"))return false;
+   if(!isNaN(cv("EDRX"))&&r["1X2_close_draw_odds"]>cv("EDRX"))return false;
+   if(!isNaN(cv("EAWM"))&&r["1X2_close_away_odds"]<cv("EAWM"))return false;
+   if(!isNaN(cv("EAWX"))&&r["1X2_close_away_odds"]>cv("EAWX"))return false;
    return true;
  });
  let home=0,draw=0,away=0,d1=0,d2=0,d3=0,tb=document.querySelector("#eTbl tbody");tb.innerHTML="";
