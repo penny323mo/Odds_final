@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <title>歐洲盤查詢</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <h1>歐洲標準盤查詢</h1>
+    <form id="query-form">
+        <label>初盤主勝賠率：</label>
+        <input type="number" step="0.01" id="homeOpenMin" placeholder="最低"> -
+        <input type="number" step="0.01" id="homeOpenMax" placeholder="最高"><br/>
+        <label>終盤主勝賠率：</label>
+        <input type="number" step="0.01" id="homeCloseMin" placeholder="最低"> -
+        <input type="number" step="0.01" id="homeCloseMax" placeholder="最高"><br/>
+        <label>初盤和局賠率：</label>
+        <input type="number" step="0.01" id="drawOpenMin" placeholder="最低"> -
+        <input type="number" step="0.01" id="drawOpenMax" placeholder="最高"><br/>
+        <label>終盤和局賠率：</label>
+        <input type="number" step="0.01" id="drawCloseMin" placeholder="最低"> -
+        <input type="number" step="0.01" id="drawCloseMax" placeholder="最高"><br/>
+        <label>初盤客勝賠率：</label>
+        <input type="number" step="0.01" id="awayOpenMin" placeholder="最低"> -
+        <input type="number" step="0.01" id="awayOpenMax" placeholder="最高"><br/>
+        <label>終盤客勝賠率：</label>
+        <input type="number" step="0.01" id="awayCloseMin" placeholder="最低"> -
+        <input type="number" step="0.01" id="awayCloseMax" placeholder="最高"><br/>
+        <button type="button" onclick="search()">搜尋</button>
+    </form>
+
+    <div id="stats"></div>
+    <table id="results" border="1">
+        <thead>
+            <tr>
+                <th>比賽</th><th>比分</th><th>勝負</th><th>淨勝球</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+<script>
+let data = [];
+
+fetch("european_odds.json")
+    .then(res => res.json())
+    .then(json => data = json);
+
+function search() {
+    const hOpenMin = parseFloat(document.getElementById("homeOpenMin").value);
+    const hOpenMax = parseFloat(document.getElementById("homeOpenMax").value);
+    const hCloseMin = parseFloat(document.getElementById("homeCloseMin").value);
+    const hCloseMax = parseFloat(document.getElementById("homeCloseMax").value);
+    const dOpenMin = parseFloat(document.getElementById("drawOpenMin").value);
+    const dOpenMax = parseFloat(document.getElementById("drawOpenMax").value);
+    const dCloseMin = parseFloat(document.getElementById("drawCloseMin").value);
+    const dCloseMax = parseFloat(document.getElementById("drawCloseMax").value);
+    const aOpenMin = parseFloat(document.getElementById("awayOpenMin").value);
+    const aOpenMax = parseFloat(document.getElementById("awayOpenMax").value);
+    const aCloseMin = parseFloat(document.getElementById("awayCloseMin").value);
+    const aCloseMax = parseFloat(document.getElementById("awayCloseMax").value);
+
+    const results = data.filter(row => {
+        let pass = true;
+        if (!isNaN(hOpenMin)) pass = pass && row["1X2_open_home_odds"] >= hOpenMin;
+        if (!isNaN(hOpenMax)) pass = pass && row["1X2_open_home_odds"] <= hOpenMax;
+        if (!isNaN(hCloseMin)) pass = pass && row["1X2_close_home_odds"] >= hCloseMin;
+        if (!isNaN(hCloseMax)) pass = pass && row["1X2_close_home_odds"] <= hCloseMax;
+        if (!isNaN(dOpenMin)) pass = pass && row["1X2_open_draw_odds"] >= dOpenMin;
+        if (!isNaN(dOpenMax)) pass = pass && row["1X2_open_draw_odds"] <= dOpenMax;
+        if (!isNaN(dCloseMin)) pass = pass && row["1X2_close_draw_odds"] >= dCloseMin;
+        if (!isNaN(dCloseMax)) pass = pass && row["1X2_close_draw_odds"] <= dCloseMax;
+        if (!isNaN(aOpenMin)) pass = pass && row["1X2_open_away_odds"] >= aOpenMin;
+        if (!isNaN(aOpenMax)) pass = pass && row["1X2_open_away_odds"] <= aOpenMax;
+        if (!isNaN(aCloseMin)) pass = pass && row["1X2_close_away_odds"] >= aCloseMin;
+        if (!isNaN(aCloseMax)) pass = pass && row["1X2_close_away_odds"] <= aCloseMax;
+        return pass;
+    });
+
+    let home = 0, draw = 0, away = 0;
+    let diff1 = 0, diff2 = 0, diff3 = 0;
+    const tbody = document.querySelector("#results tbody");
+    tbody.innerHTML = "";
+
+    results.forEach(row => {
+        const score = row.ft_score;
+        const [h, a] = score.split("-").map(x => parseInt(x));
+        const diff = h - a;
+        const absDiff = Math.abs(diff);
+        let result = "";
+        if (diff > 0) {
+            home++;
+            if (absDiff === 1) diff1++;
+            else if (absDiff === 2) diff2++;
+            else if (absDiff >= 3) diff3++;
+        } else if (diff < 0) {
+            away++;
+        } else {
+            draw++;
+        }
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${row.home_team} vs ${row.away_team}</td>
+                        <td>${row.ft_score}</td>
+                        <td>${row.ft_result}</td>
+                        <td>${diff}</td>`;
+        tbody.appendChild(tr);
+    });
+
+    const total = results.length;
+    document.getElementById("stats").innerHTML = `
+        <p>總場數：${total}</p>
+        <p>主勝：${home} (${(home/total*100).toFixed(1)}%)</p>
+        <p>和局：${draw} (${(draw/total*100).toFixed(1)}%)</p>
+        <p>客勝：${away} (${(away/total*100).toFixed(1)}%)</p>
+        <p>主勝淨勝1球：${diff1} (${(diff1/home*100).toFixed(1)}%)、2球：${diff2}、3球或以上：${diff3}</p>`;
+}
+</script>
+</body>
+</html>

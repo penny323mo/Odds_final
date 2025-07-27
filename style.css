@@ -1,0 +1,25 @@
+
+body {
+    font-family: "Microsoft JhengHei", sans-serif;
+    background: #f7f7f7;
+    padding: 20px;
+}
+h1 {
+    color: #333;
+}
+form {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+th, td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+}

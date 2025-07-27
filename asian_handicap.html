@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <title>亞洲盤查詢</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <h1>亞洲讓球盤查詢</h1>
+    <form id="query-form">
+        <label>初盤主隊賠率範圍：</label>
+        <input type="number" step="0.01" id="openHomeMin" placeholder="最低"> -
+        <input type="number" step="0.01" id="openHomeMax" placeholder="最高"><br/>
+        <label>終盤主隊賠率範圍：</label>
+        <input type="number" step="0.01" id="closeHomeMin" placeholder="最低"> -
+        <input type="number" step="0.01" id="closeHomeMax" placeholder="最高"><br/>
+        <label>精確讓球初盤：</label>
+        <input type="number" step="0.25" id="exactOpenHandicap" placeholder="如 -0.5 或 1"><br/>
+        <label>精確讓球終盤：</label>
+        <input type="number" step="0.25" id="exactCloseHandicap" placeholder="如 -0.5 或 1"><br/>
+        <button type="button" onclick="search()">搜尋</button>
+    </form>
+
+    <div id="stats"></div>
+    <table id="results" border="1">
+        <thead>
+            <tr>
+                <th>比賽</th><th>盤口變化</th><th>結果</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+<script>
+let data = [];
+
+fetch("asian_handicap.json")
+    .then(res => res.json())
+    .then(json => data = json);
+
+function search() {
+    const openHomeMin = parseFloat(document.getElementById("openHomeMin").value);
+    const openHomeMax = parseFloat(document.getElementById("openHomeMax").value);
+    const closeHomeMin = parseFloat(document.getElementById("closeHomeMin").value);
+    const closeHomeMax = parseFloat(document.getElementById("closeHomeMax").value);
+    const exactOpen = document.getElementById("exactOpenHandicap").value;
+    const exactClose = document.getElementById("exactCloseHandicap").value;
+
+    const results = data.filter(row => {
+        let pass = true;
+        if (!isNaN(openHomeMin)) pass = pass && row.AH_open_home_odds >= openHomeMin;
+        if (!isNaN(openHomeMax)) pass = pass && row.AH_open_home_odds <= openHomeMax;
+        if (!isNaN(closeHomeMin)) pass = pass && row.AH_close_home_odds >= closeHomeMin;
+        if (!isNaN(closeHomeMax)) pass = pass && row.AH_close_home_odds <= closeHomeMax;
+        if (exactOpen !== "") pass = pass && row.AH_open_handicap == parseFloat(exactOpen);
+        if (exactClose !== "") pass = pass && row.AH_close_handicap == parseFloat(exactClose);
+        return pass;
+    });
+
+    let win = 0, lose = 0, draw = 0;
+    const tbody = document.querySelector("#results tbody");
+    tbody.innerHTML = "";
+
+    results.forEach(row => {
+        let result = "";
+        if (row.ft_result === "Home") win++;
+        else if (row.ft_result === "Away") lose++;
+        else draw++;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${row.home_team} vs ${row.away_team} (${row.ft_score})</td>
+                        <td>${row.AH_movement}</td>
+                        <td>${row.ft_result}</td>`;
+        tbody.appendChild(tr);
+    });
+
+    const total = results.length;
+    document.getElementById("stats").innerHTML = `
+        <p>總場數：${total}</p>
+        <p>主隊贏盤：${win} 場 (${(win/total*100).toFixed(1)}%)</p>
+        <p>主隊輸盤：${lose} 場 (${(lose/total*100).toFixed(1)}%)</p>
+        <p>和盤：${draw} 場 (${(draw/total*100).toFixed(1)}%)</p>`;
+}
+</script>
+</body>
+</html>
