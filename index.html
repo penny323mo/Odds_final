@@ -2,69 +2,70 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8" />
-<title>足球賠率 篩選工具</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>足球賠率篩選工具</title>
 <style>
 body{background:#f8fafd;font-family:"Microsoft JhengHei",sans-serif;margin:0}
 .header{background:#1666c1;color:#fff;text-align:center;padding:36px 0 20px}
-.header h1{margin:0;font-size:2.2em;letter-spacing:2px}
-.header .desc{margin-top:7px;font-size:1.10em;font-weight:300}
+.header h1{margin:0;font-size:2.1em;letter-spacing:2px}
+.header .desc{margin-top:7px;font-size:1.04em;font-weight:300}
 .tabbar{display:flex;justify-content:center;background:#e7f0fb;border-bottom:2px solid #dbe7f5}
-.tabbar button{flex:1;padding:17px;font-size:1.18em;font-weight:bold;background:none;border:none;border-bottom:4px solid transparent;cursor:pointer;transition:.2s}
+.tabbar button{flex:1;padding:15px;font-size:1.1em;font-weight:bold;background:none;border:none;border-bottom:4px solid transparent;cursor:pointer;transition:.2s}
 .tabbar button.active{color:#1666c1;border-bottom:4px solid #1666c1;background:#fff}
-.timestamp{text-align:center;color:#444;margin:14px 0 0 0;font-size:1.10em}
-.tabcontent{max-width:970px;margin:32px auto 30px;background:#fff;border-radius:10px;padding:30px 28px;box-shadow:0 3px 18px #8ab3e929}
-fieldset{margin-bottom:20px;border:1.5px solid #c3daf7;border-radius:7px;background:#f9fcff}
+.timestamp{text-align:center;color:#444;margin:10px 0 18px;font-size:1.07em;}
+.tabcontent{max-width:920px;margin:26px auto 0;background:#fff;border-radius:8px;padding:22px;box-shadow:0 3px 18px #8ab3e929}
+fieldset{margin-bottom:15px;border:1.5px solid #c3daf7;border-radius:6px;background:#f9fcff}
 legend{color:#1666c1;font-weight:bold}
-.row{display:flex;flex-wrap:wrap;align-items:center;margin:13px 0;}
-.row label{width:120px;text-align:right;margin-right:14px;white-space:nowrap;font-size:1.16em;}
-.input-wrap{flex:1;display:flex;gap:12px;align-items:center;}
-input,select{border:1px solid #b8cef1;border-radius:4px;padding:8px 11px;margin:2px;width:120px;font-size:1.18em}
-.input-wrap span {display:inline-block;vertical-align:middle;line-height:0;position:relative;top:2px;font-size:2.05em;}
-button.search{padding:10px 33px;border:none;border-radius:4px;background:#1666c1;color:#fff;font-size:1.18em;margin-top:10px;cursor:pointer}
+.row{display:flex;flex-wrap:wrap;align-items:center;margin:7px 0;}
+.row label{width:120px;text-align:right;margin-right:14px;white-space:nowrap;font-size:1.09em;}
+.input-wrap{flex:1;display:flex;gap:10px;}
+input,select{border:1px solid #b8cef1;border-radius:4px;padding:4px 6px;margin:2px;width:110px;font-size:1em}
+.input-wrap span{display:inline-block;min-width:12px;text-align:center;vertical-align:middle;position:relative;top:6px;}
+button.search{padding:7px 24px;border:none;border-radius:4px;background:#1666c1;color:#fff;font-size:1em;margin-top:8px;cursor:pointer}
 button.search:hover{background:#205b98}
-.section-gap{margin-top:38px;}
-.stat-area{display:flex;align-items:center;gap:38px;margin:30px 0 34px 0;}
-.stat-txt{flex:2;}
-.stat-txt span{font-size:2em;font-weight:900;margin-right:22px;}
-.stat-txt .win{color:#f55353;}
-.stat-txt .draw{color:#3eb96c;}
-.stat-txt .lose{color:#3776e6;}
-.piechart{width:180px;height:180px;}
-.pie-legend{margin-left:40px;display:flex;flex-direction:column;gap:20px;font-size:1.30em;}
-.pie-legend span{display:flex;align-items:center;gap:11px}
-.pie-legend .dot{width:21px;height:21px;border-radius:50%;display:inline-block;}
-.pie-legend .dot.win{background:#f55353;}
-.pie-legend .dot.draw{background:#3eb96c;}
-.pie-legend .dot.lose{background:#3776e6;}
-table{width:100%;border-collapse:collapse;background:#fff;margin-top:16px}
-th,td{border:1px solid #e5e5e5;padding:14px 6px;text-align:center;font-size:1.25em;}
-th{background:#f2f6fb;font-size:1.23em;}
-@media(max-width:830px){
- .tabcontent{padding:12px 2vw;}
- .header h1{font-size:1.37em;}
- .row label{width:92px;}
- .input-wrap{gap:5px;}
- input,select{width:70px;font-size:.97em}
- .stat-area{flex-direction:column;align-items:flex-start;gap:22px}
- .pie-legend{margin:10px 0 0 0;}
- .piechart{width:100px;height:100px;}
- th,td{font-size:1.04em;}
+.table-wrap{ width:100%; overflow-x:auto; margin-top:25px;}
+table{width:100%;min-width:700px;border-collapse:collapse;background:#fff;margin-top:8px;font-size:1.15em;}
+th,td{border:1px solid #e5e5e5;padding:9px 4px;text-align:center}
+th{background:#f2f6fb;}
+.stat-area{margin:32px 0 0 0;display:flex;flex-direction:column;align-items:flex-start;}
+.stat-row{font-size:1.4em;font-weight:bold;margin-bottom:10px;}
+.stat-row .win{color:#e53b2d;}
+.stat-row .draw{color:#27a146;}
+.stat-row .lose{color:#2166d1;}
+.stat-info{font-size:1.03em;margin-bottom:12px;}
+.piebox{display:flex;align-items:center;gap:36px;margin:20px 0 0 0;}
+.piechart{width:128px;height:128px;}
+.pie-legend{margin-top:16px;}
+.pie-legend div{font-size:1.13em;margin-bottom:2px;display:flex;align-items:center;gap:8px;}
+.pie-legend span{display:inline-block;width:16px;height:16px;border-radius:50%;margin-right:6px;}
+@media(max-width:850px){
+  .tabcontent{padding:13px 2vw;}
+  .piechart{width:100px;height:100px;}
+  table{font-size:1.02em;min-width:640px;}
+}
+@media(max-width:650px){
+ .tabbar button{font-size:.96em;padding:11px 2px}
+ .header h1{font-size:1.22em}
+ .row label{width:88px;}
+ .input-wrap{gap:6px;}
+ input,select{width:66px;font-size:.97em}
+ .piebox{gap:14px;}
+ .piechart{width:68vw;height:68vw;max-width:140px;max-height:140px;}
+ .stat-row{font-size:1.07em;}
+ table{font-size:.98em;min-width:540px;}
 }
 </style>
 </head>
 <body>
 <div class="header">
   <h1>足球賠率篩選工具</h1>
-  <div class="desc">根據初盤、終盤所有條件組合 快速篩選比賽，並精確統計每一項百分比。</div>
+  <div class="desc">根據初盤、終盤所有條件組合快速篩選比賽，並精確統計每一項百分比。</div>
 </div>
 <div class="tabbar">
   <button id="tab1" class="active" onclick="showTab(0)">亞洲盤查詢</button>
   <button id="tab2" onclick="showTab(1)">大小球查詢</button>
   <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
 </div>
- 
-<div class="timestamp" id="ts">版本時間1930：{{BUILD_TIME}}</div>
+<div class="timestamp" id="ts">版本時間：2025/07/28 下午07:45:00 (GMT+8)</div>
 
 <!-- ===== 1. 亞洲盤 ===== -->
 <div class="tabcontent" id="tc1">
@@ -115,17 +116,14 @@ th{background:#f2f6fb;font-size:1.23em;}
     </fieldset>
     <button type="button" class="search" onclick="asianSearch()">搜尋</button>
   </form>
-  <div class="section-gap"></div>
-  <div id="aStat"></div>
-  <div class="section-gap"></div>
-  <table id="aTbl"><thead>
+  <div class="stat-area" id="aStat"></div>
+  <div class="table-wrap"><table id="aTbl"><thead>
     <tr>
       <th>比賽日期</th>
       <th>比賽</th>
-      <th>盤口變化</th>
       <th>盤口勝負</th>
     </tr>
-  </thead><tbody></tbody></table>
+  </thead><tbody></tbody></table></div>
 </div>
 
 <!-- ===== 2. 大小球 ===== -->
@@ -173,10 +171,8 @@ th{background:#f2f6fb;font-size:1.23em;}
     </fieldset>
     <button type="button" class="search" onclick="overSearch()">搜尋</button>
   </form>
-  <div class="section-gap"></div>
-  <div id="oStat"></div>
-  <div class="section-gap"></div>
-  <table id="oTbl"><thead>
+  <div class="stat-area" id="oStat"></div>
+  <div class="table-wrap"><table id="oTbl"><thead>
     <tr>
       <th>比賽日期</th>
       <th>比賽</th>
@@ -187,7 +183,7 @@ th{background:#f2f6fb;font-size:1.23em;}
       <th>終盤細</th>
       <th>結果</th>
     </tr>
-  </thead><tbody></tbody></table>
+  </thead><tbody></tbody></table></div>
 </div>
 
 <!-- ===== 3. 歐洲盤 ===== -->
@@ -247,10 +243,8 @@ th{background:#f2f6fb;font-size:1.23em;}
     </fieldset>
     <button type="button" class="search" onclick="euroSearch()">搜尋</button>
   </form>
-  <div class="section-gap"></div>
-  <div id="eStat"></div>
-  <div class="section-gap"></div>
-  <table id="eTbl"><thead>
+  <div class="stat-area" id="eStat"></div>
+  <div class="table-wrap"><table id="eTbl"><thead>
     <tr>
       <th>比賽日期</th>
       <th>比賽</th>
@@ -260,36 +254,12 @@ th{background:#f2f6fb;font-size:1.23em;}
       <th>勝負</th>
       <th>淨勝球</th>
     </tr>
-  </thead><tbody></tbody></table>
+  </thead><tbody></tbody></table></div>
 </div>
+
 <script>
-/* ---- VERSION from GitHub Action ---- */
-(function() {
-  var el = document.getElementById("ts");
-  if (typeof BUILD_TIME !== "undefined") {
-    el.innerText = "版本時間：" + BUILD_TIME;
-  }
-})();
+// ========== Helper ===========
 const pct=(n,t)=>t?((n/t*100).toFixed(1)+"%"):"0%";
-
-/* －－ 資料預載 －－ */
-let AData=[],OData=[],EData=[];
-Promise.all([
- fetch("asian_handicap.json").then(r=>r.json()).then(j=>AData=j),
- fetch("over_under.json").then(r=>r.json()).then(j=>OData=j),
- fetch("european_odds.json").then(r=>r.json()).then(j=>EData=j)
-]).then(()=>{initAsian();initOU();});
-
-/* －－ Tab 切換 －－ */
-function showTab(i){["tab1","tab2","tab3"].forEach((t,idx)=>{document.getElementById(t).classList.toggle("active",idx===i);document.getElementById("tc"+(idx+1)).style.display=idx===i?"":"none";});}
-
-/* ===== ① 亞洲盤 ===== */
-function initAsian(){
- const oSet=new Set(),cSet=new Set();
- AData.forEach(r=>{if(typeof r.AH_open_handicap==="number")oSet.add(r.AH_open_handicap);if(typeof r.AH_close_handicap==="number")cSet.add(r.AH_close_handicap);});
- sel("AO",oSet); sel("AC",cSet);
-}
-function sel(id,set){document.getElementById(id).innerHTML='<option value="">--</option>'+[...set].sort((a,b)=>a-b).map(v=>`<option>${v}</option>`).join("");}
 function getDate(r){
   let d = r.date || r.match_date || r.game_date || r.match_time || "";
   if(typeof d === "number" || /^\d{12,}$/.test(d)) {
@@ -300,22 +270,23 @@ function getDate(r){
   if(typeof d === "string" && /^\d{4}-\d{2}-\d{2}/.test(d)) return d;
   return d;
 }
-function drawPie(id,arr,colors){
-  const sum=arr.reduce((a,b)=>a+b,0),r=90,cx=90,cy=90;
-  let a0=0,svg=`<svg width="180" height="180" class="piechart">`;
-  arr.forEach((v,i)=>{
-    const a1=a0+v/sum*2*Math.PI;
-    if(v>0){
-      const x0=cx+r*Math.sin(a0), y0=cy-r*Math.cos(a0);
-      const x1=cx+r*Math.sin(a1), y1=cy-r*Math.cos(a1);
-      const big=a1-a0>Math.PI?1:0;
-      svg+=`<path d="M${cx},${cy} L${x0},${y0} A${r},${r} 0 ${big},1 ${x1},${y1} Z" fill="${colors[i]}"></path>`;
-    }
-    a0=a1;
-  });
-  svg+="</svg>";
-  document.getElementById(id).innerHTML=svg;
+function showTab(i){["tab1","tab2","tab3"].forEach((t,idx)=>{document.getElementById(t).classList.toggle("active",idx===i);document.getElementById("tc"+(idx+1)).style.display=idx===i?"":"none";});}
+
+// ======= Load Data =======
+let AData=[],OData=[],EData=[];
+Promise.all([
+ fetch("asian_handicap.json").then(r=>r.json()).then(j=>AData=j),
+ fetch("over_under.json").then(r=>r.json()).then(j=>OData=j),
+ fetch("european_odds.json").then(r=>r.json()).then(j=>EData=j)
+]).then(()=>{initAsian();initOU();});
+
+// ===== ① 亞洲盤 =====
+function initAsian(){
+ const oSet=new Set(),cSet=new Set();
+ AData.forEach(r=>{if(typeof r.AH_open_handicap==="number")oSet.add(r.AH_open_handicap);if(typeof r.AH_close_handicap==="number")cSet.add(r.AH_close_handicap);});
+ sel("AO",oSet); sel("AC",cSet);
 }
+function sel(id,set){document.getElementById(id).innerHTML='<option value="">--</option>'+[...set].sort((a,b)=>a-b).map(v=>`<option>${v}</option>`).join("");}
 function asianSearch(){
  const v=id=>parseFloat(document.getElementById(id).value);
  let res=AData.filter(r=>{
@@ -331,7 +302,8 @@ function asianSearch(){
    if(!isNaN(v("CAX"))&&r.AH_close_away_odds>v("CAX"))return false;
    return true;
  });
- let win=0,draw=0,lose=0,tb=document.querySelector("#aTbl tbody");tb.innerHTML="";
+ let win=0,draw=0,lose=0;
+ let tb=document.querySelector("#aTbl tbody");tb.innerHTML="";
  res.forEach(r=>{
    const [h,a]=r.ft_score.split("-").map(Number),
          out=(h+r.AH_close_handicap)-a>0?"贏盤":(h+r.AH_close_handicap)-a<0?"輸盤":"和盤";
@@ -339,29 +311,34 @@ function asianSearch(){
    tb.insertAdjacentHTML("beforeend",`<tr>
      <td>${getDate(r)}</td>
      <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-     <td>${r.AH_movement}</td><td>${out}</td>
+     <td>${out}</td>
    </tr>`);
  });
  const tot=res.length;
- let statHTML = `<div class="stat-area">
-    <div class="stat-txt">
+ // Pie chart
+ let pieHTML = drawPieChart([
+   {label:"贏盤",val:win,color:"#e53b2d"},
+   {label:"和盤",val:draw,color:"#27a146"},
+   {label:"輸盤",val:lose,color:"#2166d1"},
+ ]);
+ document.getElementById("aStat").innerHTML=
+   `<div class="stat-row">
       <span class="win">贏盤 ${win} (${pct(win,tot)})</span>
-      <span class="draw">和盤 ${draw} (${pct(draw,tot)})</span>
-      <span class="lose">輸盤 ${lose} (${pct(lose,tot)})</span>
-      <span style="font-weight:normal;font-size:.97em;">場數：${tot}</span>
+      <span class="draw" style="margin-left:18px;">和盤 ${draw} (${pct(draw,tot)})</span>
+      <span class="lose" style="margin-left:18px;">輸盤 ${lose} (${pct(lose,tot)})</span>
     </div>
-    <div id="aPie"></div>
-    <div class="pie-legend">
-      <span><span class="dot win"></span>贏盤</span>
-      <span><span class="dot draw"></span>和盤</span>
-      <span><span class="dot lose"></span>輸盤</span>
-    </div>
-  </div>`;
- document.getElementById("aStat").innerHTML=statHTML;
- drawPie("aPie",[win,draw,lose],["#f55353","#3eb96c","#3776e6"]);
+    <div class="stat-info">場數：${tot}</div>
+    <div class="piebox">
+      ${pieHTML}
+      <div class="pie-legend">
+        <div><span style="background:#e53b2d"></span>贏盤</div>
+        <div><span style="background:#27a146"></span>和盤</div>
+        <div><span style="background:#2166d1"></span>輸盤</div>
+      </div>
+    </div>`;
 }
 
-/* ===== ② 大小球 ===== */
+// ===== ② 大小球 =====
 function initOU(){
  const set=new Set(OData.map(r=>r.OU_line));
  const arr=[...set].sort((a,b)=>a-b);
@@ -390,7 +367,8 @@ function overSearch(){
    if(!isNaN(uMaxC)&&r.OU_close_under_odds>uMaxC)return false;
    return true;
  });
- let over=0,under=0,tb=document.querySelector("#oTbl tbody");tb.innerHTML="";
+ let over=0,under=0;
+ let tb=document.querySelector("#oTbl tbody");tb.innerHTML="";
  res.forEach(r=>{
    const goals=r.ft_score.split("-").reduce((a,b)=>parseInt(a)+parseInt(b));
    const out=goals>r.OU_line?"Over":goals<r.OU_line?"Under":"Push";
@@ -408,23 +386,26 @@ function overSearch(){
       </tr>`);
  });
  const tot=res.length;
- let statHTML = `<div class="stat-area">
-    <div class="stat-txt">
+ let pieHTML = drawPieChart([
+   {label:"Over",val:over,color:"#e53b2d"},
+   {label:"Under",val:under,color:"#2166d1"},
+ ]);
+ document.getElementById("oStat").innerHTML=
+   `<div class="stat-row">
       <span class="win">Over ${over} (${pct(over,tot)})</span>
-      <span class="lose">Under ${under} (${pct(under,tot)})</span>
-      <span style="font-weight:normal;font-size:.97em;">場數：${tot}</span>
+      <span class="lose" style="margin-left:18px;">Under ${under} (${pct(under,tot)})</span>
     </div>
-    <div id="oPie"></div>
-    <div class="pie-legend">
-      <span><span class="dot win" style="background:#f55353"></span>Over</span>
-      <span><span class="dot lose" style="background:#3776e6"></span>Under</span>
-    </div>
-  </div>`;
- document.getElementById("oStat").innerHTML=statHTML;
- drawPie("oPie",[over,under],[ "#f55353","#3776e6"]);
+    <div class="stat-info">場數：${tot}</div>
+    <div class="piebox">
+      ${pieHTML}
+      <div class="pie-legend">
+        <div><span style="background:#e53b2d"></span>Over</div>
+        <div><span style="background:#2166d1"></span>Under</div>
+      </div>
+    </div>`;
 }
 
-/* ===== ③ 歐洲盤 ===== */
+// ===== ③ 歐洲盤 =====
 function euroSearch(){
  const v=id=>parseFloat(document.getElementById(id).value);
  const cv=id=>parseFloat(document.getElementById("C"+id).value);
@@ -443,7 +424,8 @@ function euroSearch(){
    if(!isNaN(cv("EAWX"))&&r["1X2_close_away_odds"]>cv("EAWX"))return false;
    return true;
  });
- let home=0,draw=0,away=0,d1=0,d2=0,d3=0,tb=document.querySelector("#eTbl tbody");tb.innerHTML="";
+ let home=0,draw=0,away=0,d1=0,d2=0,d3=0;
+ let tb=document.querySelector("#eTbl tbody");tb.innerHTML="";
  res.forEach(r=>{
    const [h,a]=r.ft_score.split("-").map(Number),diff=h-a;
    if(diff>0){home++;if(diff==1)d1++;else if(diff==2)d2++;else d3++;}
@@ -457,23 +439,42 @@ function euroSearch(){
      <td>${r.ft_score}</td><td>${r.ft_result}</td><td>${diff}</td></tr>`);
  });
  const tot=res.length;
- let statHTML = `<div class="stat-area">
-    <div class="stat-txt">
+ let pieHTML = drawPieChart([
+   {label:"主勝",val:home,color:"#e53b2d"},
+   {label:"和局",val:draw,color:"#27a146"},
+   {label:"客勝",val:away,color:"#2166d1"},
+ ]);
+ document.getElementById("eStat").innerHTML=
+   `<div class="stat-row">
       <span class="win">主勝 ${home} (${pct(home,tot)})</span>
-      <span class="draw">和局 ${draw} (${pct(draw,tot)})</span>
-      <span class="lose">客勝 ${away} (${pct(away,tot)})</span>
-      <span style="font-weight:normal;font-size:.97em;">場數：${tot}</span><br>
-      主勝淨勝球 ➜ 1球:${d1}　2球:${d2}　3+球:${d3}
+      <span class="draw" style="margin-left:18px;">和局 ${draw} (${pct(draw,tot)})</span>
+      <span class="lose" style="margin-left:18px;">客勝 ${away} (${pct(away,tot)})</span>
     </div>
-    <div id="ePie"></div>
-    <div class="pie-legend">
-      <span><span class="dot win"></span>主勝</span>
-      <span><span class="dot draw"></span>和局</span>
-      <span><span class="dot lose"></span>客勝</span>
-    </div>
-  </div>`;
- document.getElementById("eStat").innerHTML=statHTML;
- drawPie("ePie",[home,draw,away],["#f55353","#3eb96c","#3776e6"]);
+    <div class="stat-info">場數：${tot}<br/>主勝淨勝球 ➜ 1球:${d1}  2球:${d2}  3+球:${d3}</div>
+    <div class="piebox">
+      ${pieHTML}
+      <div class="pie-legend">
+        <div><span style="background:#e53b2d"></span>主勝</div>
+        <div><span style="background:#27a146"></span>和局</div>
+        <div><span style="background:#2166d1"></span>客勝</div>
+      </div>
+    </div>`;
+}
+
+// ===== 畫Pie Chart =====
+function drawPieChart(arr){
+  // arr: [{label,val,color}]
+  const tot = arr.reduce((s,x)=>s+x.val,0);
+  if(!tot) return `<svg class="piechart"></svg>`;
+  let cur=0, arc = [], sz=128, r=sz/2-3, cx=sz/2, cy=sz/2;
+  arr.forEach(x=>{
+    const v=x.val/tot, a1=cur*2*Math.PI, a2=(cur+=v)*2*Math.PI;
+    const x1 = cx+r*Math.sin(a1), y1 = cy-r*Math.cos(a1);
+    const x2 = cx+r*Math.sin(a2), y2 = cy-r*Math.cos(a2);
+    const laf = (a2-a1)>Math.PI?1:0;
+    arc.push(`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${laf} 1 ${x2},${y2} Z" fill="${x.color}"></path>`);
+  });
+  return `<svg class="piechart" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">${arc.join("")}</svg>`;
 }
 </script>
 </body>
