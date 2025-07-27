@@ -13,9 +13,11 @@ body{background:#f8fafd;font-family:"Microsoft JhengHei",sans-serif;margin:0}
 .tabbar button.active{color:#1666c1;border-bottom:4px solid #1666c1;background:#fff}
 .timestamp{text-align:center;color:#444;margin:10px 0;font-size:1.02em}
 .tabcontent{max-width:920px;margin:25px auto;background:#fff;border-radius:8px;padding:22px;box-shadow:0 3px 18px #8ab3e929}
-fieldset{margin-bottom:12px;border:1.5px solid #c3daf7;border-radius:6px;background:#f9fcff}
+fieldset{margin-bottom:15px;border:1.5px solid #c3daf7;border-radius:6px;background:#f9fcff}
 legend{color:#1666c1;font-weight:bold}
-input,select{border:1px solid #b8cef1;border-radius:4px;padding:4px 6px;margin:3px 2px;width:110px}
+.row{display:flex;flex-wrap:wrap;align-items:center;margin:5px 0;}
+.row label{width:70px;text-align:right;margin-right:8px;}
+input,select{border:1px solid #b8cef1;border-radius:4px;padding:4px 6px;margin:2px;width:110px}
 button.search{padding:7px 24px;border:none;border-radius:4px;background:#1666c1;color:#fff;font-size:1em;margin-top:8px;cursor:pointer}
 button.search:hover{background:#205b98}
 table{width:100%;border-collapse:collapse;background:#fff;margin-top:10px}
@@ -25,7 +27,8 @@ th{background:#f2f6fb}
  .tabbar button{font-size:.95em;padding:11px 2px}
  .tabcontent{padding:14px 3vw}
  .header h1{font-size:1.4em}
- input,select{width:80px}
+ .row label{width:46px}
+ input,select{width:74px}
 }
 </style>
 </head>
@@ -45,63 +48,154 @@ th{background:#f2f6fb}
 <div class="tabcontent" id="tc1">
   <form>
     <fieldset><legend>初盤</legend>
-      盤口：<select id="AO"></select>
-      主隊賠率：<input type="number" step="0.01" id="OHH" placeholder="低">–<input type="number" step="0.01" id="OHX" placeholder="高">
-      客隊賠率：<input type="number" step="0.01" id="OAH" placeholder="低">–<input type="number" step="0.01" id="OAX" placeholder="高">
+      <div class="row">
+        <label>盤口：</label>
+        <select id="AO"></select>
+      </div>
+      <div class="row">
+        <label>主隊賠率：</label>
+        <input type="number" step="0.01" id="OHH" placeholder="最小值">
+        <span>–</span>
+        <input type="number" step="0.01" id="OHX" placeholder="最大值">
+      </div>
+      <div class="row">
+        <label>客隊賠率：</label>
+        <input type="number" step="0.01" id="OAH" placeholder="最小值">
+        <span>–</span>
+        <input type="number" step="0.01" id="OAX" placeholder="最大值">
+      </div>
     </fieldset>
     <fieldset><legend>終盤</legend>
-      盤口：<select id="AC"></select>
-      主隊賠率：<input type="number" step="0.01" id="CHH" placeholder="低">–<input type="number" step="0.01" id="CHX" placeholder="高">
-      客隊賠率：<input type="number" step="0.01" id="CAH" placeholder="低">–<input type="number" step="0.01" id="CAX" placeholder="高">
+      <div class="row">
+        <label>盤口：</label>
+        <select id="AC"></select>
+      </div>
+      <div class="row">
+        <label>主隊賠率：</label>
+        <input type="number" step="0.01" id="CHH" placeholder="最小值">
+        <span>–</span>
+        <input type="number" step="0.01" id="CHX" placeholder="最大值">
+      </div>
+      <div class="row">
+        <label>客隊賠率：</label>
+        <input type="number" step="0.01" id="CAH" placeholder="最小值">
+        <span>–</span>
+        <input type="number" step="0.01" id="CAX" placeholder="最大值">
+      </div>
     </fieldset>
     <button type="button" class="search" onclick="asianSearch()">搜尋</button>
   </form>
   <div id="aStat"></div>
-  <table id="aTbl"><thead><tr><th>比賽</th><th>盤口變化</th><th>盤口勝負</th></tr></thead><tbody></tbody></table>
+  <table id="aTbl"><thead>
+    <tr>
+      <th>比賽日期</th>
+      <th>比賽</th>
+      <th>盤口變化</th>
+      <th>盤口勝負</th>
+    </tr>
+  </thead><tbody></tbody></table>
 </div>
 
-<!-- ===== 2. 大小球（有終盤賠率，盤口下拉且預選2.5） ===== -->
+<!-- ===== 2. 大小球 ===== -->
 <div class="tabcontent" id="tc2" style="display:none">
   <form>
     <fieldset><legend>初盤</legend>
-      盤口：
-      <select id="OUlineSel"></select>
-      大：<input type="number" step="0.01" id="OUoMin" placeholder="低">–<input type="number" step="0.01" id="OUoMax" placeholder="高">
-      細：<input type="number" step="0.01" id="OUuMin" placeholder="低">–<input type="number" step="0.01" id="OUuMax" placeholder="高">
+      <div class="row">
+        <label>盤口：</label>
+        <select id="OUlineSel"></select>
+      </div>
+      <div class="row">
+        <label>大球賠率：</label>
+        <input type="number" step="0.01" id="OUoMin" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="OUoMax" placeholder="最大值">
+      </div>
+      <div class="row">
+        <label>細球賠率：</label>
+        <input type="number" step="0.01" id="OUuMin" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="OUuMax" placeholder="最大值">
+      </div>
     </fieldset>
     <fieldset><legend>終盤賠率</legend>
-      大：<input type="number" step="0.01" id="OUoMinC" placeholder="低">–<input type="number" step="0.01" id="OUoMaxC" placeholder="高">
-      細：<input type="number" step="0.01" id="OUuMinC" placeholder="低">–<input type="number" step="0.01" id="OUuMaxC" placeholder="高">
+      <div class="row">
+        <label>大球賠率：</label>
+        <input type="number" step="0.01" id="OUoMinC" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="OUoMaxC" placeholder="最大值">
+      </div>
+      <div class="row">
+        <label>細球賠率：</label>
+        <input type="number" step="0.01" id="OUuMinC" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="OUuMaxC" placeholder="最大值">
+      </div>
     </fieldset>
     <button type="button" class="search" onclick="overSearch()">搜尋</button>
   </form>
   <div id="oStat"></div>
-  <table id="oTbl"><thead><tr>
-    <th>比賽</th><th>盤口</th><th>初盤大</th><th>初盤細</th><th>終盤大</th><th>終盤細</th><th>結果</th>
-  </tr></thead><tbody></tbody></table>
+  <table id="oTbl"><thead>
+    <tr>
+      <th>比賽日期</th>
+      <th>比賽</th>
+      <th>盤口</th>
+      <th>初盤大</th>
+      <th>初盤細</th>
+      <th>終盤大</th>
+      <th>終盤細</th>
+      <th>結果</th>
+    </tr>
+  </thead><tbody></tbody></table>
 </div>
 
-<!-- ===== 3. 歐洲盤（可輸入初盤/終盤三賠率範圍） ===== -->
+<!-- ===== 3. 歐洲盤 ===== -->
 <div class="tabcontent" id="tc3" style="display:none">
   <form>
     <fieldset><legend>初盤</legend>
-      主勝：<input type="number" step="0.01" id="EHOM" placeholder="低">–<input type="number" step="0.01" id="EHOX" placeholder="高">
-      和局：<input type="number" step="0.01" id="EDRM" placeholder="低">–<input type="number" step="0.01" id="EDRX" placeholder="高">
-      客勝：<input type="number" step="0.01" id="EAWM" placeholder="低">–<input type="number" step="0.01" id="EAWX" placeholder="高">
+      <div class="row">
+        <label>主勝：</label>
+        <input type="number" step="0.01" id="EHOM" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="EHOX" placeholder="最大值">
+      </div>
+      <div class="row">
+        <label>和局：</label>
+        <input type="number" step="0.01" id="EDRM" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="EDRX" placeholder="最大值">
+      </div>
+      <div class="row">
+        <label>客勝：</label>
+        <input type="number" step="0.01" id="EAWM" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="EAWX" placeholder="最大值">
+      </div>
     </fieldset>
     <fieldset><legend>終盤</legend>
-      主勝：<input type="number" step="0.01" id="CEHOM" placeholder="低">–<input type="number" step="0.01" id="CEHOX" placeholder="高">
-      和局：<input type="number" step="0.01" id="CEDRM" placeholder="低">–<input type="number" step="0.01" id="CEDRX" placeholder="高">
-      客勝：<input type="number" step="0.01" id="CEAWM" placeholder="低">–<input type="number" step="0.01" id="CEAWX" placeholder="高">
+      <div class="row">
+        <label>主勝：</label>
+        <input type="number" step="0.01" id="CEHOM" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="CEHOX" placeholder="最大值">
+      </div>
+      <div class="row">
+        <label>和局：</label>
+        <input type="number" step="0.01" id="CEDRM" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="CEDRX" placeholder="最大值">
+      </div>
+      <div class="row">
+        <label>客勝：</label>
+        <input type="number" step="0.01" id="CEAWM" placeholder="最小值"> – 
+        <input type="number" step="0.01" id="CEAWX" placeholder="最大值">
+      </div>
     </fieldset>
     <button type="button" class="search" onclick="euroSearch()">搜尋</button>
   </form>
   <div id="eStat"></div>
-  <table id="eTbl"><thead><tr>
-    <th>比賽</th><th>初盤(1/X/2)</th><th>終盤(1/X/2)</th><th>比分</th><th>勝負</th><th>淨勝球</th>
-  </tr></thead><tbody></tbody></table>
+  <table id="eTbl"><thead>
+    <tr>
+      <th>比賽日期</th>
+      <th>比賽</th>
+      <th>初盤(主/和/客)</th>
+      <th>終盤(主/和/客)</th>
+      <th>比分</th>
+      <th>勝負</th>
+      <th>淨勝球</th>
+    </tr>
+  </thead><tbody></tbody></table>
 </div>
-
 <script>
 const ts=document.getElementById("ts");
 ts.textContent="版本時間："+new Date().toLocaleString("zh-HK",{hour12:false})+" (GMT+8)";
@@ -125,6 +219,9 @@ function initAsian(){
  sel("AO",oSet); sel("AC",cSet);
 }
 function sel(id,set){document.getElementById(id).innerHTML='<option value="">--</option>'+[...set].sort((a,b)=>a-b).map(v=>`<option>${v}</option>`).join("");}
+function getDate(r){
+  return r.date || r.match_date || r.game_date || r.match_time || "";
+}
 function asianSearch(){
  const v=id=>parseFloat(document.getElementById(id).value);
  let res=AData.filter(r=>{
@@ -145,7 +242,11 @@ function asianSearch(){
    const [h,a]=r.ft_score.split("-").map(Number),
          out=(h+r.AH_close_handicap)-a>0?"贏盤":(h+r.AH_close_handicap)-a<0?"輸盤":"和盤";
    if(out==="贏盤")win++;else if(out==="輸盤")lose++;else draw++;
-   tb.insertAdjacentHTML("beforeend",`<tr><td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td><td>${r.AH_movement}</td><td>${out}</td></tr>`);
+   tb.insertAdjacentHTML("beforeend",`<tr>
+     <td>${getDate(r)}</td>
+     <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+     <td>${r.AH_movement}</td><td>${out}</td>
+   </tr>`);
  });
  const tot=res.length;
  document.getElementById("aStat").innerHTML=`總場數：${tot}<br/>主隊贏盤：${win} (${pct(win,tot)})　主隊輸盤：${lose} (${pct(lose,tot)})　和盤：${draw} (${pct(draw,tot)})`;
@@ -156,7 +257,7 @@ function initOU(){
  const set=new Set(OData.map(r=>r.OU_line));
  const arr=[...set].sort((a,b)=>a-b);
  const sel=document.getElementById("OUlineSel");
- sel.innerHTML=arr.map(v=>`<option${v==2.5?" selected":""}>${v}</option>`).join(""); //預設選2.5
+ sel.innerHTML=arr.map(v=>`<option${v==2.5?" selected":""}>${v}</option>`).join("");
 }
 function overSearch(){
  const sel=document.getElementById("OUlineSel").value;
@@ -186,13 +287,15 @@ function overSearch(){
    const out=goals>r.OU_line?"Over":goals<r.OU_line?"Under":"Push";
    if(out==="Over")over++;else if(out==="Under")under++;
    tb.insertAdjacentHTML("beforeend",
-     `<tr><td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-          <td>${r.OU_line}</td>
-          <td>${r.OU_open_over_odds??""}</td>
-          <td>${r.OU_open_under_odds??""}</td>
-          <td>${r.OU_close_over_odds??""}</td>
-          <td>${r.OU_close_under_odds??""}</td>
-          <td>${out}</td>
+     `<tr>
+        <td>${getDate(r)}</td>
+        <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+        <td>${r.OU_line}</td>
+        <td>${r.OU_open_over_odds??""}</td>
+        <td>${r.OU_open_under_odds??""}</td>
+        <td>${r.OU_close_over_odds??""}</td>
+        <td>${r.OU_close_under_odds??""}</td>
+        <td>${out}</td>
       </tr>`);
  });
  const tot=res.length;
@@ -204,14 +307,12 @@ function euroSearch(){
  const v=id=>parseFloat(document.getElementById(id).value);
  const cv=id=>parseFloat(document.getElementById("C"+id).value); //終盤欄位
  let res=EData.filter(r=>{
-   // 初盤
    if(!isNaN(v("EHOM"))&&r["1X2_open_home_odds"]<v("EHOM"))return false;
    if(!isNaN(v("EHOX"))&&r["1X2_open_home_odds"]>v("EHOX"))return false;
    if(!isNaN(v("EDRM"))&&r["1X2_open_draw_odds"]<v("EDRM"))return false;
    if(!isNaN(v("EDRX"))&&r["1X2_open_draw_odds"]>v("EDRX"))return false;
    if(!isNaN(v("EAWM"))&&r["1X2_open_away_odds"]<v("EAWM"))return false;
    if(!isNaN(v("EAWX"))&&r["1X2_open_away_odds"]>v("EAWX"))return false;
-   // 終盤
    if(!isNaN(cv("EHOM"))&&r["1X2_close_home_odds"]<cv("EHOM"))return false;
    if(!isNaN(cv("EHOX"))&&r["1X2_close_home_odds"]>cv("EHOX"))return false;
    if(!isNaN(cv("EDRM"))&&r["1X2_close_draw_odds"]<cv("EDRM"))return false;
@@ -226,7 +327,9 @@ function euroSearch(){
    if(diff>0){home++;if(diff==1)d1++;else if(diff==2)d2++;else d3++;}
    else if(diff<0)away++;else draw++;
    tb.insertAdjacentHTML("beforeend",
-   `<tr><td>${r.home_team} vs ${r.away_team}</td>
+   `<tr>
+     <td>${getDate(r)}</td>
+     <td>${r.home_team} vs ${r.away_team}</td>
      <td>${r["1X2_open_home_odds"]}/${r["1X2_open_draw_odds"]}/${r["1X2_open_away_odds"]}</td>
      <td>${r["1X2_close_home_odds"]}/${r["1X2_close_draw_odds"]}/${r["1X2_close_away_odds"]}</td>
      <td>${r.ft_score}</td><td>${r.ft_result}</td><td>${diff}</td></tr>`);
