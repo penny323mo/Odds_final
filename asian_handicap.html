@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>亞洲盤查詢</title>
+    <script>
+    async function loadData() {
+        const response = await fetch('asian_handicap.json');
+        const data = await response.json();
+
+        const handicapSelect = document.getElementById('handicap');
+        const allHandicaps = [...new Set(data.map(item => item.handicap).filter(Boolean))];
+        allHandicaps.sort((a, b) => parseFloat(a) - parseFloat(b));
+        for (const val of allHandicaps) {
+            const option = document.createElement('option');
+            option.value = val;
+            option.textContent = val;
+            handicapSelect.appendChild(option);
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const selectedHandicap = handicapSelect.value;
+            const minOdds = parseFloat(document.getElementById('minOdds').value) || -Infinity;
+            const maxOdds = parseFloat(document.getElementById('maxOdds').value) || Infinity;
+            const resultDiv = document.getElementById('results');
+            resultDiv.innerHTML = '';
+
+            const filtered = data.filter(item => 
+                (!selectedHandicap || item.handicap == selectedHandicap) &&
+                parseFloat(item.odds_home) >= minOdds &&
+                parseFloat(item.odds_home) <= maxOdds
+            );
+
+            const stats = { home_win: 0, away_win: 0, draw: 0 };
+            const table = document.createElement('table');
+            table.border = 1;
+            const header = table.insertRow();
+            Object.keys(filtered[0] || {}).forEach(key => {
+                const th = document.createElement('th');
+                th.textContent = key;
+                header.appendChild(th);
+            });
+            filtered.forEach(row => {
+                const tr = table.insertRow();
+                Object.values(row).forEach(value => {
+                    const td = tr.insertCell();
+                    td.textContent = value;
+                });
+            });
+            resultDiv.appendChild(table);
+        });
+    }
+    window.onload = loadData;
+    </script>
+</head>
+<body>
+    <h1>亞洲盤查詢</h1>
+    <label>讓球盤：</label>
+    <select id="handicap">
+        <option value="">（全部）</option>
+    </select>
+    <label>主隊賠率範圍：</label>
+    <input type="number" id="minOdds" step="0.01" placeholder="最低值">
+    <input type="number" id="maxOdds" step="0.01" placeholder="最高值">
+    <button id="searchBtn">搜尋</button>
+    <div id="results"></div>
+</body>
+</html>

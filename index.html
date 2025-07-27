@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>五大聯賽足球歷史賽果及賠率分析統計</title>
+</head>
+<body>
+    <h1>五大聯賽足球歷史賽果及賠率分析統計</h1>
+    <ul>
+        <li><a href="asian_handicap.html">亞洲盤查詢</a></li>
+        <li><a href="over_under.html">大小球查詢</a></li>
+        <li><a href="european_odds.html">歐洲標準盤查詢</a></li>
+    </ul>
+    <p>版本更新時間（香港時間）：<span id="timestamp"></span></p>
+
+    <script>
+        const now = new Date();
+        const hkTime = now.toLocaleString("zh-HK", { timeZone: "Asia/Hong_Kong" });
+        document.getElementById("timestamp").innerText = hkTime;
+    </script>
+</body>
+</html>
