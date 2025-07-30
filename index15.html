@@ -3,584 +3,570 @@
 <head>
 <meta charset="UTF-8" />
 <title>足球賠率篩選工具</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body{background:#f8fafd;font-family:"Microsoft JhengHei",sans-serif;margin:0}
-.header{background:#1666c1;color:#fff;text-align:center;padding:36px 0 20px}
-.header h1{margin:0;font-size:2.1em;letter-spacing:2px}
-.header .desc{margin-top:7px;font-size:1.04em;font-weight:300}
-.tabbar{display:flex;justify-content:center;background:#e7f0fb;border-bottom:2px solid #dbe7f5}
-.tabbar button{flex:1;padding:15px;font-size:1.1em;font-weight:bold;background:none;border:none;border-bottom:4px solid transparent;cursor:pointer;transition:.2s}
-.tabbar button.active{color:#1666c1;border-bottom:4px solid #1666c1;background:#fff}
-.timestamp{text-align:center;color:#444;margin:10px 0 18px;font-size:1.07em;}
-.tabcontent{max-width:920px;margin:26px auto 0;background:#fff;border-radius:8px;padding:22px;box-shadow:0 3px 18px #8ab3e929}
-fieldset{margin-bottom:15px;border:1.5px solid #c3daf7;border-radius:6px;background:#f9fcff}
-legend{color:#1666c1;font-weight:bold}
-.row{display:flex;flex-wrap:wrap;align-items:center;margin:7px 0;}
-.row label{width:120px;text-align:right;margin-right:14px;white-space:nowrap;font-size:1.09em;}
-.input-wrap{flex:1;display:flex;gap:10px;}
-input,select{border:1px solid #b8cef1;border-radius:4px;padding:4px 6px;margin:2px;width:110px;font-size:1em}
-.input-wrap span{display:inline-block;min-width:12px;text-align:center;vertical-align:middle;position:relative;top:6px;}
-button.search{padding:7px 24px;border:none;border-radius:4px;background:#1666c1;color:#fff;font-size:1em;margin-top:8px;cursor:pointer}
-button.search:hover{background:#205b98}
-.table-wrap{ width:100%; overflow-x:auto; margin-top:25px;}
-table{width:100%;min-width:900px;border-collapse:collapse;background:#fff;margin-top:8px;font-size:1.12em;}
-th,td{border:1px solid #e5e5e5;padding:9px 4px;text-align:center}
-th{background:#f2f6fb;}
-.stat-area{margin:32px 0 0 0;display:flex;flex-direction:column;align-items:flex-start;}
-.stat-row{font-size:1.4em;font-weight:bold;margin-bottom:10px;}
-.stat-row .win{color:#e53b2d;}
-.stat-row .draw{color:#27a146;}
-.stat-row .lose{color:#2166d1;}
-.stat-info{font-size:1.03em;margin-bottom:12px;}
-.piebox{display:flex;align-items:center;gap:36px;margin:20px 0 0 0;}
-.piechart{width:128px;height:128px;}
-.pie-legend{margin-top:16px;}
-.pie-legend div{font-size:1.13em;margin-bottom:2px;display:flex;align-items:center;gap:8px;}
-.pie-legend span{display:inline-block;width:16px;height:16px;border-radius:50%;margin-right:6px;}
-@media(max-width:850px){
-  .tabcontent{padding:13px 2vw;}
-  .piechart{width:100px;height:100px;}
-  table{font-size:1.02em;min-width:700px;}
-}
-@media(max-width:650px){
- .tabbar button{font-size:.96em;padding:11px 2px}
- .header h1{font-size:1.22em}
- .row label{width:88px;}
- .input-wrap{gap:6px;}
- input,select{width:66px;font-size:.97em}
- .piebox{gap:14px;}
- .piechart{width:68vw;height:68vw;max-width:140px;max-height:140px;}
- .stat-row{font-size:1.07em;}
- table{font-size:.98em;min-width:660px;}
-}
-</style>
-
-<style>
+body{font-family:"PingFang TC","Microsoft JhengHei",sans-serif;background:#f8fafd;margin:0}
+.navbar-brand{font-size:1.6rem;}
+.btn-sm{padding:.15rem .4rem;font-size:.8rem;}
+.table-wrap{width:100%;overflow-x:auto;margin-top:20px;}
+table{font-size:.9rem;}
 .step-group{display:inline-flex;align-items:center;gap:4px;}
-
-.step-group .btn-wrap button{
-  padding:4px 8px;
-  font-size:14px;
-  line-height:1;
+.step-group input{width:70px;border-radius:4px;border:1px solid #b8cef1;padding:4px;}
+.step-group .btn-wrap button{padding:4px 8px;font-size:14px;line-height:1;border:1px solid #b8cef1;background:#fff;cursor:pointer;}
+.stat-area{margin-top:24px;}
+.stat-row{font-size:1.2rem;font-weight:bold;}
+.stat-row .win{color:#e53b2d;}
+.stat-row .draw{color:#27a146;margin:0 16px;}
+.stat-row .lose{color:#2166d1;}
+.piebox{display:flex;align-items:center;gap:24px;margin-top:16px;}
+.piechart{width:100px;height:100px;}
+.pie-legend div{display:flex;align-items:center;gap:6px;font-size:0.9rem;}
+.pie-legend span{display:inline-block;width:14px;height:14px;border-radius:50%;}
+@media(max-width:650px){
+  .step-group input{width:50px;}
+  .piechart{width:70px;height:70px;}
 }
-
-.step-group input{width:70px;}
 </style>
-
 </head>
 <body>
-<div class="header">
-  <h1>足球賠率篩選工具</h1>
-  <div class="desc">根據初盤、終盤所有條件組合快速篩選比賽，並精確統計每一項百分比。</div>
-</div>
-<div class="tabbar">
-  <button id="tab1" class="active" onclick="showTab(0)">亞洲盤查詢</button>
-  <button id="tab2" onclick="showTab(1)">大小球查詢</button>
-  <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
-</div>
-<div class="timestamp" id="ts">版本時間：2025/07/27 下午09:30:00 (GMT+8)</div>
+<nav class="navbar navbar-dark bg-primary">
+  <div class="container-fluid">
+    <span class="navbar-brand">足球賠率篩選工具</span>
+  </div>
+</nav>
+<div class="container-fluid mt-3">
+  <ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#ahTab">亞洲盤查詢</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#ouTab">大小球查詢</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#euTab">歐洲盤查詢</a></li>
+  </ul>
+  <div class="tab-content pt-3">
 
-<!-- ===== 1. 亞洲盤 ===== -->
-<div class="tabcontent" id="tc1">
-  <form>
-    <fieldset><legend>初盤</legend>
-      <div class="row">
-        <label>盤口：</label>
-        <div class="input-wrap"><select id="AO"></select></div>
+    <!-- 亞洲盤 -->
+    <div class="tab-pane fade show active" id="ahTab">
+      <div class="row g-2 mb-3 align-items-center">
+        <div class="col-auto"><strong>初盤</strong></div>
       </div>
-      <div class="row">
-        <label>主隊賠率：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="OHH" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="OHX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('OHX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('OHX',-0.01)">▼</button>
-  </div>
-</div>
+      <div class="row g-2 align-items-center">
+        <div class="col-auto">盤口：</div>
+        <div class="col-auto">
+          <select id="ahInitHand" class="form-select form-select-sm">
+            <option value="">--</option>
+          </select>
         </div>
       </div>
-      <div class="row">
-        <label>客隊賠率：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="OAH" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="OAX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('OAX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('OAX',-0.01)">▼</button>
-  </div>
-</div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">主隊賠率：</div>
+        <div class="col-auto">
+          <input id="ahHomeExact" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="ahHomeErr" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('ahHomeErr',0.01)">▲</button>
+              <button type="button" onclick="stepErr('ahHomeErr',-0.01)">▼</button>
+            </div>
+          </div>
         </div>
       </div>
-    </fieldset>
-    <fieldset><legend>終盤</legend>
-      <div class="row">
-        <label>盤口：</label>
-        <div class="input-wrap"><select id="AC"></select></div>
-      </div>
-      <div class="row">
-        <label>主隊賠率：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="CHH" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="CHX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('CHX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('CHX',-0.01)">▼</button>
-  </div>
-</div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">客隊賠率：</div>
+        <div class="col-auto">
+          <input id="ahAwayExact" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="ahAwayErr" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('ahAwayErr',0.01)">▲</button>
+              <button type="button" onclick="stepErr('ahAwayErr',-0.01)">▼</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <label>客隊賠率：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="CAH" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="CAX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('CAX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('CAX',-0.01)">▼</button>
-  </div>
-</div>
-        </div>
-      </div>
-    </fieldset>
-    <button type="button" class="search" onclick="asianSearch()">搜尋</button>
-  </form>
-  <div class="stat-area" id="aStat"></div>
-  <div class="table-wrap"><table id="aTbl"><thead>
-    <tr>
-      <th>賽季</th>
-      <th>比賽</th>
-      <th>初盤盤口</th>
-      <th>初盤主隊賠率</th>
-      <th>初盤客隊賠率</th>
-      <th>終盤盤口</th>
-      <th>終盤主隊賠率</th>
-      <th>終盤客隊賠率</th>
-      <th>盤口勝負</th>
-    </tr>
-  </thead><tbody></tbody></table></div>
-</div>
 
-<!-- ===== 2. 大小球 ===== -->
-<div class="tabcontent" id="tc2" style="display:none">
-  <form>
-    <fieldset><legend>初盤</legend>
-      <div class="row">
-        <label>盤口：</label>
-        <div class="input-wrap"><select id="OUlineSel"></select></div>
-      </div>
-      <div class="row">
-        <label>大球賠率：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="OUoMin" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="OUoMax" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('OUoMax',0.01)">▲</button>
-    <button type="button" onclick="adjErr('OUoMax',-0.01)">▼</button>
-  </div>
-</div>
-        </div>
-      </div>
-      <div class="row">
-        <label>細球賠率：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="OUuMin" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="OUuMax" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('OUuMax',0.01)">▲</button>
-    <button type="button" onclick="adjErr('OUuMax',-0.01)">▼</button>
-  </div>
-</div>
-        </div>
-      </div>
-    </fieldset>
-    <fieldset><legend>終盤賠率</legend>
-      <div class="row">
-        <label>盤口：</label>
-        <div class="input-wrap"><select id="OUlineSelC"></select></div>
-      </div>
-      <div class="row">
-        <label>大球賠率：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="OUoMinC" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="OUoMaxC" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('OUoMaxC',0.01)">▲</button>
-    <button type="button" onclick="adjErr('OUoMaxC',-0.01)">▼</button>
-  </div>
-</div>
-        </div>
-      </div>
-      <div class="row">
-        <label>細球賠率：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="OUuMinC" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="OUuMaxC" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('OUuMaxC',0.01)">▲</button>
-    <button type="button" onclick="adjErr('OUuMaxC',-0.01)">▼</button>
-  </div>
-</div>
-        </div>
-      </div>
-    </fieldset>
-    <button type="button" class="search" onclick="overSearch()">搜尋</button>
-  </form>
-  <div class="stat-area" id="oStat"></div>
-  <div class="table-wrap"><table id="oTbl"><thead>
-    <tr>
-      <th>賽季</th>
-      <th>比賽</th>
-      <th>盤口</th>
-      <th>初盤大</th>
-      <th>初盤細</th>
-      <th>終盤盤口</th>
-      <th>終盤大</th>
-      <th>終盤細</th>
-      <th>結果</th>
-    </tr>
-  </thead><tbody></tbody></table></div>
-</div>
+      <hr>
 
-<!-- ===== 3. 歐洲盤 ===== -->
-<div class="tabcontent" id="tc3" style="display:none">
-  <form>
-    <fieldset><legend>初盤</legend>
-      <div class="row">
-        <label>主勝：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="EHOM" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="EHOX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('EHOX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('EHOX',-0.01)">▼</button>
-  </div>
-</div>
+      <div class="row g-2 mb-3 align-items-center">
+        <div class="col-auto"><strong>終盤</strong></div>
+      </div>
+      <div class="row g-2 align-items-center">
+        <div class="col-auto">盤口：</div>
+        <div class="col-auto">
+          <select id="ahCloseHand" class="form-select form-select-sm">
+            <option value="">--</option>
+          </select>
         </div>
       </div>
-      <div class="row">
-        <label>和局：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="EDRM" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="EDRX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('EDRX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('EDRX',-0.01)">▼</button>
-  </div>
-</div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">主隊賠率：</div>
+        <div class="col-auto">
+          <input id="ahCloseHomeExact" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="ahCloseHomeErr" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('ahCloseHomeErr',0.01)">▲</button>
+              <button type="button" onclick="stepErr('ahCloseHomeErr',-0.01)">▼</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <label>客勝：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="EAWM" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="EAWX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('EAWX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('EAWX',-0.01)">▼</button>
-  </div>
-</div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">客隊賠率：</div>
+        <div class="col-auto">
+          <input id="ahCloseAwayExact" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="ahCloseAwayErr" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('ahCloseAwayErr',0.01)">▲</button>
+              <button type="button" onclick="stepErr('ahCloseAwayErr',-0.01)">▼</button>
+            </div>
+          </div>
         </div>
       </div>
-    </fieldset>
-    <fieldset><legend>終盤</legend>
-      <div class="row">
-        <label>主勝：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="CEHOM" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="CEHOX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('CEHOX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('CEHOX',-0.01)">▼</button>
-  </div>
-</div>
-        </div>
-      </div>
-      <div class="row">
-        <label>和局：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="CEDRM" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="CEDRX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('CEDRX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('CEDRX',-0.01)">▼</button>
-  </div>
-</div>
-        </div>
-      </div>
-      <div class="row">
-        <label>客勝：</label>
-        <div class="input-wrap">
-          <input type="number" step="0.01" id="CEAWM" placeholder="精確值"> <span>±</span> <div class="step-group">
-  <input type="number" step="0.01" id="CEAWX" value="0.01" style="width:70px;">
-  <div class="btn-wrap">
-    <button type="button" onclick="adjErr('CEAWX',0.01)">▲</button>
-    <button type="button" onclick="adjErr('CEAWX',-0.01)">▼</button>
-  </div>
-</div>
-        </div>
-      </div>
-    </fieldset>
-    <button type="button" class="search" onclick="euroSearch()">搜尋</button>
-  </form>
-  <div class="stat-area" id="eStat"></div>
-  <div class="table-wrap"><table id="eTbl"><thead>
-    <tr>
-      <th>賽季</th>
-      <th>比賽</th>
-      <th>初盤(主/和/客)</th>
-      <th>終盤(主/和/客)</th>
-      <th>比分</th>
-      <th>勝負</th>
-      <th>淨勝球</th>
-    </tr>
-  </thead><tbody></tbody></table></div>
-</div>
 
-<script>
-// ========== Helper ===========
-const pct=(n,t)=>t?((n/t*100).toFixed(1)+"%"):"0%";
-function getDate(r){
-  let d = r.date || r.match_date || r.game_date || r.match_time || "";
-  if(typeof d === "number" || /^\d{12,}$/.test(d)) {
-    try {
-      return new Date(Number(d)).toLocaleDateString("zh-HK");
-    } catch(e) { return "" }
-  }
-  if(typeof d === "string" && /^\d{4}-\d{2}-\d{2}/.test(d)) return d;
-  return d;
-}
-function showTab(i){["tab1","tab2","tab3"].forEach((t,idx)=>{document.getElementById(t).classList.toggle("active",idx===i);document.getElementById("tc"+(idx+1)).style.display=idx===i?"":"none";});}
+      <div class="text-center mt-4">
+        <button class="btn btn-primary px-4" onclick="doAhSearch()">搜尋</button>
+      </div>
 
-// ======= Load Data =======
-let AData=[],OData=[],EData=[];
-Promise.all([
- fetch("asian_handicap.json").then(r=>r.json()).then(j=>AData=j),
- fetch("over_under.json").then(r=>r.json()).then(j=>OData=j),
- fetch("european_odds.json").then(r=>r.json()).then(j=>EData=j)
-]).then(()=>{initAsian();initOU();});
-
-// ===== ① 亞洲盤 =====
-function initAsian(){
- const oSet=new Set(),cSet=new Set();
- AData.forEach(r=>{if(typeof r.AH_open_handicap==="number")oSet.add(r.AH_open_handicap);if(typeof r.AH_close_handicap==="number")cSet.add(r.AH_close_handicap);});
- sel("AO",oSet); sel("AC",cSet);
-}
-function sel(id,set){document.getElementById(id).innerHTML='<option value="">--</option>'+[...set].sort((a,b)=>a-b).map(v=>`<option>${v}</option>`).join("");}
-function asianSearch(){
- const v=id=>parseFloat(document.getElementById(id).value);
- let res=AData.filter(r=>{
-   if(document.getElementById("AO").value && r.AH_open_handicap!=v("AO"))return false;
-   if(document.getElementById("AC").value && r.AH_close_handicap!=v("AC"))return false;
-   if(!isNaN(v("OHH"))&&r.AH_open_home_odds<v("OHH"))return false;
-   if(!isNaN(v("OHX"))&&r.AH_open_home_odds>v("OHX"))return false;
-   if(!isNaN(v("OAH"))&&r.AH_open_away_odds<v("OAH"))return false;
-   if(!isNaN(v("OAX"))&&r.AH_open_away_odds>v("OAX"))return false;
-   if(!isNaN(v("CHH"))&&r.AH_close_home_odds<v("CHH"))return false;
-   if(!isNaN(v("CHX"))&&r.AH_close_home_odds>v("CHX"))return false;
-   if(!isNaN(v("CAH"))&&r.AH_close_away_odds<v("CAH"))return false;
-   if(!isNaN(v("CAX"))&&r.AH_close_away_odds>v("CAX"))return false;
-   return true;
- });
- let win=0,draw=0,lose=0;
- let tb=document.querySelector("#aTbl tbody");tb.innerHTML="";
- res.forEach(r=>{
-   const [h,a]=r.ft_score.split("-").map(Number),
-         out=(h+r.AH_close_handicap)-a>0?"贏盤":(h+r.AH_close_handicap)-a<0?"輸盤":"和盤";
-   if(out==="贏盤")win++;else if(out==="輸盤")lose++;else draw++;
-   tb.insertAdjacentHTML("beforeend",`<tr>
-     <td>${r.season}</td>
-     <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-     <td>${r.AH_open_handicap ?? ""}</td>
-     <td>${r.AH_open_home_odds ?? ""}</td>
-     <td>${r.AH_open_away_odds ?? ""}</td>
-     <td>${r.AH_close_handicap ?? ""}</td>
-     <td>${r.AH_close_home_odds ?? ""}</td>
-     <td>${r.AH_close_away_odds ?? ""}</td>
-     <td>${out}</td>
-   </tr>`);
- });
- const tot=res.length;
- // Pie chart
- let pieHTML = drawPieChart([
-   {label:"贏盤",val:win,color:"#e53b2d"},
-   {label:"和盤",val:draw,color:"#27a146"},
-   {label:"輸盤",val:lose,color:"#2166d1"},
- ]);
- document.getElementById("aStat").innerHTML=
-   `<div class="stat-row">
-      <span class="win">贏盤 ${win} (${pct(win,tot)})</span>
-      <span class="draw" style="margin-left:18px;">和盤 ${draw} (${pct(draw,tot)})</span>
-      <span class="lose" style="margin-left:18px;">輸盤 ${lose} (${pct(lose,tot)})</span>
+      <div id="ahStat" class="stat-area"></div>
+      <div class="table-wrap">
+        <table class="table table-striped" id="ahTable">
+          <thead>
+            <tr>
+              <th>賽季</th><th>比賽</th>
+              <th>初盤盤口</th><th>初盤主隊賠率</th><th>初盤客隊賠率</th>
+              <th>終盤盤口</th><th>終盤主隊賠率</th><th>終盤客隊賠率</th><th>結果</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
-    <div class="stat-info">場數：${tot}</div>
-    <div class="piebox">
-      ${pieHTML}
-      <div class="pie-legend">
-        <div><span style="background:#e53b2d"></span>贏盤</div>
-        <div><span style="background:#27a146"></span>和盤</div>
-        <div><span style="background:#2166d1"></span>輸盤</div>
+
+    <!-- 大小球 -->
+    <div class="tab-pane fade" id="ouTab">
+      <div class="row g-2 mb-3 align-items-center">
+        <div class="col-auto"><strong>初盤</strong></div>
       </div>
-    </div>`;
+      <div class="row g-2 align-items-center">
+        <div class="col-auto">盤口：</div>
+        <div class="col-auto">
+          <select id="ouInitLine" class="form-select form-select-sm">
+            <option value="">--</option>
+          </select>
+        </div>
+      </div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">大球賠率：</div>
+        <div class="col-auto">
+          <input id="ouBigExact" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="ouBigErr" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('ouBigErr',0.01)">▲</button>
+              <button type="button" onclick="stepErr('ouBigErr',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">細球賠率：</div>
+        <div class="col-auto">
+          <input id="ouSmallExact" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="ouSmallErr" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('ouSmallErr',0.01)">▲</button>
+              <button type="button" onclick="stepErr('ouSmallErr',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row g-2 mb-3 align-items-center">
+        <div class="col-auto"><strong>終盤</strong></div>
+      </div>
+      <div class="row g-2 align-items-center">
+        <div class="col-auto">盤口：</div>
+        <div class="col-auto">
+          <select id="ouCloseLine" class="form-select form-select-sm">
+            <option value="">--</option>
+          </select>
+        </div>
+      </div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">大球賠率：</div>
+        <div class="col-auto">
+          <input id="ouBigExactC" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="ouBigErrC" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('ouBigErrC',0.01)">▲</button>
+              <button type="button" onclick="stepErr('ouBigErrC',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">細球賠率：</div>
+        <div class="col-auto">
+          <input id="ouSmallExactC" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="ouSmallErrC" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('ouSmallErrC',0.01)">▲</button>
+              <button type="button" onclick="stepErr('ouSmallErrC',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-primary px-4" onclick="doOuSearch()">搜尋</button>
+      </div>
+
+      <div id="ouStat" class="stat-area"></div>
+      <div class="table-wrap">
+        <table class="table table-striped" id="ouTable">
+          <thead>
+            <tr>
+              <th>賽季</th><th>比賽</th><th>盤口</th>
+              <th>初盤大</th><th>初盤細</th>
+              <th>終盤盤口</th><th>終盤大</th><th>終盤細</th><th>結果</th>
+            </tr>
+          </thead><tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 歐洲盤 -->
+    <div class="tab-pane fade" id="euTab">
+      <div class="row g-2 mb-3 align-items-center"><div class="col-auto"><strong>初盤</strong></div></div>
+      <div class="row g-2 align-items-center">
+        <div class="col-auto">主勝：</div>
+        <div class="col-auto">
+          <input id="euHomeExact" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="euHomeErr" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('euHomeErr',0.01)">▲</button>
+              <button type="button" onclick="stepErr('euHomeErr',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">和局：</div>
+        <div class="col-auto">
+          <input id="euDrawExact" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="euDrawErr" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('euDrawErr',0.01)">▲</button>
+              <button type="button" onclick="stepErr('euDrawErr',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">客勝：</div>
+        <div class="col-auto">
+          <input id="euAwayExact" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="euAwayErr" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('euAwayErr',0.01)">▲</button>
+              <button type="button" onclick="stepErr('euAwayErr',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row g-2 mb-3 align-items-center"><div class="col-auto"><strong>終盤</strong></div></div>
+      <div class="row g-2 align-items-center">
+        <div class="col-auto">主勝：</div>
+        <div class="col-auto">
+          <input id="euHomeExactC" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="euHomeErrC" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('euHomeErrC',0.01)">▲</button>
+              <button type="button" onclick="stepErr('euHomeErrC',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">和局：</div>
+        <div class="col-auto">
+          <input id="euDrawExactC" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="euDrawErrC" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('euDrawErrC',0.01)">▲</button>
+              <button type="button" onclick="stepErr('euDrawErrC',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-2 mt-2 align-items-center">
+        <div class="col-auto">客勝：</div>
+        <div class="col-auto">
+          <input id="euAwayExactC" type="number" step="0.01" class="form-control form-control-sm" placeholder="精確值">
+        </div>
+        <div class="col-auto">±</div>
+        <div class="col-auto">
+          <div class="step-group">
+            <input id="euAwayErrC" type="number" step="0.01" class="form-control form-control-sm text-end" value="0.01">
+            <div class="btn-wrap">
+              <button type="button" onclick="stepErr('euAwayErrC',0.01)">▲</button>
+              <button type="button" onclick="stepErr('euAwayErrC',-0.01)">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-primary px-4" onclick="doEuSearch()">搜尋</button>
+      </div>
+
+      <div id="euStat" class="stat-area"></div>
+      <div class="table-wrap">
+        <table class="table table-striped" id="euTable">
+          <thead>
+            <tr>
+              <th>賽季</th><th>比賽</th>
+              <th>初盤(主/和/客)</th><th>終盤(主/和/客)</th>
+              <th>比分</th><th>勝負</th><th>淨勝球</th>
+            </tr>
+          </thead><tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// 讀檔
+let AH=[],OU=[],EU=[];
+Promise.all([
+  fetch('asian_handicap.json').then(r=>r.json()).then(d=>AH=d),
+  fetch('over_under.json').then(r=>r.json()).then(d=>OU=d),
+  fetch('european_odds.json').then(r=>r.json()).then(d=>EU=d),
+]).then(initAll);
+
+function initAll(){
+  // 亞洲盤下拉
+  const s1 = new Set(AH.map(r=>r.AH_open_handicap));
+  const s2 = new Set(AH.map(r=>r.AH_close_handicap));
+  fillSelect('ahInitHand',s1);
+  fillSelect('ahCloseHand',s2);
+  // OU 下拉
+  const o1=new Set(OU.map(r=>r.OU_line)), o2=new Set(OU.map(r=>r.close_OU_line));
+  fillSelect('ouInitLine',o1);
+  fillSelect('ouCloseLine',o2);
+  // 歐洲盤不需盤口
+}
+function fillSelect(id,set){
+  const arr=[...set].filter(v=>v!==null&&v!==undefined).sort((a,b)=>a-b);
+  const opt=['<option value="">--</option>'];
+  arr.forEach(v=>opt.push(`<option value="${v}">${v}</option>`));
+  document.getElementById(id).innerHTML=opt.join('');
 }
 
-// ===== ② 大小球 =====
-
-function initOU(){
-  // 初盤盤口
-  const set1 = new Set(OData.map(r => r.OU_line));
-  const arr1 = [...set1].sort((a, b) => a - b);
-  const sel1 = document.getElementById("OUlineSel");
-  sel1.innerHTML = '<option value="">--</option>' +
-    arr1.map(v => `<option value="${v}"${v===2.5?' selected':''}>${v}</option>`).join('');
-
-  // 終盤盤口
-  const set2 = new Set(OData.map(r => r.close_OU_line));
-  const arr2 = [...set2].sort((a, b) => a - b);
-  const sel2 = document.getElementById("OUlineSelC");
-  sel2.innerHTML = '<option value="">--</option>' +
-    arr2.map(v => `<option value="${v}">${v}</option>`).join('');
+// ▲▼ 調誤差
+function stepErr(id,d){
+  const e=document.getElementById(id);
+  let v=parseFloat(e.value)||0;
+  v=Math.max(0,+(v+d).toFixed(2));
+  e.value=v.toFixed(2);
 }
+// 計 min/max
+function range(exId,errId){
+  const ex=parseFloat(document.getElementById(exId).value);
+  const er=parseFloat(document.getElementById(errId).value)||0;
+  return isNaN(ex)?[null,null]:[ex-er,ex+er];
+}
+// 百分比
+function pct(n,t){return t?((n/t*100).toFixed(1)+'%'):'0.0%';}
 
-function overSearch(){
- const sel=document.getElementById("OUlineSel").value;
-  const selC = document.getElementById("OUlineSelC").value;
- const oMin=parseFloat(document.getElementById("OUoMin").value),
-       oMax=parseFloat(document.getElementById("OUoMax").value),
-       uMin=parseFloat(document.getElementById("OUuMin").value),
-       uMax=parseFloat(document.getElementById("OUuMax").value),
-       oMinC=parseFloat(document.getElementById("OUoMinC").value),
-       oMaxC=parseFloat(document.getElementById("OUoMaxC").value),
-       uMinC=parseFloat(document.getElementById("OUuMinC").value),
-       uMaxC=parseFloat(document.getElementById("OUuMaxC").value);
- let res=OData.filter(r=>{
-   if(sel && r.OU_line!=parseFloat(sel))return false;
-   if (selC && r.close_OU_line != parseFloat(selC)) return false;
-   if(!isNaN(oMin)&&r.OU_open_over_odds<oMin)return false;
-   if(!isNaN(oMax)&&r.OU_open_over_odds>oMax)return false;
-   if(!isNaN(uMin)&&r.OU_open_under_odds<uMin)return false;
-   if(!isNaN(uMax)&&r.OU_open_under_odds>uMax)return false;
-   if(!isNaN(oMinC)&&r.OU_close_over_odds<oMinC)return false;
-   if(!isNaN(oMaxC)&&r.OU_close_over_odds>oMaxC)return false;
-   if(!isNaN(uMinC)&&r.OU_close_under_odds<uMinC)return false;
-   if(!isNaN(uMaxC)&&r.OU_close_under_odds>uMaxC)return false;
-   return true;
- });
- let over=0, under=0, push=0;
- let tb=document.querySelector("#oTbl tbody");tb.innerHTML="";
- res.forEach(r=>{
-   const goals=r.ft_score.split("-").reduce((a,b)=>parseInt(a)+parseInt(b));
-   const out = goals > r.close_OU_line ? "大球" : goals < r.close_OU_line ? "小球" : "走盤";
-   if(out==="大球") over++; else if(out==="小球") under++; else push++;
-   tb.insertAdjacentHTML("beforeend",
-     `<tr>
+// ===== 亞洲盤搜尋 =====
+function doAhSearch(){
+  const [hMin,hMax]=range('ahHomeExact','ahHomeErr');
+  const [aMin,aMax]=range('ahAwayExact','ahAwayErr');
+  const [hMinC,hMaxC]=range('ahCloseHomeExact','ahCloseHomeErr');
+  const [aMinC,aMaxC]=range('ahCloseAwayExact','ahCloseAwayErr');
+  const selO=document.getElementById('ahInitHand').value;
+  const selC=document.getElementById('ahCloseHand').value;
+  let res=AH.filter(r=>{
+    if(selO && r.AH_open_handicap!=+selO) return false;
+    if(selC && r.AH_close_handicap!=+selC) return false;
+    if(hMin!==null && (r.AH_open_home_odds<hMin||r.AH_open_home_odds>hMax)) return false;
+    if(aMin!==null && (r.AH_open_away_odds<aMin||r.AH_open_away_odds>aMax)) return false;
+    if(hMinC!==null && (r.AH_close_home_odds<hMinC||r.AH_close_home_odds>hMaxC)) return false;
+    if(aMinC!==null && (r.AH_close_away_odds<aMinC||r.AH_close_away_odds>aMaxC)) return false;
+    return true;
+  });
+  // 統計 & 渲染
+  let win=0,draw=0,lose=0;
+  const tb=document.querySelector('#ahTable tbody');
+  tb.innerHTML='';
+  res.forEach(r=>{
+    const [hs,as]=r.ft_score.split('-').map(Number),
+          out=(hs+r.AH_close_handicap)-as>0?'贏盤':(hs+r.AH_close_handicap)-as<0?'輸盤':'和盤';
+    if(out==='贏盤') win++; else if(out==='輸盤') lose++; else draw++;
+    tb.insertAdjacentHTML('beforeend',`
+      <tr>
         <td>${r.season}</td>
         <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-        <td>${r.OU_line}</td>
-        <td>${r.OU_open_over_odds??""}</td>
-        <td>${r.OU_open_under_odds??""}</td>
-        <td>${r.close_OU_line}</td>
-<td>${r.OU_close_over_odds??""}</td>
-        <td>${r.OU_close_under_odds??""}</td>
+        <td>${r.AH_open_handicap}</td><td>${r.AH_open_home_odds}</td><td>${r.AH_open_away_odds}</td>
+        <td>${r.AH_close_handicap}</td><td>${r.AH_close_home_odds}</td><td>${r.AH_close_away_odds}</td>
         <td>${out}</td>
       </tr>`);
- });
- const tot=res.length;
- let pieHTML = drawPieChart([
-   {label:"Over",val:over,color:"#e53b2d"},
-   {label:"Under",val:under,color:"#2166d1"},
- ]);
- document.getElementById("oStat").innerHTML=`<div class="stat-row"><span class="win">大球 ${over} (${pct(over,tot)})</span><span class="draw" style="margin-left:18px;">走盤 ${push} (${pct(push,tot)})</span><span class="lose" style="margin-left:18px;">小球 ${under} (${pct(under,tot)})</span></div><div class="stat-info">場數：${tot}</div><div class="piebox">${pieHTML}<div class="pie-legend"><div><span style="background:#e53b2d"></span>大球</div><div><span style="background:#27a146"></span>走盤</div><div><span style="background:#2166d1"></span>小球</div></div></div>`;
-}
-
-// ===== ③ 歐洲盤 =====
-function euroSearch(){
- const v=id=>parseFloat(document.getElementById(id).value);
- const cv=id=>parseFloat(document.getElementById("C"+id).value);
- let res=EData.filter(r=>{
-   if(!isNaN(v("EHOM"))&&r["1X2_open_home_odds"]<v("EHOM"))return false;
-   if(!isNaN(v("EHOX"))&&r["1X2_open_home_odds"]>v("EHOX"))return false;
-   if(!isNaN(v("EDRM"))&&r["1X2_open_draw_odds"]<v("EDRM"))return false;
-   if(!isNaN(v("EDRX"))&&r["1X2_open_draw_odds"]>v("EDRX"))return false;
-   if(!isNaN(v("EAWM"))&&r["1X2_open_away_odds"]<v("EAWM"))return false;
-   if(!isNaN(v("EAWX"))&&r["1X2_open_away_odds"]>v("EAWX"))return false;
-   if(!isNaN(cv("EHOM"))&&r["1X2_close_home_odds"]<cv("EHOM"))return false;
-   if(!isNaN(cv("EHOX"))&&r["1X2_close_home_odds"]>cv("EHOX"))return false;
-   if(!isNaN(cv("EDRM"))&&r["1X2_close_draw_odds"]<cv("EDRM"))return false;
-   if(!isNaN(cv("EDRX"))&&r["1X2_close_draw_odds"]>cv("EDRX"))return false;
-   if(!isNaN(cv("EAWM"))&&r["1X2_close_away_odds"]<cv("EAWM"))return false;
-   if(!isNaN(cv("EAWX"))&&r["1X2_close_away_odds"]>cv("EAWX"))return false;
-   return true;
- });
- let home=0,draw=0,away=0,d1=0,d2=0,d3=0;
- let tb=document.querySelector("#eTbl tbody");tb.innerHTML="";
- res.forEach(r=>{
-   const [h,a]=r.ft_score.split("-").map(Number),diff=h-a;
-   if(diff>0){home++;if(diff==1)d1++;else if(diff==2)d2++;else d3++;}
-   else if(diff<0)away++;else draw++;
-   tb.insertAdjacentHTML("beforeend",
-   `<tr>
-     <td>${r.season}</td>
-     <td>${r.home_team} vs ${r.away_team}</td>
-     <td>${r["1X2_open_home_odds"]}/${r["1X2_open_draw_odds"]}/${r["1X2_open_away_odds"]}</td>
-     <td>${r["1X2_close_home_odds"]}/${r["1X2_close_draw_odds"]}/${r["1X2_close_away_odds"]}</td>
-     <td>${r.ft_score}</td><td>${
-      (() => {
-        const [h,a] = r.ft_score.split(/[-–]/).map(Number);
-        if (h > a) return "主勝";
-        if (h < a) return "客勝";
-        return "和局";
-      })()
-    }</td><td>${diff}</td></tr>`);
- });
- const tot=res.length;
- let pieHTML = drawPieChart([
-   {label:"主勝",val:home,color:"#e53b2d"},
-   {label:"和局",val:draw,color:"#27a146"},
-   {label:"客勝",val:away,color:"#2166d1"},
- ]);
- document.getElementById("eStat").innerHTML=
-   `<div class="stat-row">
-      <span class="win">主勝 ${home} (${pct(home,tot)})</span>
-      <span class="draw" style="margin-left:18px;">和局 ${draw} (${pct(draw,tot)})</span>
-      <span class="lose" style="margin-left:18px;">客勝 ${away} (${pct(away,tot)})</span>
-    </div>
-    <div class="stat-info">場數：${tot}<br/>主勝淨勝球 ➜ 1球:${d1}  2球:${d2}  3+球:${d3}</div>
-    <div class="piebox">
-      ${pieHTML}
-      <div class="pie-legend">
-        <div><span style="background:#e53b2d"></span>主勝</div>
-        <div><span style="background:#27a146"></span>和局</div>
-        <div><span style="background:#2166d1"></span>客勝</div>
-      </div>
-    </div>`;
-}
-
-// ===== 畫Pie Chart =====
-function drawPieChart(arr){
-  // arr: [{label,val,color}]
-  const tot = arr.reduce((s,x)=>s+x.val,0);
-  if(!tot) return `<svg class="piechart"></svg>`;
-  let cur=0, arc = [], sz=128, r=sz/2-3, cx=sz/2, cy=sz/2;
-  arr.forEach(x=>{
-    const v=x.val/tot, a1=cur*2*Math.PI, a2=(cur+=v)*2*Math.PI;
-    const x1 = cx+r*Math.sin(a1), y1 = cy-r*Math.cos(a1);
-    const x2 = cx+r*Math.sin(a2), y2 = cy-r*Math.cos(a2);
-    const laf = (a2-a1)>Math.PI?1:0;
-    arc.push(`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${laf} 1 ${x2},${y2} Z" fill="${x.color}"></path>`);
   });
-  return `<svg class="piechart" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">${arc.join("")}</svg>`;
+  const tot=res.length;
+  document.getElementById('ahStat').innerHTML=`
+    <div class="stat-row">
+      <span class="win">贏盤 ${win} (${pct(win,tot)})</span>
+      <span class="draw">和盤 ${draw} (${pct(draw,tot)})</span>
+      <span class="lose">輸盤 ${lose} (${pct(lose,tot)})</span>
+    </div>
+    <div>場數：${tot}</div>`;
+}
+
+// ===== 大小球搜尋 =====
+function doOuSearch(){
+  const [bMin,bMax]=range('ouBigExact','ouBigErr');
+  const [sMin,sMax]=range('ouSmallExact','ouSmallErr');
+  const [bMinC,bMaxC]=range('ouBigExactC','ouBigErrC');
+  const [sMinC,sMaxC]=range('ouSmallExactC','ouSmallErrC');
+  const selO=document.getElementById('ouInitLine').value;
+  const selC=document.getElementById('ouCloseLine').value;
+  let res=OU.filter(r=>{
+    if(selO && r.OU_line!=+selO) return false;
+    if(selC && r.close_OU_line!=+selC) return false;
+    if(bMin!==null && (r.OU_open_over_odds<bMin||r.OU_open_over_odds>bMax)) return false;
+    if(sMin!==null && (r.OU_open_under_odds<sMin||r.OU_open_under_odds>sMax)) return false;
+    if(bMinC!==null && (r.OU_close_over_odds<bMinC||r.OU_close_over_odds>bMaxC)) return false;
+    if(sMinC!==null && (r.OU_close_under_odds<sMinC||r.OU_close_under_odds>sMaxC)) return false;
+    return true;
+  });
+  let over=0,push=0,under=0;
+  const tb=document.querySelector('#ouTable tbody');
+  tb.innerHTML='';
+  res.forEach(r=>{
+    const sum=r.ft_score.split('-').reduce((a,b)=>+a+ +b,0);
+    const out=sum>r.close_OU_line?'大球':sum<r.close_OU_line?'小球':'走盤';
+    if(out==='大球') over++; else if(out==='小球') under++; else push++;
+    tb.insertAdjacentHTML('beforeend',`
+      <tr>
+        <td>${r.season}</td>
+        <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+        <td>${r.OU_line}</td><td>${r.OU_open_over_odds}</td><td>${r.OU_open_under_odds}</td>
+        <td>${r.close_OU_line}</td><td>${r.OU_close_over_odds}</td><td>${r.OU_close_under_odds}</td>
+        <td>${out}</td>
+      </tr>`);
+  });
+  const tot=res.length;
+  document.getElementById('ouStat').innerHTML=`
+    <div class="stat-row">
+      <span class="win">大球 ${over} (${pct(over,tot)})</span>
+      <span class="draw">走盤 ${push} (${pct(push,tot)})</span>
+      <span class="lose">小球 ${under} (${pct(under,tot)})</span>
+    </div>
+    <div>場數：${tot}</div>`;
+}
+
+// ===== 歐洲盤搜尋 =====
+function doEuSearch(){
+  const [hMin,hMax]=range('euHomeExact','euHomeErr');
+  const [dMin,dMax]=range('euDrawExact','euDrawErr');
+  const [aMin,aMax]=range('euAwayExact','euAwayErr');
+  const [hMinC,hMaxC]=range('euHomeExactC','euHomeErrC');
+  const [dMinC,dMaxC]=range('euDrawExactC','euDrawErrC');
+  const [aMinC,aMaxC]=range('euAwayExactC','euAwayErrC');
+  let res=EU.filter(r=>{
+    if(hMin!==null && (r['1X2_open_home_odds']<hMin||r['1X2_open_home_odds']>hMax)) return false;
+    if(dMin!==null && (r['1X2_open_draw_odds']<dMin||r['1X2_open_draw_odds']>dMax)) return false;
+    if(aMin!==null && (r['1X2_open_away_odds']<aMin||r['1X2_open_away_odds']>aMax)) return false;
+    if(hMinC!==null && (r['1X2_close_home_odds']<hMinC||r['1X2_close_home_odds']>hMaxC)) return false;
+    if(dMinC!==null && (r['1X2_close_draw_odds']<dMinC||r['1X2_close_draw_odds']>dMaxC)) return false;
+    if(aMinC!==null && (r['1X2_close_away_odds']<aMinC||r['1X2_close_away_odds']>aMaxC)) return false;
+    return true;
+  });
+  let win=0,draw=0,lose=0, d1=0,d2=0,d3=0;
+  const tb=document.querySelector('#euTable tbody');
+  tb.innerHTML='';
+  res.forEach(r=>{
+    const [hs,as]=r.ft_score.split('-').map(Number),diff=hs-as;
+    const out= diff>0?'主勝':diff<0?'客勝':'和局';
+    if(out==='主勝') win++ , diff===1?d1:diff===2?d2:d3++;
+    else if(out==='客勝') lose++;
+    else draw++;
+    tb.insertAdjacentHTML('beforeend',`
+      <tr>
+        <td>${r.season}</td>
+        <td>${r.home_team} vs ${r.away_team}</td>
+        <td>${r['1X2_open_home_odds']}/${r['1X2_open_draw_odds']}/${r['1X2_open_away_odds']}</td>
+        <td>${r['1X2_close_home_odds']}/${r['1X2_close_draw_odds']}/${r['1X2_close_away_odds']}</td>
+        <td>${r.ft_score}</td>
+        <td>${out}</td>
+        <td>${diff}</td>
+      </tr>`);
+  });
+  const tot=res.length;
+  document.getElementById('euStat').innerHTML=`
+    <div class="stat-row">
+      <span class="win">主勝 ${win} (${pct(win,tot)})</span>
+      <span class="draw">和局 ${draw} (${pct(draw,tot)})</span>
+      <span class="lose">客勝 ${lose} (${pct(lose,tot)})</span>
+    </div>
+    <div>場數：${tot} 主勝淨勝球 → 1球:${d1} 2球:${d2} 3+球:${d3}</div>`;
 }
 </script>
-
-<script>
-function adjErr(id,delta){
-  const el=document.getElementById(id);
-  let v=parseFloat(el.value)||0;
-  v=Math.max(0, (v+delta));
-  el.value=v.toFixed(2);
-}
-</script>
-
 </body>
 </html>
