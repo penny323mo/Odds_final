@@ -358,29 +358,24 @@ function asianSearch(){
 // ===== ② 大小球 =====
 function initOU(){
   // 初盤盤口
-  const set1 = new Set(OData.map(r => r.OU_line));
-  const arr1 = [...set1].sort((a, b) => a - b);
+  const arr1 = [...new Set(OData.map(r => r.OU_line))].sort((a,b)=>a-b);
   const sel1 = document.getElementById("OUlineSel");
-  sel1.innerHTML = '<option value="">--</option>' + arr1.map(v => {
-    return `<option value="${v}">${v}</option>`;
-  }).join('');
+  sel1.innerHTML = '<option value="">--</option>' +
+    arr1.map(v=>`<option value="${v}">${v}</option>`).join('');
 
   // 終盤盤口
-  const set2 = new Set(OData.map(r => r.close_OU_line));
-  const arr2 = [...set2].sort((a, b) => a - b);
+  const arr2 = [...new Set(OData.map(r => r.close_OU_line))].sort((a,b)=>a-b);
   const sel2 = document.getElementById("OUlineSelC");
-  sel2.innerHTML = '<option value="">--</option>' + arr2.map(v => {
-    return `<option value="${v}">${v}</option>`;
-  }).join('');
-}>${v}</option>`).join("");
-
- // 終盤盤口
- const set2=new Set(OData.map(r=>r.close_OU_line));
- const arr2=[...set2].sort((a,b)=>a-b);
- const sel2=document.getElementById("OUlineSelC");
- sel2.innerHTML=arr2.map(v=>`<option>${v}</option>`).join("");
+  sel2.innerHTML = '<option value="">--</option>' +
+    arr2.map(v=>`<option value="${v}">${v}</option>`).join('');
 }
+
 function overSearch(){
+  const selOpen = document.getElementById("OUlineSel").value;
+  const selClose = document.getElementById("OUlineSelC").value;
+  const selOpen = document.getElementById("OUlineSel").value;
+  const selClose = document.getElementById("OUlineSelC").value;
+
  const sel=document.getElementById("OUlineSel").value;
  const oMin=parseFloat(document.getElementById("OUoMin").value),
        oMax=parseFloat(document.getElementById("OUoMax").value),
@@ -415,6 +410,7 @@ function overSearch(){
         <td>${r.OU_line}</td>
         <td>${r.OU_open_over_odds??""}</td>
         <td>${r.OU_open_under_odds??""}</td>
+        <td>${r.close_OU_line}</td>
         <td>${r.close_OU_line}</td>
 <td>${r.OU_close_over_odds??""}</td>
         <td>${r.OU_close_under_odds??""}</td>
