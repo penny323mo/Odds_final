@@ -401,8 +401,8 @@ function overSearch(){
  let tb=document.querySelector("#oTbl tbody");tb.innerHTML="";
  res.forEach(r=>{
    const goals=r.ft_score.split("-").reduce((a,b)=>parseInt(a)+parseInt(b));
-   const out=goals>r.OU_line?"Over":goals<r.OU_line?"Under":"Push";
-   if(out==="Over") over++; else if(out==="Under") under++; else push++;
+   const out = goals > r.close_OU_line ? "大球" : goals < r.close_OU_line ? "小球" : "走盤";
+   if(out==="大球") over++; else if(out==="小球") under++; else push++;
    tb.insertAdjacentHTML("beforeend",
      `<tr>
         <td>${r.season}</td>
@@ -455,14 +455,7 @@ function euroSearch(){
      <td>${r.home_team} vs ${r.away_team}</td>
      <td>${r["1X2_open_home_odds"]}/${r["1X2_open_draw_odds"]}/${r["1X2_open_away_odds"]}</td>
      <td>${r["1X2_close_home_odds"]}/${r["1X2_close_draw_odds"]}/${r["1X2_close_away_odds"]}</td>
-     <td>${r.ft_score}</td><td>${
-      (() => {
-        const [h,a] = r.ft_score.split("-").map(Number);
-        if (h > a)   return "主勝";
-        if (h < a)   return "客勝";
-        return "和局";
-      })()
-    }</td><td>${diff}</td></tr>`);
+     <td>${r.ft_score}</td><td>${r.ft_result}</td><td>${diff}</td></tr>`);
  });
  const tot=res.length;
  let pieHTML = drawPieChart([
