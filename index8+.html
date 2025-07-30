@@ -188,7 +188,8 @@ th{background:#f2f6fb;}
       <th>比賽</th>
       <th>盤口</th>
       <th>初盤大</th>
-      <th>初盤細</th><th>終盤盤口</th>
+      <th>初盤細</th>
+      <th>終盤盤口</th>
       <th>終盤大</th>
       <th>終盤細</th>
       <th>結果</th>
@@ -356,18 +357,10 @@ function asianSearch(){
 
 // ===== ② 大小球 =====
 function initOU(){
-  // 初盤盤口
-  const openSet = new Set(OData.map(r => r.OU_line));
-  const openArr = [...openSet].sort((a, b) => a - b);
-  const openSel = document.getElementById("OUlineSel");
-  openSel.innerHTML = '<option value="">--</option>' + openArr.map(v => `<option value="${v}">${v}</option>`).join('');
-
-  // 終盤盤口
-  const closeSet = new Set(OData.map(r => r.close_OU_line));
-  const closeArr = [...closeSet].sort((a, b) => a - b);
-  const closeSel = document.getElementById("OUlineSelC");
-  closeSel.innerHTML = '<option value="">--</option>' + closeArr.map(v => `<option value="${v}">${v}</option>`).join('');
-}>${v}</option>`).join("");
+ const set=new Set(OData.map(r=>r.OU_line));
+ const arr=[...set].sort((a,b)=>a-b);
+ const sel=document.getElementById("OUlineSel");
+ sel.innerHTML=arr.map(v=>`<option${v==2.5?" selected":""}>${v}</option>`).join("");
 
  // 終盤盤口
  const set2=new Set(OData.map(r=>r.close_OU_line));
@@ -409,8 +402,9 @@ function overSearch(){
         <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
         <td>${r.OU_line}</td>
         <td>${r.OU_open_over_odds??""}</td>
-        <td>${r.OU_open_under_odds??""}</td><td>${r.close_OU_line}</td>
-        <td>${r.OU_close_over_odds??""}</td>
+        <td>${r.OU_open_under_odds??""}</td>
+        <td>${r.close_OU_line}</td>
+<td>${r.OU_close_over_odds??""}</td>
         <td>${r.OU_close_under_odds??""}</td>
         <td>${out}</td>
       </tr>`);
