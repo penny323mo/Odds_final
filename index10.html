@@ -455,7 +455,7 @@ function euroSearch(){
      <td>${r.home_team} vs ${r.away_team}</td>
      <td>${r["1X2_open_home_odds"]}/${r["1X2_open_draw_odds"]}/${r["1X2_open_away_odds"]}</td>
      <td>${r["1X2_close_home_odds"]}/${r["1X2_close_draw_odds"]}/${r["1X2_close_away_odds"]}</td>
-     <td>${r.ft_score}</td><td>${r.ft_result}</td><td>${diff}</td></tr>`);
+     <td>${r.ft_score}</td><td>${diff>0?"主勝":(diff<0?"客勝":"和局")}</td><td>${diff}</td></tr>`);
  });
  const tot=res.length;
  let pieHTML = drawPieChart([
