@@ -3,31 +3,70 @@
 <head>
 <meta charset="UTF-8" />
 <title>足球賠率篩選工具</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body{font-family:"PingFang TC","Microsoft JhengHei",sans-serif;background:#f8fafd;margin:0}
-.navbar-brand{font-size:1.6rem;}
-.btn-sm{padding:.15rem .4rem;font-size:.8rem;}
-.table-wrap{width:100%;overflow-x:auto;margin-top:20px;}
-table{font-size:.9rem;}
-.step-group{display:inline-flex;align-items:center;gap:4px;}
-.step-group input{width:70px;border-radius:4px;border:1px solid #b8cef1;padding:4px;}
-.step-group .btn-wrap button{padding:4px 8px;font-size:14px;line-height:1;border:1px solid #b8cef1;background:#fff;cursor:pointer;}
-.stat-area{margin-top:24px;}
-.stat-row{font-size:1.2rem;font-weight:bold;}
+body{background:#f8fafd;font-family:"Microsoft JhengHei",sans-serif;margin:0}
+.header{background:#1666c1;color:#fff;text-align:center;padding:36px 0 20px}
+.header h1{margin:0;font-size:2.1em;letter-spacing:2px}
+.header .desc{margin-top:7px;font-size:1.04em;font-weight:300}
+.tabbar{display:flex;justify-content:center;background:#e7f0fb;border-bottom:2px solid #dbe7f5}
+.tabbar button{flex:1;padding:15px;font-size:1.1em;font-weight:bold;background:none;border:none;border-bottom:4px solid transparent;cursor:pointer;transition:.2s}
+.tabbar button.active{color:#1666c1;border-bottom:4px solid #1666c1;background:#fff}
+.timestamp{text-align:center;color:#444;margin:10px 0 18px;font-size:1.07em;}
+.tabcontent{max-width:920px;margin:26px auto 0;background:#fff;border-radius:8px;padding:22px;box-shadow:0 3px 18px #8ab3e929}
+fieldset{margin-bottom:15px;border:1.5px solid #c3daf7;border-radius:6px;background:#f9fcff}
+legend{color:#1666c1;font-weight:bold}
+.row{display:flex;flex-wrap:wrap;align-items:center;margin:7px 0;}
+.row label{width:120px;text-align:right;margin-right:14px;white-space:nowrap;font-size:1.09em;}
+.input-wrap{flex:1;display:flex;gap:10px;}
+input,select{border:1px solid #b8cef1;border-radius:4px;padding:4px 6px;margin:2px;width:110px;font-size:1em}
+.input-wrap span{display:inline-block;min-width:12px;text-align:center;vertical-align:middle;position:relative;top:6px;}
+button.search{padding:7px 24px;border:none;border-radius:4px;background:#1666c1;color:#fff;font-size:1em;margin-top:8px;cursor:pointer}
+button.search:hover{background:#205b98}
+.table-wrap{ width:100%; overflow-x:auto; margin-top:25px;}
+table{width:100%;min-width:900px;border-collapse:collapse;background:#fff;margin-top:8px;font-size:1.12em;}
+th,td{border:1px solid #e5e5e5;padding:9px 4px;text-align:center}
+th{background:#f2f6fb;}
+.stat-area{margin:32px 0 0 0;display:flex;flex-direction:column;align-items:flex-start;}
+.stat-row{font-size:1.4em;font-weight:bold;margin-bottom:10px;}
 .stat-row .win{color:#e53b2d;}
-.stat-row .draw{color:#27a146;margin:0 16px;}
+.stat-row .draw{color:#27a146;}
 .stat-row .lose{color:#2166d1;}
-.piebox{display:flex;align-items:center;gap:24px;margin-top:16px;}
-.piechart{width:100px;height:100px;}
-.pie-legend div{display:flex;align-items:center;gap:6px;font-size:0.9rem;}
-.pie-legend span{display:inline-block;width:14px;height:14px;border-radius:50%;}
+.stat-info{font-size:1.03em;margin-bottom:12px;}
+.piebox{display:flex;align-items:center;gap:36px;margin:20px 0 0 0;}
+.piechart{width:128px;height:128px;}
+.pie-legend{margin-top:16px;}
+.pie-legend div{font-size:1.13em;margin-bottom:2px;display:flex;align-items:center;gap:8px;}
+.pie-legend span{display:inline-block;width:16px;height:16px;border-radius:50%;margin-right:6px;}
+@media(max-width:850px){
+  .tabcontent{padding:13px 2vw;}
+  .piechart{width:100px;height:100px;}
+  table{font-size:1.02em;min-width:700px;}
+}
 @media(max-width:650px){
-  .step-group input{width:50px;}
-  .piechart{width:70px;height:70px;}
+ .tabbar button{font-size:.96em;padding:11px 2px}
+ .header h1{font-size:1.22em}
+ .row label{width:88px;}
+ .input-wrap{gap:6px;}
+ input,select{width:66px;font-size:.97em}
+ .piebox{gap:14px;}
+ .piechart{width:68vw;height:68vw;max-width:140px;max-height:140px;}
+ .stat-row{font-size:1.07em;}
+ table{font-size:.98em;min-width:660px;}
 }
 </style>
+
+<style>
+.step-group{display:inline-flex;align-items:center;gap:4px;}
+
+.step-group .btn-wrap button{
+  padding:4px 8px;
+  font-size:14px;
+  line-height:1;
+}
+
+.step-group input{width:70px;}
+</style>
+
 </head>
 <body>
 <nav class="navbar navbar-dark bg-primary">
