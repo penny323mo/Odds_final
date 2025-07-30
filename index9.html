@@ -357,18 +357,10 @@ function asianSearch(){
 
 // ===== ② 大小球 =====
 function initOU(){
-  // 初盤盤口
-  const set1 = new Set(OData.map(r => r.OU_line));
-  const arr1 = [...set1].sort((a, b) => a - b);
-  const sel1 = document.getElementById("OUlineSel");
-  sel1.innerHTML = '<option value="">--</option>' + arr1.map(v => `<option value="${v}">${v}</option>`).join("");
-
-  // 終盤盤口
-  const set2 = new Set(OData.map(r => r.close_OU_line));
-  const arr2 = [...set2].sort((a, b) => a - b);
-  const sel2 = document.getElementById("OUlineSelC");
-  sel2.innerHTML = '<option value="">--</option>' + arr2.map(v => `<option value="${v}">${v}</option>`).join("");
-}>${v}</option>`).join("");
+ const set=new Set(OData.map(r=>r.OU_line));
+ const arr=[...set].sort((a,b)=>a-b);
+ const sel=document.getElementById("OUlineSel");
+ sel.innerHTML=arr.map(v=>`<option${v==2.5?" selected":""}>${v}</option>`).join("");
 
  // 終盤盤口
  const set2=new Set(OData.map(r=>r.close_OU_line));
