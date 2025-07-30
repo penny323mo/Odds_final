@@ -121,13 +121,13 @@ th{background:#f2f6fb;}
     <tr>
       <th>賽季</th>
       <th>比賽</th>
-      <th>盤口</th>
-      <th>初盤大</th>
-      <th>初盤細</th>
+      <th>初盤盤口</th>
+      <th>初盤主隊賠率</th>
+      <th>初盤客隊賠率</th>
       <th>終盤盤口</th>
-      <th>終盤大</th>
-      <th>終盤細</th>
-      <th>結果</th>
+      <th>終盤主隊賠率</th>
+      <th>終盤客隊賠率</th>
+      <th>盤口勝負</th>
     </tr>
   </thead><tbody></tbody></table></div>
 </div>
@@ -259,13 +259,11 @@ th{background:#f2f6fb;}
     <tr>
       <th>賽季</th>
       <th>比賽</th>
-      <th>盤口</th>
-      <th>初盤大</th>
-      <th>初盤細</th>
-      <th>終盤盤口</th>
-      <th>終盤大</th>
-      <th>終盤細</th>
-      <th>結果</th>
+      <th>初盤(主/和/客)</th>
+      <th>終盤(主/和/客)</th>
+      <th>比分</th>
+      <th>勝負</th>
+      <th>淨勝球</th>
     </tr>
   </thead><tbody></tbody></table></div>
 </div>
@@ -291,8 +289,7 @@ Promise.all([
  fetch("asian_handicap.json").then(r=>r.json()).then(j=>AData=j),
  fetch("over_under.json").then(r=>r.json()).then(j=>OData=j),
  fetch("european_odds.json").then(r=>r.json()).then(j=>EData=j)
-]).then(()=>{
-    showTab(0);initAsian();initOU();});
+]).then(()=>{initAsian();initOU();});
 
 // ===== ① 亞洲盤 =====
 function initAsian(){
@@ -322,19 +319,17 @@ function asianSearch(){
    const [h,a]=r.ft_score.split("-").map(Number),
          out=(h+r.AH_close_handicap)-a>0?"贏盤":(h+r.AH_close_handicap)-a<0?"輸盤":"和盤";
    if(out==="贏盤")win++;else if(out==="輸盤")lose++;else draw++;
-   tb.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${r.season}</td>
-        <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-        <td>${r.OU_line}</td>
-        <td>${r.OU_open_over_odds ?? ""}</td>
-        <td>${r.OU_open_under_odds ?? ""}</td>
-        <td>${r.close_OU_line}</td>
-        <td>${r.OU_close_over_odds ?? ""}</td>
-        <td>${r.OU_close_under_odds ?? ""}</td><td>${r.close_OU_line}</td>
-        <td>${out}</td>
-      </tr>
-    `);
+   tb.insertAdjacentHTML("beforeend",`<tr>
+     <td>${r.season}</td>
+     <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+     <td>${r.AH_open_handicap ?? ""}</td>
+     <td>${r.AH_open_home_odds ?? ""}</td>
+     <td>${r.AH_open_away_odds ?? ""}</td>
+     <td>${r.AH_close_handicap ?? ""}</td>
+     <td>${r.AH_close_home_odds ?? ""}</td>
+     <td>${r.AH_close_away_odds ?? ""}</td>
+     <td>${out}</td>
+   </tr>`);
  });
  const tot=res.length;
  // Pie chart
@@ -362,29 +357,18 @@ function asianSearch(){
 
 // ===== ② 大小球 =====
 function initOU(){
-  // 初盤盤口
-  const openSet = new Set(OData.map(r => r.OU_line));
-  const openArr = [...openSet].sort((a, b) => a - b);
-  const openSel = document.getElementById("OUlineSel");
-  openSel.innerHTML = '<option value="">--</option>' + openArr.map(v => `<option value="${v}">${v}</option>`).join('');
+ const set=new Set(OData.map(r=>r.OU_line));
+ const arr=[...set].sort((a,b)=>a-b);
+ const sel=document.getElementById("OUlineSel");
+ sel.innerHTML=arr.map(v=>`<option${v==2.5?" selected":""}>${v}</option>`).join("");
 
-  // 終盤盤口
-  const closeSet = new Set(OData.map(r => r.close_OU_line));
-  const closeArr = [...closeSet].sort((a, b) => a - b);
-  const closeSel = document.getElementById("OUlineSelC");
-  closeSel.innerHTML = '<option value="">--</option>' + closeArr.map(v => `<option value="${v}">${v}</option>`).join('');
-}">${v}</option>`).join('');
-
-  // 終盤盤口
-  const closeSet = new Set(OData.map(r => r.close_OU_line));
-  const closeArr = [...closeSet].sort((a, b) => a - b);
-  const closeSel = document.getElementById("OUlineSelC");
-  closeSel.innerHTML = '<option value="">--</option>' + closeArr.map(v => `<option value="${v}">${v}</option>`).join('');
-}>${v}</option>`).join("");
+ // 終盤盤口
+ const set2=new Set(OData.map(r=>r.close_OU_line));
+ const arr2=[...set2].sort((a,b)=>a-b);
+ const sel2=document.getElementById("OUlineSelC");
+ sel2.innerHTML=arr2.map(v=>`<option>${v}</option>`).join("");
 }
 function overSearch(){
-  const selOpen = document.getElementById("OUlineSel").value;
-  const selClose = document.getElementById("OUlineSelC").value;
  const sel=document.getElementById("OUlineSel").value;
  const oMin=parseFloat(document.getElementById("OUoMin").value),
        oMax=parseFloat(document.getElementById("OUoMax").value),
@@ -412,19 +396,18 @@ function overSearch(){
    const goals=r.ft_score.split("-").reduce((a,b)=>parseInt(a)+parseInt(b));
    const out=goals>r.OU_line?"Over":goals<r.OU_line?"Under":"Push";
    if(out==="Over")over++;else if(out==="Under")under++;
-   tb.insertAdjacentHTML("beforeend", `
-      <tr>
+   tb.insertAdjacentHTML("beforeend",
+     `<tr>
         <td>${r.season}</td>
         <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
         <td>${r.OU_line}</td>
-        <td>${r.OU_open_over_odds ?? ""}</td>
-        <td>${r.OU_open_under_odds ?? ""}</td>
+        <td>${r.OU_open_over_odds??""}</td>
+        <td>${r.OU_open_under_odds??""}</td>
         <td>${r.close_OU_line}</td>
-        <td>${r.OU_close_over_odds ?? ""}</td>
-        <td>${r.OU_close_under_odds ?? ""}</td><td>${r.close_OU_line}</td>
+<td>${r.OU_close_over_odds??""}</td>
+        <td>${r.OU_close_under_odds??""}</td>
         <td>${out}</td>
-      </tr>
-    `);
+      </tr>`);
  });
  const tot=res.length;
  let pieHTML = drawPieChart([
@@ -471,19 +454,13 @@ function euroSearch(){
    const [h,a]=r.ft_score.split("-").map(Number),diff=h-a;
    if(diff>0){home++;if(diff==1)d1++;else if(diff==2)d2++;else d3++;}
    else if(diff<0)away++;else draw++;
-   tb.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${r.season}</td>
-        <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-        <td>${r.OU_line}</td>
-        <td>${r.OU_open_over_odds ?? ""}</td>
-        <td>${r.OU_open_under_odds ?? ""}</td>
-        <td>${r.close_OU_line}</td>
-        <td>${r.OU_close_over_odds ?? ""}</td>
-        <td>${r.OU_close_under_odds ?? ""}</td><td>${r.close_OU_line}</td>
-        <td>${out}</td>
-      </tr>
-    `);
+   tb.insertAdjacentHTML("beforeend",
+   `<tr>
+     <td>${r.season}</td>
+     <td>${r.home_team} vs ${r.away_team}</td>
+     <td>${r["1X2_open_home_odds"]}/${r["1X2_open_draw_odds"]}/${r["1X2_open_away_odds"]}</td>
+     <td>${r["1X2_close_home_odds"]}/${r["1X2_close_draw_odds"]}/${r["1X2_close_away_odds"]}</td>
+     <td>${r.ft_score}</td><td>${r.ft_result}</td><td>${diff}</td></tr>`);
  });
  const tot=res.length;
  let pieHTML = drawPieChart([
