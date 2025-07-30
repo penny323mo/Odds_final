@@ -391,6 +391,23 @@ table{font-size:.9rem;}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
+// drawPieChart function 取自 index15x
+function drawPieChart(arr){
+  const tot = arr.reduce((s,x)=>s+x.val,0);
+  if(!tot) return `<svg class="piechart"></svg>`;
+  let cur=0, arc = [], sz=100, r=sz/2-3, cx=sz/2, cy=sz/2;
+  arr.forEach(x=>{
+    const v=x.val/tot, a1=cur*2*Math.PI, a2=(cur+=v)*2*Math.PI;
+    const x1 = cx+r*Math.sin(a1), y1 = cy-r*Math.cos(a1);
+    const x2 = cx+r*Math.sin(a2), y2 = cy-r*Math.cos(a2);
+    const laf = (a2-a1)>Math.PI?1:0;
+    arc.push(`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${laf} 1 ${x2},${y2} Z" fill="${x.color}"></path>`);
+  });
+  return `<svg class="piechart" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">${arc.join("")}</svg>`;
+}
+// 其他篩選、渲染 function 保持 index15.html 
+  
 // 讀檔
 let AH=[],OU=[],EU=[];
 Promise.all([
