@@ -660,31 +660,31 @@
     }
 
     // 大小球搜尋
-    function overSearch(){
-      // 取出上下限
-const [oMin2, oMax2] = range('OUoMin','OUoMax'),
-      [uMin2, uMax2] = range('OUuMin','OUuMax'),
-      [oMinC2, oMaxC2] = range('OUoMinC','OUoMaxC'),
-      [uMinC2, uMaxC2] = range('OUuMinC','OUuMaxC');
+    // —— 重寫「大小球」搜尋函式 ——  
+function overSearch() {
+  const sel   = document.getElementById('OUlineSel').value,
+        selC  = document.getElementById('OUlineSelC').value;
+  // 用 range() 計算「精確值 ± 誤差」上下限
+  const [oMin2, oMax2] = range('OUoMin','OUoMax'),
+        [uMin2, uMax2] = range('OUuMin','OUuMax'),
+        [oMinC2, oMaxC2] = range('OUoMinC','OUoMaxC'),
+        [uMinC2, uMaxC2] = range('OUuMinC','OUuMaxC');
 
-res = OData.filter(r => {
-  if(sel && r.OU_line != +sel) return false;
-  if(selC && r.close_OU_line != +selC) return false;
-  // open over
-  if(oMin2 != null && r.OU_open_over_odds < oMin2) return false;
-  if(oMax2 != null && r.OU_open_over_odds > oMax2) return false;
-  // open under
-  if(uMin2 != null && r.OU_open_under_odds < uMin2) return false;
-  if(uMax2 != null && r.OU_open_under_odds > uMax2) return false;
-  // close over
-  if(oMinC2 != null && r.OU_close_over_odds < oMinC2) return false;
-  if(oMaxC2 != null && r.OU_close_over_odds > oMaxC2) return false;
-  // close under
-  if(uMinC2 != null && r.OU_close_under_odds < uMinC2) return false;
-  if(uMaxC2 != null && r.OU_close_under_odds > uMaxC2) return false;
-
-  return true;
-});
+  const res = OData.filter(r => {
+    if (sel   && r.OU_line             != +sel  ) return false;
+    if (selC  && r.close_OU_line       != +selC ) return false;
+    if (oMin2 != null && r.OU_open_over_odds  <  oMin2  ) return false;
+    if (oMax2 != null && r.OU_open_over_odds  >  oMax2  ) return false;
+    if (uMin2 != null && r.OU_open_under_odds <  uMin2  ) return false;
+    if (uMax2 != null && r.OU_open_under_odds >  uMax2  ) return false;
+    if (oMinC2!= null && r.OU_close_over_odds <  oMinC2 ) return false;
+    if (oMaxC2!= null && r.OU_close_over_odds >  oMaxC2 ) return false;
+    if (uMinC2!= null && r.OU_close_under_odds<  uMinC2 ) return false;
+    if (uMaxC2!= null && r.OU_close_under_odds>  uMaxC2 ) return false;
+    return true;
+  });
+  // …（後續統計 & 表格填值不變）…
+}
       let over=0, under=0, push=0;
       const tb=document.querySelector('#oTbl tbody');
       tb.innerHTML='';
@@ -730,38 +730,35 @@ res = OData.filter(r => {
     }
 
     // 欧洲盘搜尋
-    function euroSearch(){
-      // 計算上下限
-const [hMin,  hMax ] = range('EHOM','EHOX'),
-      [dMin,  dMax ] = range('EDRM','EDRX'),
-      [aMin,  aMax ] = range('EAWM','EAWX'),
-      [hMinC, hMaxC] = range('CEHOM','CEHOX'),
-      [dMinC, dMaxC] = range('CEDRM','CEDRX'),
-      [aMinC, aMaxC] = range('CEAWM','CEAWX');
+    // —— 重寫「歐洲盤」搜尋函式 ——  
+function euroSearch() {
+  // 用 range() 計算「精確值 ± 誤差」上下限
+  const [hMin,  hMax ] = range('EHOM','EHOX'),
+        [dMin,  dMax ] = range('EDRM','EDRX'),
+        [aMin,  aMax ] = range('EAWM','EAWX'),
+        [hMinC, hMaxC] = range('CEHOM','CEHOX'),
+        [dMinC, dMaxC] = range('CEDRM','CEDRX'),
+        [aMinC, aMaxC] = range('CEAWM','CEAWX');
 
-res = EData.filter(r => {
-  // 開盤主勝
-  if(hMin  != null && r['1X2_open_home_odds'] <  hMin ) return false;
-  if(hMax  != null && r['1X2_open_home_odds'] >  hMax ) return false;
-  // 開盤和局
-  if(dMin  != null && r['1X2_open_draw_odds'] <  dMin ) return false;
-  if(dMax  != null && r['1X2_open_draw_odds'] >  dMax ) return false;
-  // 開盤客勝
-  if(aMin  != null && r['1X2_open_away_odds'] <  aMin ) return false;
-  if(aMax  != null && r['1X2_open_away_odds'] >  aMax ) return false;
-
-  // 終盤主勝
-  if(hMinC != null && r['1X2_close_home_odds'] <  hMinC) return false;
-  if(hMaxC != null && r['1X2_close_home_odds'] >  hMaxC) return false;
-  // 終盤和局
-  if(dMinC != null && r['1X2_close_draw_odds'] <  dMinC) return false;
-  if(dMaxC != null && r['1X2_close_draw_odds'] >  dMaxC) return false;
-  // 終盤客勝
-  if(aMinC != null && r['1X2_close_away_odds'] <  aMinC) return false;
-  if(aMaxC != null && r['1X2_close_away_odds'] >  aMaxC) return false;
-
-  return true;
-});
+  const res = EData.filter(r => {
+    // 初盤
+    if (hMin  != null && r['1X2_open_home_odds'] <  hMin ) return false;
+    if (hMax  != null && r['1X2_open_home_odds'] >  hMax ) return false;
+    if (dMin  != null && r['1X2_open_draw_odds'] <  dMin ) return false;
+    if (dMax  != null && r['1X2_open_draw_odds'] >  dMax ) return false;
+    if (aMin  != null && r['1X2_open_away_odds'] <  aMin ) return false;
+    if (aMax  != null && r['1X2_open_away_odds'] >  aMax ) return false;
+    // 終盤
+    if (hMinC != null && r['1X2_close_home_odds'] <  hMinC) return false;
+    if (hMaxC != null && r['1X2_close_home_odds'] >  hMaxC) return false;
+    if (dMinC != null && r['1X2_close_draw_odds'] <  dMinC) return false;
+    if (dMaxC != null && r['1X2_close_draw_odds'] >  dMaxC) return false;
+    if (aMinC != null && r['1X2_close_away_odds'] <  aMinC) return false;
+    if (aMaxC != null && r['1X2_close_away_odds'] >  aMaxC) return false;
+    return true;
+  });
+  // …（後續統計 & 表格填值不變）…
+}
       let home=0, draw=0, away=0, d1=0, d2=0, d3=0;
       const tb=document.querySelector('#eTbl tbody');
       tb.innerHTML='';
