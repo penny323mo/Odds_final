@@ -1,260 +1,231 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>足球賠率篩選工具</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <style>
-    /* ---------- 全局重置 ---------- */
+    /***********************************************/
+    /*                  全局設定                   */
+    /***********************************************/
+    html { font-size: 16px; }
     body {
       margin: 0;
-      background: #f8fafd;
+      padding: 0;
       font-family: "PingFang TC","Microsoft JhengHei",sans-serif;
+      background: #f8fafd;
     }
-    a { text-decoration:none; }
-    /* ---------- Header ---------- */
-    .header {
-      background: #1666c1;
-      color: #fff;
-      text-align: center;
-      padding: 24px 0 8px;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 2.4rem;
+
+    /* 1. 頁首 Title 放大 */
+    .navbar-brand {
+      font-size: 2rem;
       font-weight: bold;
     }
-    .header .desc {
-      margin: 6px 12px 0;
-      font-size: clamp(0.8rem,1.5vw,1rem);
-      font-weight: 300;
-      white-space: normal;
-      line-height:1.4;
-    }
-    /* ---------- Tabs ---------- */
-    .tabbar {
-      display: flex;
-      background: #e7f0fb;
-      border-bottom: 1px solid #dbe7f5;
-    }
-    .tabbar button {
-      flex: 1;
-      padding: 12px 0;
-      font-size: 1.1rem;
-      font-weight: bold;
-      background: none;
-      border: none;
-      border-bottom: 3px solid transparent;
-      cursor: pointer;
-      transition: .2s;
-    }
-    .tabbar button.active {
-      color: #1666c1;
-      background: #fff;
-      border-bottom: 3px solid #1666c1;
-    }
-    /* ---------- Timestamp ---------- */
-    .timestamp {
-      text-align: center;
-      color: #444;
-      font-size: .95rem;
-      margin: 10px 0 12px;
-    }
-    /* ---------- Container ---------- */
-    .tabcontent {
-      max-width: 920px;
-      margin: 0 auto 24px;
-      background: #fff;
-      border-radius: 8px;
-      padding: 20px 16px;
-      box-shadow: 0 3px 18px rgba(138,179,233,.16);
-    }
-    @media(max-width:850px) {
-      .tabcontent {
-        padding: 16px 4vw;
-      }
-    }
-    /* ---------- Fieldset & Form ---------- */
-    fieldset {
-      margin-bottom: 18px;
-      border: 1.5px solid #c3daf7;
-      border-radius: 6px;
-      background: #f9fcff;
-      padding: 12px 16px 16px;
-    }
-    legend {
-      padding: 0 8px;
-      font-size: 1.15rem;
-      font-weight: bold;
-      color: #1666c1;
-    }
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      margin: 8px 0;
-    }
-    .row label {
-      width: 100px;
-      text-align: right;
-      margin-right: 12px;
+
+    /* 2. 副標題縮小且一行顯示 */
+    .header-subtitle {
+      font-size: 0.9rem;
+      color: #eef5fb;
       white-space: nowrap;
-      font-size: 1.02rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0.5rem 0 1rem;
+      text-align: center;
     }
-    .input-wrap {
-      flex: 1;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    input, select {
-      border: 1px solid #b8cef1;
-      border-radius: 4px;
-      padding: 6px 8px;
+
+    /* Nav-tabs */
+    .nav-tabs .nav-link {
       font-size: 1rem;
     }
-    select {
-      min-width: 100px;
-      background: #fff;
+    .nav-tabs .nav-link.active {
+      font-weight: bold;
     }
+
+    /* 3. 卡片區域（fieldset）間距調整 */
+    .card-section {
+      background: #fff;
+      border: 1px solid #cde2f7;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1.25rem;
+      position: relative;
+    }
+    .card-section legend {
+      font-weight: bold;
+      color: #1666c1;
+      margin-left: 0.5rem;
+      padding: 0 0.5rem;
+    }
+
+    /* 表單元素最小寬度 */
+    .form-label {
+      min-width: 75px;
+    }
+    .form-control, .form-select {
+      min-width: 5rem;
+    }
+
+    /* ± 誤差調整按鈕群 */
     .step-group {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 0.25rem;
     }
     .step-group input {
-      width: 70px;
+      width: 4rem;
+      text-align: right;
+      padding: 0.2rem;
     }
-    .btn-wrap button {
-      padding: 4px 8px;
-      font-size: 14px;
+    .step-group .btn-wrap button {
+      padding: 0.2rem 0.4rem;
+      font-size: 0.9rem;
       line-height: 1;
-      background: #fff;
       border: 1px solid #b8cef1;
+      background: #fff;
       cursor: pointer;
     }
-    button.search {
-      display: block;
-      margin: 16px auto 0;
-      padding: 8px 32px;
-      font-size: 1.03rem;
-      border: none;
-      border-radius: 4px;
-      background: #1666c1;
-      color: #fff;
-      cursor: pointer;
-      transition: .2s;
-    }
-    button.search:hover {
-      background: #205b98;
-    }
-    /* ---------- 統計區 ---------- */
+
+    /* 4. 統計結果區間放大且一行顯示 */
     .stat-area {
-      margin: 28px 0 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      margin-top: 1rem;
     }
     .stat-row {
-      font-size: 1.3rem;
-      font-weight: bold;
       display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+      justify-content: center;
+      gap: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      white-space: nowrap;
     }
-    .stat-row .win  { color: #e53b2d; }
-    .stat-row .draw { color: #27a146; }
-    .stat-row .lose { color: #2166d1; }
-    .stat-info {
-      font-size: 1.05rem;
-      margin: 6px 0 10px;
+    .stat-row .win {
+      color: #e53b2d;
     }
+    .stat-row .draw {
+      color: #27a146;
+    }
+    .stat-row .lose {
+      color: #2166d1;
+    }
+
+    /* 圓餅圖置中 */
     .piebox {
       display: flex;
       align-items: center;
-      gap: 24px;
-      margin-top: 12px;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 0.75rem;
     }
     .piechart {
-      width: 140px;
-      height: 140px;
+      width: 120px;
+      height: 120px;
     }
     .pie-legend div {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 1rem;
-      margin-bottom: 4px;
+      gap: 0.5rem;
+      font-size: 0.9rem;
     }
     .pie-legend span {
       display: inline-block;
-      width: 16px; height: 16px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
     }
-    /* ---------- 表格 ---------- */
+
+    /* 6. 表格自適應手機螢幕 */
     .table-wrap {
       width: 100%;
-      overflow-x: hidden;
-      margin-top: 20px;
+      overflow-x: auto;
+      margin-top: 1rem;
     }
     table {
       width: 100%;
       table-layout: fixed;
-      border-collapse: collapse;
-      font-size: 1.05rem;
+      font-size: 0.9rem;
+      word-break: break-word;
     }
     th, td {
-      border: 1px solid #e5e5e5;
-      padding: 8px 6px;
+      padding: 0.5rem 0.3rem;
       text-align: center;
-      word-wrap: break-word;
-      white-space: normal;
     }
-    th {
-      background: #f2f6fb;
+
+    /* 搜尋按鈕置中 */
+    .search-btn {
+      margin-top: 1rem;
+      text-align: center;
     }
-    /* ---------- 手機響應 ---------- */
-    @media (max-width: 768px) {
-      fieldset .row { gap: 6px; }
-      fieldset .row label {
-        width: 100%;
-        text-align: left;
-        margin: 0 0 4px;
+    .search-btn .btn {
+      width: 50%;
+      max-width: 200px;
+    }
+
+    /* 手機額外微調 */
+    @media (max-width: 650px) {
+      .navbar-brand {
+        font-size: 1.6rem;
       }
-      fieldset .row .input-wrap { flex: 1 1 100%; }
-      input, select { width: 100%; }
-      .step-group { flex: 1 1 100%; }
-      .step-group input { width: 60%; }
-      .btn-wrap { width: 40%; display: flex; justify-content: space-between; }
-      button.search { width: 100%; }
-      .stat-row { font-size: 1.1rem; gap: 8px; }
-      .piebox { flex-wrap: wrap; gap: 12px; }
-      .piechart { width: 100px; height: 100px; }
-      table { font-size: .85rem; }
+      .header-subtitle {
+        font-size: 0.8rem;
+      }
+      .card-section {
+        padding: 0.75rem;
+      }
+      .form-label { min-width: 60px; }
+      .stat-row {
+        font-size: 1rem;
+        flex-wrap: wrap;
+      }
+      table {
+        font-size: 0.75rem;
+      }
+      .piechart {
+        width: 80px;
+        height: 80px;
+      }
+      .step-group input {
+        width: 3.5rem;
+      }
     }
   </style>
 </head>
+
 <body>
-  <!-- Header -->
-  <div class="header">
-    <h1>足球歷史賠率篩選</h1>
-    <div class="desc">
+
+  <!-- ===== Navbar ===== -->
+  <nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+      <span class="navbar-brand">足球賠率篩選工具</span>
+    </div>
+  </nav>
+
+  <div class="container-fluid px-2">
+
+    <!-- 副標題 -->
+    <div class="header-subtitle">
       根據初盤、終盤所有條件組合快速篩選比賽，並精確統計每一項百分比。
     </div>
-  </div>
 
-  <!-- Tabs -->
-  <div class="tabbar">
-    <button id="tab1" class="active" onclick="showTab(0)">亞洲盤查詢</button>
-    <button id="tab2" onclick="showTab(1)">大小球查詢</button>
-    <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
-  </div>
+    <!-- Nav Tabs -->
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#ahTab">亞洲盤查詢</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#ouTab">大小球查詢</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#euTab">歐洲盤查詢</a>
+      </li>
+    </ul>
 
-  <!-- Timestamp -->
-  <div class="timestamp" id="ts">
-    版本時間：2025/07/31 下午 01:30:00 (GMT+8)
-  </div>
+    <!-- 版本時間 -->
+    <div class="text-center text-muted mt-2">
+      版本時間：2025/07/27 下午09:30:00 (GMT+8)
+    </div>
 
     <!-- Tab Contents -->
     <div class="tab-content pt-3">
