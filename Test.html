@@ -30,14 +30,14 @@
 <body>
   <div class="header">
     <h1>足球賠率篩選工具</h1>
-    <div class="desc">根據初盤、終盤所有條件組合快速篩選比賽，並精確統計每一項百分比。</div>
+    <div class="desc">根據初盤、終盤所有條件組合快速篩選比賽，並且精確統計每一項百分比。</div>
   </div>
   <div class="tabbar">
     <button id="tab1" class="active" onclick="showTab(0)">亞洲盤查詢</button>
     <button id="tab2" onclick="showTab(1)">大小球查詢</button>
     <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
   </div>
-  <div class="timestamp" id="ts">版本時間：2025/07/27 下午09:30:00 (GMT+8)</div>
+  <div class="timestamp" id="ts">版本時間：2025/07/31 上午09:30:00 (GMT+8)</div>
 
   <!-- ===== 1. 亞洲盤 (第 1 段開始) ===== -->
   <div class="tabcontent" id="tc1">
@@ -115,10 +115,26 @@
           </div>
         </div>
       </fieldset>
-
       <!-- 搜尋按鈕 -->
       <button type="button" class="search" onclick="asianSearch()">搜尋</button>
     </form>
+    <!-- 统计 & 饼图 容器 -->
+<div class="stat-area" id="aStat"></div>
+
+<!-- 结果表格 -->
+<div class="table-wrap">
+  <table id="aTbl">
+    <thead>
+      <tr>
+        <th>賽季</th><th>比賽</th>
+        <th>初盤盤口</th><th>初盤主隊賠率</th><th>初盤客隊賠率</th>
+        <th>終盤盤口</th><th>終盤主隊賠率</th><th>終盤客隊賠率</th>
+        <th>盤口勝負</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
   </div>
   <!-- /#tc1 (第 1 段结束) -->
 
