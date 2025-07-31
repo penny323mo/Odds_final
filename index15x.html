@@ -361,61 +361,74 @@ Promise.all([
 ]).then(()=>{initAsian();initOU();});
 
 // ===== ① 亞洲盤 =====
-function initAsian(){
- const oSet=new Set(),cSet=new Set();
- AData.forEach(r=>{if(typeof r.AH_open_handicap==="number")oSet.add(r.AH_open_handicap);if(typeof r.AH_close_handicap==="number")cSet.add(r.AH_close_handicap);});
- sel("AO",oSet); sel("AC",cSet);
+<script>
+// 計算 [min, max] 範圍
+function range(exId, errId) {
+  const ex = parseFloat(document.getElementById(exId).value);
+  const er = parseFloat(document.getElementById(errId).value) || 0;
+  return isNaN(ex) ? [null, null] : [ex - er, ex + er];
 }
-function sel(id,set){document.getElementById(id).innerHTML='<option value="">--</option>'+[...set].sort((a,b)=>a-b).map(v=>`<option>${v}</option>`).join("");}
-function asianSearch(){
- const v=id=>parseFloat(document.getElementById(id).value);
- let res=AData.filter(r=>{
-   if(document.getElementById("AO").value && r.AH_open_handicap!=v("AO"))return false;
-   if(document.getElementById("AC").value && r.AH_close_handicap!=v("AC"))return false;
-   if(!isNaN(v("OHH"))&&r.AH_open_home_odds<v("OHH"))return false;
-   if(!isNaN(v("OHX"))&&r.AH_open_home_odds>v("OHX"))return false;
-   if(!isNaN(v("OAH"))&&r.AH_open_away_odds<v("OAH"))return false;
-   if(!isNaN(v("OAX"))&&r.AH_open_away_odds>v("OAX"))return false;
-   if(!isNaN(v("CHH"))&&r.AH_close_home_odds<v("CHH"))return false;
-   if(!isNaN(v("CHX"))&&r.AH_close_home_odds>v("CHX"))return false;
-   if(!isNaN(v("CAH"))&&r.AH_close_away_odds<v("CAH"))return false;
-   if(!isNaN(v("CAX"))&&r.AH_close_away_odds>v("CAX"))return false;
-   return true;
- });
- let win=0,draw=0,lose=0;
- let tb=document.querySelector("#aTbl tbody");tb.innerHTML="";
- res.forEach(r=>{
-   const [h,a]=r.ft_score.split("-").map(Number),
-         out=(h+r.AH_close_handicap)-a>0?"贏盤":(h+r.AH_close_handicap)-a<0?"輸盤":"和盤";
-   if(out==="贏盤")win++;else if(out==="輸盤")lose++;else draw++;
-   tb.insertAdjacentHTML("beforeend",`<tr>
-     <td>${r.season}</td>
-     <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-     <td>${r.AH_open_handicap ?? ""}</td>
-     <td>${r.AH_open_home_odds ?? ""}</td>
-     <td>${r.AH_open_away_odds ?? ""}</td>
-     <td>${r.AH_close_handicap ?? ""}</td>
-     <td>${r.AH_close_home_odds ?? ""}</td>
-     <td>${r.AH_close_away_odds ?? ""}</td>
-     <td>${out}</td>
-   </tr>`);
- });
- const tot=res.length;
- // Pie chart
- let pieHTML = drawPieChart([
-   {label:"贏盤",val:win,color:"#e53b2d"},
-   {label:"和盤",val:draw,color:"#27a146"},
-   {label:"輸盤",val:lose,color:"#2166d1"},
- ]);
- document.getElementById("aStat").innerHTML=
-   `<div class="stat-row">
+
+// 亞洲盤搜尋
+function asianSearch() {
+  const [hMin, hMax]   = range('OHH','OHX');   // 初盤主隊
+  const [aMin, aMax]   = range('OAH','OAX');   // 初盤客隊
+  const [hCMin, hCMax] = range('CHH','CHX');   // 終盤主隊
+  const [aCMin, aCMax] = range('CAH','CAX');   // 終盤客隊
+  const selO = document.getElementById('AO').value;
+  const selC = document.getElementById('AC').value;
+
+  const res = AData.filter(r => {
+    if (selO && r.AH_open_handicap  != +selO) return false;
+    if (selC && r.AH_close_handicap != +selC) return false;
+    if (hMin  !== null && (r.AH_open_home_odds  < hMin  || r.AH_open_home_odds  > hMax )) return false;
+    if (aMin  !== null && (r.AH_open_away_odds  < aMin  || r.AH_open_away_odds  > aMax )) return false;
+    if (hCMin !== null && (r.AH_close_home_odds < hCMin || r.AH_close_home_odds > hCMax)) return false;
+    if (aCMin !== null && (r.AH_close_away_odds < aCMin || r.AH_close_away_odds > aCMax)) return false;
+    return true;
+  });
+
+  // —— 以下統計與渲染同原來 index15x 無異 ——  
+  let win=0, draw=0, lose=0;
+  const tb = document.querySelector('#aTbl tbody');
+  tb.innerHTML = '';
+  res.forEach(r => {
+    const [hs, as] = r.ft_score.split('-').map(Number);
+    const out = (hs + r.AH_close_handicap) - as > 0 ? '贏盤'
+              : (hs + r.AH_close_handicap) - as < 0 ? '輸盤'
+              : '和盤';
+    if (out==='贏盤') win++;
+    else if (out==='輸盤') lose++;
+    else draw++;
+
+    tb.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td>${r.season}</td>
+        <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+        <td>${r.AH_open_handicap}</td>
+        <td>${r.AH_open_home_odds}</td>
+        <td>${r.AH_open_away_odds}</td>
+        <td>${r.AH_close_handicap}</td>
+        <td>${r.AH_close_home_odds}</td>
+        <td>${r.AH_close_away_odds}</td>
+        <td>${out}</td>
+      </tr>`);
+  });
+  const tot = res.length;
+  const pie = drawPieChart([
+    {label:'贏盤', val:win, color:'#e53b2d'},
+    {label:'和盤', val:draw, color:'#27a146'},
+    {label:'輸盤', val:lose, color:'#2166d1'}
+  ]);
+  document.getElementById('aStat').innerHTML = `
+    <div class="stat-row">
       <span class="win">贏盤 ${win} (${pct(win,tot)})</span>
-      <span class="draw" style="margin-left:18px;">和盤 ${draw} (${pct(draw,tot)})</span>
-      <span class="lose" style="margin-left:18px;">輸盤 ${lose} (${pct(lose,tot)})</span>
+      <span class="draw">和盤 ${draw} (${pct(draw,tot)})</span>
+      <span class="lose">輸盤 ${lose} (${pct(lose,tot)})</span>
     </div>
     <div class="stat-info">場數：${tot}</div>
     <div class="piebox">
-      ${pieHTML}
+      ${pie}
       <div class="pie-legend">
         <div><span style="background:#e53b2d"></span>贏盤</div>
         <div><span style="background:#27a146"></span>和盤</div>
@@ -424,130 +437,131 @@ function asianSearch(){
     </div>`;
 }
 
-// ===== ② 大小球 =====
+// 大小球搜尋
+function overSearch() {
+  const [oMin, oMax] = range('OUoMin','OUoMax');
+  const [uMin, uMax] = range('OUuMin','OUuMax');
+  const [oCMin,oCMax]= range('OUoMinC','OUoMaxC');
+  const [uCMin,uCMax]= range('OUuMinC','OUuMaxC');
+  const selO = document.getElementById('OUlineSel').value;
+  const selC = document.getElementById('OUlineSelC').value;
 
-function initOU(){
-  // 初盤盤口
-  const set1 = new Set(OData.map(r => r.OU_line));
-  const arr1 = [...set1].sort((a, b) => a - b);
-  const sel1 = document.getElementById("OUlineSel");
-  sel1.innerHTML = '<option value="">--</option>' +
-    arr1.map(v => `<option value="${v}"${v===2.5?' selected':''}>${v}</option>`).join('');
+  const res = OData.filter(r => {
+    if (selO && r.OU_line      != +selO) return false;
+    if (selC && r.close_OU_line!= +selC) return false;
+    if (oMin  !== null && (r.OU_open_over_odds  < oMin  || r.OU_open_over_odds  > oMax )) return false;
+    if (uMin  !== null && (r.OU_open_under_odds < uMin  || r.OU_open_under_odds > uMax )) return false;
+    if (oCMin !== null && (r.OU_close_over_odds < oCMin || r.OU_close_over_odds > oCMax)) return false;
+    if (uCMin !== null && (r.OU_close_under_odds< uCMin || r.OU_close_under_odds> uCMax)) return false;
+    return true;
+  });
 
-  // 終盤盤口
-  const set2 = new Set(OData.map(r => r.close_OU_line));
-  const arr2 = [...set2].sort((a, b) => a - b);
-  const sel2 = document.getElementById("OUlineSelC");
-  sel2.innerHTML = '<option value="">--</option>' +
-    arr2.map(v => `<option value="${v}">${v}</option>`).join('');
-}
+  let over=0, push=0, under=0;
+  const tb = document.querySelector('#oTbl tbody');
+  tb.innerHTML = '';
+  res.forEach(r => {
+    const sum = r.ft_score.split('-').reduce((a,b)=>+a+ +b,0);
+    const out = sum > r.close_OU_line ? '大球'
+              : sum < r.close_OU_line ? '小球'
+              : '走盤';
+    if (out==='大球') over++;
+    else if (out==='小球') under++;
+    else push++;
 
-function overSearch(){
- const sel=document.getElementById("OUlineSel").value;
-  const selC = document.getElementById("OUlineSelC").value;
- const oMin=parseFloat(document.getElementById("OUoMin").value),
-       oMax=parseFloat(document.getElementById("OUoMax").value),
-       uMin=parseFloat(document.getElementById("OUuMin").value),
-       uMax=parseFloat(document.getElementById("OUuMax").value),
-       oMinC=parseFloat(document.getElementById("OUoMinC").value),
-       oMaxC=parseFloat(document.getElementById("OUoMaxC").value),
-       uMinC=parseFloat(document.getElementById("OUuMinC").value),
-       uMaxC=parseFloat(document.getElementById("OUuMaxC").value);
- let res=OData.filter(r=>{
-   if(sel && r.OU_line!=parseFloat(sel))return false;
-   if (selC && r.close_OU_line != parseFloat(selC)) return false;
-   if(!isNaN(oMin)&&r.OU_open_over_odds<oMin)return false;
-   if(!isNaN(oMax)&&r.OU_open_over_odds>oMax)return false;
-   if(!isNaN(uMin)&&r.OU_open_under_odds<uMin)return false;
-   if(!isNaN(uMax)&&r.OU_open_under_odds>uMax)return false;
-   if(!isNaN(oMinC)&&r.OU_close_over_odds<oMinC)return false;
-   if(!isNaN(oMaxC)&&r.OU_close_over_odds>oMaxC)return false;
-   if(!isNaN(uMinC)&&r.OU_close_under_odds<uMinC)return false;
-   if(!isNaN(uMaxC)&&r.OU_close_under_odds>uMaxC)return false;
-   return true;
- });
- let over=0, under=0, push=0;
- let tb=document.querySelector("#oTbl tbody");tb.innerHTML="";
- res.forEach(r=>{
-   const goals=r.ft_score.split("-").reduce((a,b)=>parseInt(a)+parseInt(b));
-   const out = goals > r.close_OU_line ? "大球" : goals < r.close_OU_line ? "小球" : "走盤";
-   if(out==="大球") over++; else if(out==="小球") under++; else push++;
-   tb.insertAdjacentHTML("beforeend",
-     `<tr>
+    tb.insertAdjacentHTML('beforeend', `
+      <tr>
         <td>${r.season}</td>
         <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
         <td>${r.OU_line}</td>
-        <td>${r.OU_open_over_odds??""}</td>
-        <td>${r.OU_open_under_odds??""}</td>
+        <td>${r.OU_open_over_odds}</td>
+        <td>${r.OU_open_under_odds}</td>
         <td>${r.close_OU_line}</td>
-<td>${r.OU_close_over_odds??""}</td>
-        <td>${r.OU_close_under_odds??""}</td>
+        <td>${r.OU_close_over_odds}</td>
+        <td>${r.OU_close_under_odds}</td>
         <td>${out}</td>
       </tr>`);
- });
- const tot=res.length;
- let pieHTML = drawPieChart([
-   {label:"Over",val:over,color:"#e53b2d"},
-   {label:"Under",val:under,color:"#2166d1"},
- ]);
- document.getElementById("oStat").innerHTML=`<div class="stat-row"><span class="win">大球 ${over} (${pct(over,tot)})</span><span class="draw" style="margin-left:18px;">走盤 ${push} (${pct(push,tot)})</span><span class="lose" style="margin-left:18px;">小球 ${under} (${pct(under,tot)})</span></div><div class="stat-info">場數：${tot}</div><div class="piebox">${pieHTML}<div class="pie-legend"><div><span style="background:#e53b2d"></span>大球</div><div><span style="background:#27a146"></span>走盤</div><div><span style="background:#2166d1"></span>小球</div></div></div>`;
+  });
+  const tot = res.length;
+  const pie = drawPieChart([
+    {label:'大球', val:over, color:'#e53b2d'},
+    {label:'走盤', val:push, color:'#27a146'},
+    {label:'小球', val:under, color:'#2166d1'}
+  ]);
+  document.getElementById('oStat').innerHTML = `
+    <div class="stat-row">
+      <span class="win">大球 ${over} (${pct(over,tot)})</span>
+      <span class="draw">走盤 ${push} (${pct(push,tot)})</span>
+      <span class="lose">小球 ${under} (${pct(under,tot)})</span>
+    </div>
+    <div class="stat-info">場數：${tot}</div>
+    <div class="piebox">
+      ${pie}
+      <div class="pie-legend">
+        <div><span style="background:#e53b2d"></span>大球</div>
+        <div><span style="background:#27a146"></span>走盤</div>
+        <div><span style="background:#2166d1"></span>小球</div>
+      </div>
+    </div>`;
 }
 
-// ===== ③ 歐洲盤 =====
-function euroSearch(){
- const v=id=>parseFloat(document.getElementById(id).value);
- const cv=id=>parseFloat(document.getElementById("C"+id).value);
- let res=EData.filter(r=>{
-   if(!isNaN(v("EHOM"))&&r["1X2_open_home_odds"]<v("EHOM"))return false;
-   if(!isNaN(v("EHOX"))&&r["1X2_open_home_odds"]>v("EHOX"))return false;
-   if(!isNaN(v("EDRM"))&&r["1X2_open_draw_odds"]<v("EDRM"))return false;
-   if(!isNaN(v("EDRX"))&&r["1X2_open_draw_odds"]>v("EDRX"))return false;
-   if(!isNaN(v("EAWM"))&&r["1X2_open_away_odds"]<v("EAWM"))return false;
-   if(!isNaN(v("EAWX"))&&r["1X2_open_away_odds"]>v("EAWX"))return false;
-   if(!isNaN(cv("EHOM"))&&r["1X2_close_home_odds"]<cv("EHOM"))return false;
-   if(!isNaN(cv("EHOX"))&&r["1X2_close_home_odds"]>cv("EHOX"))return false;
-   if(!isNaN(cv("EDRM"))&&r["1X2_close_draw_odds"]<cv("EDRM"))return false;
-   if(!isNaN(cv("EDRX"))&&r["1X2_close_draw_odds"]>cv("EDRX"))return false;
-   if(!isNaN(cv("EAWM"))&&r["1X2_close_away_odds"]<cv("EAWM"))return false;
-   if(!isNaN(cv("EAWX"))&&r["1X2_close_away_odds"]>cv("EAWX"))return false;
-   return true;
- });
- let home=0,draw=0,away=0,d1=0,d2=0,d3=0;
- let tb=document.querySelector("#eTbl tbody");tb.innerHTML="";
- res.forEach(r=>{
-   const [h,a]=r.ft_score.split("-").map(Number),diff=h-a;
-   if(diff>0){home++;if(diff==1)d1++;else if(diff==2)d2++;else d3++;}
-   else if(diff<0)away++;else draw++;
-   tb.insertAdjacentHTML("beforeend",
-   `<tr>
-     <td>${r.season}</td>
-     <td>${r.home_team} vs ${r.away_team}</td>
-     <td>${r["1X2_open_home_odds"]}/${r["1X2_open_draw_odds"]}/${r["1X2_open_away_odds"]}</td>
-     <td>${r["1X2_close_home_odds"]}/${r["1X2_close_draw_odds"]}/${r["1X2_close_away_odds"]}</td>
-     <td>${r.ft_score}</td><td>${
-      (() => {
-        const [h,a] = r.ft_score.split(/[-–]/).map(Number);
-        if (h > a) return "主勝";
-        if (h < a) return "客勝";
-        return "和局";
-      })()
-    }</td><td>${diff}</td></tr>`);
- });
- const tot=res.length;
- let pieHTML = drawPieChart([
-   {label:"主勝",val:home,color:"#e53b2d"},
-   {label:"和局",val:draw,color:"#27a146"},
-   {label:"客勝",val:away,color:"#2166d1"},
- ]);
- document.getElementById("eStat").innerHTML=
-   `<div class="stat-row">
-      <span class="win">主勝 ${home} (${pct(home,tot)})</span>
-      <span class="draw" style="margin-left:18px;">和局 ${draw} (${pct(draw,tot)})</span>
-      <span class="lose" style="margin-left:18px;">客勝 ${away} (${pct(away,tot)})</span>
+// 歐洲盤搜尋
+function euroSearch() {
+  const [hMin,hMax] = range('EHOM','EHOX');
+  const [dMin,dMax] = range('EDRM','EDRX');
+  const [aMin,aMax] = range('EAWM','EAWX');
+  const [hCMin,hCMax] = range('CEHOM','CEHOX');
+  const [dCMin,dCMax] = range('CEDRM','CEDRX');
+  const [aCMin,aCMax] = range('CEAWM','CEAWX');
+
+  const res = EData.filter(r => {
+    if (hMin  !== null && (r['1X2_open_home_odds'] < hMin  || r['1X2_open_home_odds']  > hMax )) return false;
+    if (dMin  !== null && (r['1X2_open_draw_odds'] < dMin  || r['1X2_open_draw_odds']  > dMax )) return false;
+    if (aMin  !== null && (r['1X2_open_away_odds'] < aMin  || r['1X2_open_away_odds']  > aMax )) return false;
+    if (hCMin !== null && (r['1X2_close_home_odds']< hCMin || r['1X2_close_home_odds'] > hCMax)) return false;
+    if (dCMin !== null && (r['1X2_close_draw_odds']< dCMin || r['1X2_close_draw_odds'] > dCMax)) return false;
+    if (aCMin !== null && (r['1X2_close_away_odds']< aCMin || r['1X2_close_away_odds'] > aCMax)) return false;
+    return true;
+  });
+
+  let win=0, draw=0, lose=0, d1=0,d2=0,d3=0;
+  const tb = document.querySelector('#eTbl tbody');
+  tb.innerHTML = '';
+  res.forEach(r => {
+    const [hs, as] = r.ft_score.split('-').map(Number);
+    const diff = hs - as;
+    const out  = diff>0?'主勝':diff<0?'客勝':'和局';
+    if (out==='主勝') {
+      win++; diff===1?d1:diff===2?d2:d3++;
+    } else if (out==='客勝') {
+      lose++;
+    } else draw++;
+
+    tb.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td>${r.season}</td>
+        <td>${r.home_team} vs ${r.away_team}</td>
+        <td>${r['1X2_open_home_odds']}/${r['1X2_open_draw_odds']}/${r['1X2_open_away_odds']}</td>
+        <td>${r['1X2_close_home_odds']}/${r['1X2_close_draw_odds']}/${r['1X2_close_away_odds']}</td>
+        <td>${r.ft_score}</td>
+        <td>${out}</td>
+        <td>${diff}</td>
+      </tr>`);
+  });
+  const tot = res.length;
+  const pie = drawPieChart([
+    {label:'主勝', val:win, color:'#e53b2d'},
+    {label:'和局', val:draw, color:'#27a146'},
+    {label:'客勝', val:lose, color:'#2166d1'}
+  ]);
+  document.getElementById('eStat').innerHTML = `
+    <div class="stat-row">
+      <span class="win">主勝 ${win} (${pct(win,tot)})</span>
+      <span class="draw">和局 ${draw} (${pct(draw,tot)})</span>
+      <span class="lose">客勝 ${lose} (${pct(lose,tot)})</span>
     </div>
-    <div class="stat-info">場數：${tot}<br/>主勝淨勝球 ➜ 1球:${d1}  2球:${d2}  3+球:${d3}</div>
+    <div class="stat-info">場數：${tot} 主勝淨勝球 → 1球:${d1} 2球:${d2} 3+球:${d3}</div>
     <div class="piebox">
-      ${pieHTML}
+      ${pie}
       <div class="pie-legend">
         <div><span style="background:#e53b2d"></span>主勝</div>
         <div><span style="background:#27a146"></span>和局</div>
@@ -555,6 +569,7 @@ function euroSearch(){
       </div>
     </div>`;
 }
+</script>
 
 // ===== 畫Pie Chart =====
 function drawPieChart(arr){
