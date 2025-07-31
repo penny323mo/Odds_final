@@ -368,22 +368,27 @@ function fillSelect(id, set) {
 }
 
 // ===== ① 亞洲盤搜尋 =====
-function asianSearch() {
+function asianSearch(){
+  // 1) 先讀 [min, max]
   const [hMin, hMax] = range('OHH','OHX');
   const [aMin, aMax] = range('OAH','OAX');
   const [hMinC, hMaxC] = range('CHH','CHX');
   const [aMinC, aMaxC] = range('CAH','CAX');
-  const selO = document.getElementById('AO').value;
-  const selC = document.getElementById('AC').value;
+  const selO = document.getElementById("AO").value;
+  const selC = document.getElementById("AC").value;
 
-  const res = AData.filter(r => {
-    if (selO && String(r.AH_open_handicap) !== selO) return false;
-    if (selC && String(r.AH_close_handicap) !== selC) return false;
-    if (hMin !== null && (r.AH_open_home_odds < hMin || r.AH_open_home_odds > hMax)) return false;
-    if (aMin !== null && (r.AH_open_away_odds < aMin || r.AH_open_away_odds > aMax)) return false;
-    if (hMinC !== null && (r.AH_close_home_odds < hMinC || r.AH_close_home_odds > hMaxC)) return false;
-    if (aMinC !== null && (r.AH_close_away_odds < aMinC || r.AH_close_away_odds > aMaxC)) return false;
+  let res = AData.filter(r=>{
+    if(selO && r.AH_open_handicap != +selO) return false;
+    if(selC && r.AH_close_handicap != +selC) return false;
+
+    // 2) 用 range() 算出來的 min/max 來篩
+    if(hMin!==null && (r.AH_open_home_odds < hMin || r.AH_open_home_odds > hMax)) return false;
+    if(aMin!==null && (r.AH_open_away_odds < aMin || r.AH_open_away_odds > aMax)) return false;
+    if(hMinC!==null && (r.AH_close_home_odds < hMinC || r.AH_close_home_odds > hMaxC)) return false;
+    if(aMinC!==null && (r.AH_close_away_odds < aMinC || r.AH_close_away_odds > aMaxC)) return false;
+
     return true;
+  
   });
 
   let win = 0, draw = 0, lose = 0;
