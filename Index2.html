@@ -575,22 +575,44 @@
       return t ? ((n/t*100).toFixed(1) + '%') : '0.0%';
     }
 
-    function drawPieChart(data){
+        function drawPieChart(data){
       const total = data.reduce((s,x)=>s+x.val,0);
-      if(!total) return '<svg class="piechart"></svg>';
-      // Use dimensions from Index.html's CSS
-      let cur=0, sz=140, r=sz/2-5, cx=sz/2, cy=sz/2; 
-      const paths = data.map(d=>{
-        const ratio = d.val/total,
-              a1 = cur*2*Math.PI,
-              a2 = (cur+=ratio)*2*Math.PI,
-              x1 = cx+r*Math.sin(a1), y1 = cy-r*Math.cos(a1),
-              x2 = cx+r*Math.sin(a2), y2 = cy-r*Math.cos(a2),
-              laf = (a2-a1)>Math.PI?1:0;
-        return `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${laf} 1 ${x2},${y2} Z" fill="${d.color}"></path>`;
+      if (!total) return '<svg class="piechart"></svg>';
+
+      const sz = 140, r = sz / 2 - 5, cx = sz / 2, cy = sz / 2;
+
+      // 過濾掉數值為 0 的項目，以便正確判斷有幾多塊餅
+      const slices = data.filter(d => d.val > 0);
+
+      // 如果過濾後只有一塊餅，代表佢佔 100%，直接畫一個簡單嘅圓形
+      if (slices.length === 1) {
+        const slice = slices[0];
+        const circle = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${slice.color}"></circle>`;
+        return `<svg class="piechart" viewBox="0 0 ${sz} ${sz}">${circle}</svg>`;
+      }
+
+      // 如果有多過一塊餅，先用返舊嘅邏輯畫弧線
+      let currentAngle = 0;
+      const paths = slices.map(slice => {
+        const sliceAngle = (slice.val / total) * 2 * Math.PI;
+        const startAngle = currentAngle;
+        const endAngle = currentAngle + sliceAngle;
+        
+        const x1 = cx + r * Math.sin(startAngle);
+        const y1 = cy - r * Math.cos(startAngle);
+        const x2 = cx + r * Math.sin(endAngle);
+        const y2 = cy - r * Math.cos(endAngle);
+
+        const largeArcFlag = sliceAngle > Math.PI ? 1 : 0;
+
+        currentAngle = endAngle;
+
+        return `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z" fill="${slice.color}"></path>`;
       }).join('');
+
       return `<svg class="piechart" viewBox="0 0 ${sz} ${sz}">${paths}</svg>`;
     }
+
 
     /***********************************************/
     /* 亞洲盤搜尋 (Enhanced)             */
