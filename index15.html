@@ -6,30 +6,40 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body{font-family:"PingFang TC","Microsoft JhengHei",sans-serif;background:#f8fafd;margin:0}
-    .navbar-brand{font-size:1.6rem;}
-    .btn-sm{padding:.15rem .4rem;font-size:.8rem;}
-    .table-wrap{width:100%;overflow-x:auto;margin-top:20px;}
-    table{font-size:.9rem;}
-    .step-group{display:inline-flex;align-items:center;gap:4px;}
-    .step-group input{width:70px;border-radius:4px;border:1px solid #b8cef1;padding:4px;}
-    .step-group .btn-wrap button{padding:4px 8px;font-size:14px;line-height:1;border:1px solid #b8cef1;background:#fff;cursor:pointer;}
-    .stat-area{margin-top:24px;}
-    .stat-row{font-size:1.2rem;font-weight:bold;}
+    
+/* ========= 版面設計（參考 index15x.css） ========= */
+    body{margin:0;font-family:"Microsoft JhengHei",sans-serif;background:#f8fafd;}
+    .header{background:#1666c1;color:#fff;padding:20px;text-align:center;}
+    .header h1{margin:0;font-size:1.8rem;letter-spacing:1px;}
+    .header p{margin:4px 0 0;font-size:1rem;font-weight:300;}
+    .tabbar{display:flex;border-bottom:1px solid #ccc;}
+    .tabbar button{flex:1;padding:12px 0;background:none;border:none;font-size:1rem;cursor:pointer;}
+    .tabbar button.active{border-bottom:3px solid #1666c1;color:#1666c1;}
+    .container{max-width:900px;margin:20px auto;padding:0 10px;}
+    fieldset{border:1px solid #c3daf7;border-radius:6px;padding:12px;background:#fff;margin-bottom:16px;}
+    legend{padding:0 6px;color:#1666c1;font-weight:bold;}
+    .row{display:flex;align-items:center;margin:8px 0;flex-wrap:wrap;}
+    .row label{width:100px;text-align:right;margin-right:12px;}
+    .row input[type=number],.row select{width:100px;padding:4px;border:1px solid #b8cef1;border-radius:4px;}
+    .step-group{display:inline-flex;align-items:center;margin-left:6px;}
+    .step-group input{width:60px;text-align:right;}
+    .step-group button{padding:4px 8px;margin-left:2px;border:1px solid #b8cef1;background:#fff;cursor:pointer;}
+    .search{display:block;margin:16px auto 0;padding:8px 24px;background:#1666c1;color:#fff;border:none;border-radius:4px;cursor:pointer;}
+    .stat-area{background:#fff;padding:12px;margin:16px 0;border-radius:6px;}
+    .stat-row{font-size:1.1rem;font-weight:bold;}
     .stat-row .win{color:#e53b2d;}
-    .stat-row .draw{color:#27a146;margin:0 16px;}
+    .stat-row .draw{color:#27a146;margin:0 12px;}
     .stat-row .lose{color:#2166d1;}
-    .piebox{display:flex;align-items:center;gap:24px;margin-top:16px;}
+    .piebox{display:flex;align-items:center;margin-top:12px;}
     .piechart{width:100px;height:100px;}
-    .pie-legend{display:flex;align-items:center;gap:12px;margin-top:8px;font-size:0.9rem;}
-    .pie-legend div{display:flex;align-items:center;gap:6px;}
-    .pie-legend span{display:inline-block;width:14px;height:14px;border-radius:50%;}
-    hr{margin:1.5rem 0;}
-    @media(max-width:650px){
-      .step-group input{width:50px;}
-      .piechart{width:70px;height:70px;}
-      .piebox{flex-direction:column;align-items:flex-start;}
-    }
+    .pie-legend{margin-left:16px;}
+    .pie-legend div{display:flex;align-items:center;margin-bottom:4px;}
+    .pie-legend span{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px;}
+    .table-wrap{overflow-x:auto;background:#fff;padding:8px;border-radius:6px;}
+    table{width:100%;border-collapse:collapse;font-size:0.9rem;}
+    th,td{border:1px solid #e5e5e5;padding:6px;text-align:center;}
+    th{background:#f2f6fb;}
+    
   </style>
 </head>
 <body>
