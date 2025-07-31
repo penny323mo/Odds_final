@@ -599,65 +599,71 @@
 
     // 亚洲盤搜尋
     function asianSearch(){
-      const [hMin,hMax]=range('OHH','OHX'),
-            [aMin,aMax]=range('OAH','OAX'),
-            [hMinC,hMaxC]=range('CHH','CHX'),
-            [aMinC,aMaxC]=range('CAH','CAX'),
-            selO=document.getElementById('AO').value,
-            selC=document.getElementById('AC').value;
-      let res=AData.filter(r=>{
-        if(selO&&r.AH_open_handicap!=+selO) return false;
-        if(selC&&r.AH_close_handicap!=+selC) return false;
-        if(hMin!=null&&(r.AH_open_home_odds<hMin||r.AH_open_home_odds>hMax)) return false;
-        if(aMin!=null&&(r.AH_open_away_odds<aMin||r.AH_open_away_odds>aMax)) return false;
-        if(hMinC!=null&&(r.AH_close_home_odds<hMinC||r.AH_close_home_odds>hMaxC)) return false;
-        if(aMinC!=null&&(r.AH_close_away_odds<aMinC||r.AH_close_away_odds>aMaxC)) return false;
-        return true;
-      });
-      let win=0, draw=0, lose=0;
-      const tb=document.querySelector('#aTbl tbody');
-      tb.innerHTML='';
-      res.forEach(r=>{
-        const [hs,as]=r.ft_score.split('-').map(Number);
-        const diff=(hs+r.AH_close_handicap)-as;
-        const out=diff>0?'贏盤':diff<0?'輸盤':'和盤';
-        if(out==='贏盤') win++;
-        else if(out==='輸盤') lose++;
-        else draw++;
-        tb.insertAdjacentHTML('beforeend',`
-          <tr>
-            <td>${r.season}</td>
-            <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-            <td>${r.AH_open_handicap}</td>
-            <td>${r.AH_open_home_odds}</td>
-            <td>${r.AH_open_away_odds}</td>
-            <td>${r.AH_close_handicap}</td>
-            <td>${r.AH_close_home_odds}</td>
-            <td>${r.AH_close_away_odds}</td>
-            <td>${out}</td>
-          </tr>`);
-      });
-      const tot=res.length;
-      document.getElementById('aStat').innerHTML=`
-        <div class="stat-row">
-          <span class="win">贏盤 ${win} (${pct(win,tot)})</span>
-          <span class="draw">和盤 ${draw} (${pct(draw,tot)})</span>
-          <span class="lose">輸盤 ${lose} (${pct(lose,tot)})</span>
-        </div>
-        <div class="stat-info">場數：${tot}</div>
-        <div class="piebox">
-          ${drawPieChart([
-            {label:'贏盤', val:win, color:'#e53b2d'},
-            {label:'和盤', val:draw, color:'#27a146'},
-            {label:'輸盤', val:lose, color:'#2166d1'}
-          ])}
-          <div class="pie-legend">
-            <div><span style="background:#e53b2d"></span>贏盤</div>
-            <div><span style="background:#27a146"></span>和盤</div>
-            <div><span style="background:#2166d1"></span>輸盤</div>
-          </div>
-        </div>`;
-    }
+  const [hMin,hMax]   = range('OHH','OHX'),
+        [aMin,aMax]   = range('OAH','OAX'),
+        [hMinC,hMaxC] = range('CHH','CHX'),
+        [aMinC,aMaxC] = range('CAH','CAX'),
+        selO = document.getElementById('AO').value,
+        selC = document.getElementById('AC').value;
+
+  // 1. 篩選
+  const res = AData.filter(r=>{
+    if(selO && r.AH_open_handicap    != +selO ) return false;
+    if(selC && r.AH_close_handicap   != +selC ) return false;
+    if(hMin != null && (r.AH_open_home_odds  < hMin  || r.AH_open_home_odds  > hMax))  return false;
+    if(aMin != null && (r.AH_open_away_odds  < aMin  || r.AH_open_away_odds  > aMax))  return false;
+    if(hMinC!= null && (r.AH_close_home_odds < hMinC || r.AH_close_home_odds > hMaxC)) return false;
+    if(aMinC!= null && (r.AH_close_away_odds < aMinC || r.AH_close_away_odds > aMaxC)) return false;
+    return true;
+  });
+
+  // 2. 清空表格、初始計數
+  const tb = document.querySelector('#aTbl tbody');
+  tb.innerHTML = '';
+  let win=0, draw=0, lose=0;
+
+  // 3. 逐筆計算 & 插入
+  res.forEach(r=>{
+    const [hs,as] = r.ft_score.split('-').map(Number);
+    const hc = parseFloat(r.AH_close_handicap);  // 確保數字
+    const diff = (hs - as) + hc;                  // 推算盤口後差
+    const out = diff>0 ? '贏盤' : diff<0 ? '輸盤' : '和盤';
+    if(out==='贏盤') win++;
+    else if(out==='輸盤') lose++;
+    else draw++;
+
+    tb.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td>${r.season}</td>
+        <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+        <td>${r.AH_open_handicap}</td><td>${r.AH_open_home_odds}</td><td>${r.AH_open_away_odds}</td>
+        <td>${r.AH_close_handicap}</td><td>${r.AH_close_home_odds}</td><td>${r.AH_close_away_odds}</td>
+        <td>${out}</td>
+      </tr>`);
+  });
+
+  // 4. 統計更新
+  const tot = res.length;
+  document.getElementById('aStat').innerHTML = `
+    <div class="stat-row">
+      <span class="win">贏盤 ${win} (${pct(win,tot)})</span>
+      <span class="draw">和盤 ${draw} (${pct(draw,tot)})</span>
+      <span class="lose">輸盤 ${lose} (${pct(lose,tot)})</span>
+    </div>
+    <div class="stat-info">場數：${tot}</div>
+    <div class="piebox">
+      ${drawPieChart([
+        {label:'贏盤', val:win,   color:'#e53b2d'},
+        {label:'和盤', val:draw,  color:'#27a146'},
+        {label:'輸盤',val:lose,  color:'#2166d1'}
+      ])}
+      <div class="pie-legend">
+        <div><span style="background:#e53b2d"></span>贏盤</div>
+        <div><span style="background:#27a146"></span>和盤</div>
+        <div><span style="background:#2166d1"></span>輸盤</div>
+      </div>
+    </div>`;
+}
 
     // 大小球搜尋
     // —— 重寫「大小球」搜尋函式 ——  
