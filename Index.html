@@ -578,13 +578,16 @@
 
     // 初始化下拉
     function initAsian(){
-      const oSet=new Set(), cSet=new Set();
-      AData.forEach(r=>{
-        if(typeof r.AH_open_handicap==='number') oSet.add(r.AH_open_handicap);
-        if(typeof r.AH_close_handicap==='number') cSet.add(r.AH_close_handicap);
-      });
-      sel('AO',oSet); sel('AC',cSet);
-    }
+  const oSet=new Set(), cSet=new Set();
+  AData.forEach(r=>{
+    const oh = parseFloat(r.AH_open_handicap),
+          ch = parseFloat(r.AH_close_handicap);
+    if (!isNaN(oh)) oSet.add(oh);
+    if (!isNaN(ch)) cSet.add(ch);
+  });
+  sel('AO', oSet);
+  sel('AC', cSet);
+}
     function initOU(){
       const s1=new Set(OData.map(r=>r.OU_line));
       const s2=new Set(OData.map(r=>r.close_OU_line));
