@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     /***********************************************/
-    /* 全局樣式 (from Index.html)          */
+    /* 全局樣式                                    */
     /***********************************************/
     /* ---------- 全局重置 ---------- */
     body {
@@ -221,28 +221,49 @@
     /* ---------- 手機響應 (優化後) ---------- */
     @media (max-width: 768px) {
       .header h1 { font-size: 2rem; }
-      /* 以下為主要修改區域：讓 label 和 input 在同一行 */
-      fieldset .row label {
-        /* 維持 flex 但給予彈性，不強制換行 */
-        width: auto;
-        text-align: left;
-        margin-right: 8px;
-        flex-shrink: 0; /* 防止 label 文字被壓縮 */
-      }
-      .input-wrap select, .input-wrap > input {
-        flex: 1; /* 讓主要輸入框填滿剩餘空間 */
-      }
-      .step-group { flex: 1; }
-      .step-group input { width: 100%; }
-      .btn-wrap {
-        display: inline-flex;
-        margin-left: 4px;
-      }
-      button.search { width: 100%; }
       .stat-row { font-size: 1.1rem; gap: 12px; }
       .piebox { flex-wrap: wrap; gap: 12px; }
       .piechart { width: 120px; height: 120px; }
       table { font-size: .85rem; }
+
+      /* --- 表單同行排版邏輯 --- */
+      .row { flex-wrap: nowrap; }
+
+      fieldset .row label {
+        width: auto;
+        text-align: left;
+        margin-right: 8px;
+        flex-shrink: 0;
+      }
+      
+      .input-wrap {
+        gap: 4px;
+      }
+      
+      .input-wrap > select {
+          flex: 1;
+      }
+
+      .input-wrap > input[placeholder="精確值"] {
+        flex: 1 1 40%;
+        min-width: 50px;
+      }
+
+      .input-wrap > span {
+          padding: 0 2px;
+      }
+      
+      .step-group {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        gap: 4px;
+      }
+
+      .step-group input {
+        width: 60px;
+        flex-shrink: 0;
+      }
     }
   
     #ahTable, #ouTable, #euTable {
@@ -335,7 +356,7 @@
         </div>
       </fieldset>
       
-      <div class="d-flex justify-content-center gap-2 mb-3">
+      <div class="d-flex justify-content-center gap-2 mt-4">
         <button type="button" class="btn btn-primary" onclick="doAhSearch()">搜尋</button>
         <button type="button" id="resetAhBtn" class="btn btn-secondary">重設</button>
       </div>
@@ -425,7 +446,7 @@
         </div>
       </fieldset>
       
-      <div class="d-flex justify-content-center gap-2 mb-3">
+      <div class="d-flex justify-content-center gap-2 mt-4">
         <button type="button" class="btn btn-primary" onclick="doOuSearch()">搜尋</button>
         <button type="button" id="resetOuBtn" class="btn btn-secondary">重設</button>
       </div>
@@ -532,7 +553,7 @@
         </div>
       </fieldset>
       
-      <div class="d-flex justify-content-center gap-2 mb-3">
+      <div class="d-flex justify-content-center gap-2 mt-4">
         <button type="button" class="btn btn-primary" onclick="doEuSearch()">搜尋</button>
         <button type="button" id="resetEuBtn" class="btn btn-secondary">重設</button>
       </div>
@@ -800,7 +821,7 @@
     /* 輸出列表按鈕監聽 (w/ Fool-Proofing)        */
     /***********************************************/
     function confirmAndRender(resultArray, tableId, renderFn) {
-        if (resultArray.length > 20000) {
+        if (resultArray.length > 500) {
             if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
                 return;
             }
