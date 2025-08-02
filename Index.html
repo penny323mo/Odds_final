@@ -748,14 +748,24 @@
     /***********************************************/
     /* 歐洲盤搜尋 (Enhanced)             */
     /***********************************************/
+    
+    /***********************************************/
+    /* 歐洲盤搜尋 (Enhanced Fix)             */
+    /***********************************************/
     function doEuSearch(){
+      // 1. 讀取所有條件
       const [hMin,hMax] = range('euHomeExact','euHomeErr'),
             [dMin,dMax] = range('euDrawExact','euDrawErr'),
             [aMin,aMax] = range('euAwayExact','euAwayErr'),
             [hMinC,hMaxC] = range('euHomeExactC','euHomeErrC'),
             [dMinC,dMaxC] = range('euDrawExactC','euDrawErrC'),
             [aMinC,aMaxC] = range('euAwayExactC','euAwayErrC');
-
+      // 2. 防呆檢查：至少要輸入一個條件
+      if ([hMin,hMax,dMin,dMax,aMin,aMax,hMinC,hMaxC,dMinC,dMaxC,aMinC,aMaxC].every(x => x === null)) {
+        alert('請至少輸入一個篩選條件');
+        return;
+      }
+      // 3. 過濾資料
       const res = EU.filter(r=>{
         if(hMin!==null && (r['1X2_open_home_odds'] < hMin || r['1X2_open_home_odds'] > hMax)) return false;
         if(dMin!==null && (r['1X2_open_draw_odds'] < dMin || r['1X2_open_draw_odds'] > dMax)) return false;
@@ -765,6 +775,52 @@
         if(aMinC!==null && (r['1X2_close_away_odds'] < aMinC || r['1X2_close_away_odds'] > aMaxC)) return false;
         return true;
       });
+      // 4. 暫存搜尋結果並隱藏列表、啟用「輸出比賽列表」按鈕
+      lastEuResult = res;
+      document.getElementById('euTable').style.display = 'none';
+      document.getElementById('showEuListBtn').disabled = (res.length === 0);
+      // 5. 計算統計
+      let w=0, d=0, l=0, d1=0, d2=0, d3=0;
+      res.forEach(r=>{
+        const [hs, as] = r.ft_score.split('-').map(Number);
+        const diff = hs - as;
+        if (diff > 0) {
+          w++;
+          if (diff === 1) d1++;
+          else if (diff === 2) d2++;
+          else d3++;
+        } else if (diff < 0) {
+          l++;
+        } else {
+          d++;
+        }
+      });
+      const tot = res.length;
+      // 6. 更新統計摘要
+      document.getElementById('euStat').innerHTML = `
+<div class="stat-row">
+  <span class="win">主勝 ${w} (${pct(w,tot)})</span>
+  <span class="draw">和局 ${d} (${pct(d,tot)})</span>
+  <span class="lose">客勝 ${l} (${pct(l,tot)})</span>
+</div>
+<div class="stat-info">
+  場數：${tot}<br>
+  主勝淨勝球 ➜ 1球:${d1}  2球:${d2}  3+球:${d3}
+</div>
+<div class="piebox">
+  ${drawPieChart([
+    {label:'主勝',val:w,color:'#e53b2d'},
+    {label:'和局',val:d,color:'#27a146'},
+    {label:'客勝',val:l,color:'#2166d1'}
+  ])}
+  <div class="pie-legend">
+    <div><span style="background:#e53b2d"></span>主勝</div>
+    <div><span style="background:#27a146"></span>和局</div>
+    <div><span style="background:#2166d1"></span>客勝</div>
+  </div>
+</div>`;
+    }
+);
 
       let w=0, d=0, l=0, d1=0, d2=0, d3=0;
       const tb = document.querySelector('#euTable tbody');
