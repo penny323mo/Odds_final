@@ -800,7 +800,7 @@
     /* 輸出列表按鈕監聽 (w/ Fool-Proofing)        */
     /***********************************************/
     function confirmAndRender(resultArray, tableId, renderFn) {
-        if (resultArray.length > 50000) {
+        if (resultArray.length > 20000) {
             if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
                 return;
             }
