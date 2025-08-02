@@ -238,13 +238,7 @@
       .piechart { width: 120px; height: 120px; }
       table { font-size: .85rem; }
     }
-  
-  /* 隱藏所有結果表格，默認不顯示 */
-  #ahTable, #ouTable, #euTable {
-    display: none;
-  }
-</style>
-
+    #ahTable,#ouTable,#euTable{display:none;}</style>
 </head>
 <body>
   <div class="header">
@@ -265,7 +259,7 @@
   </div>
 
   <div class="tabcontent" id="tc1">
-    <form id="ahForm">
+    <form>
       <fieldset><legend>初盤</legend>
         <div class="row">
           <label>盤口：</label>
@@ -330,15 +324,11 @@
           </div>
         </div>
       </fieldset>
-      
-<div class="d-flex justify-content-center gap-2 mb-3">
-  <button type="button" id="searchAhBtn" class="btn btn-primary" onclick="doAhSearch()">搜尋</button>
-  <button type="button" id="resetAhBtn" class="btn btn-primary">重設</button>
-</div>
+      <div style="text-align:center;"><button type="button" class="search" onclick="doAhSearch()">搜尋</button> <button type="button" id="resetAhBtn" class="btn btn-secondary">重設</button></div>
     </form>
     <div class="stat-area" id="ahStat"></div>
-    <br><br>
-    <button type="button" id="showAhListBtn" class="btn btn-outline-primary" disabled>輸出比賽列表</button>
+<br><br>
+<button type="button" id="showAhListBtn" class="btn btn-outline-primary" disabled>輸出比賽列表</button>
     <div class="table-wrap">
       <table id="ahTable">
         <thead>
@@ -354,7 +344,7 @@
   </div>
 
   <div class="tabcontent" id="tc2" style="display:none">
-    <form id="ouForm">
+    <form>
       <fieldset><legend>初盤</legend>
         <div class="row">
           <label>盤口：</label>
@@ -419,15 +409,11 @@
           </div>
         </div>
       </fieldset>
-      
-<div class="d-flex justify-content-center gap-2 mb-3">
-  <button type="button" id="searchOuBtn" class="btn btn-primary" onclick="doOuSearch()">搜尋</button>
-  <button type="button" id="resetOuBtn" class="btn btn-primary">重設</button>
-</div>
+      <div style="text-align:center;"><button type="button" class="search" onclick="doOuSearch()">搜尋</button> <button type="button" id="resetOuBtn" class="btn btn-secondary">重設</button></div>
     </form>
     <div class="stat-area" id="ouStat"></div>
-    <br><br>
-    <button type="button" id="showOuListBtn" class="btn btn-outline-primary" disabled>輸出比賽列表</button>
+<br><br>
+<button type="button" id="showOuListBtn" class="btn btn-outline-primary" disabled>輸出比賽列表</button>
     <div class="table-wrap">
       <table id="ouTable">
         <thead>
@@ -443,7 +429,7 @@
   </div>
 
   <div class="tabcontent" id="tc3" style="display:none">
-    <form id="euForm">
+    <form>
       <fieldset><legend>初盤</legend>
         <div class="row">
           <label>主勝：</label>
@@ -526,15 +512,11 @@
           </div>
         </div>
       </fieldset>
-      
-<div class="d-flex justify-content-center gap-2 mb-3">
-  <button type="button" id="searchEuBtn" class="btn btn-primary" onclick="doEuSearch()">搜尋</button>
-  <button type="button" id="resetEuBtn" class="btn btn-primary">重設</button>
-</div>
+      <div style="text-align:center;"><button type="button" class="search" onclick="doEuSearch()">搜尋</button> <button type="button" id="resetEuBtn" class="btn btn-secondary">重設</button></div>
     </form>
     <div class="stat-area" id="euStat"></div>
-    <br><br>
-    <button type="button" id="showEuListBtn" class="btn btn-outline-primary" disabled>輸出比賽列表</button>
+<br><br>
+<button type="button" id="showEuListBtn" class="btn btn-outline-primary" disabled>輸出比賽列表</button>
     <div class="table-wrap">
       <table id="euTable">
         <thead><tr>
@@ -601,8 +583,6 @@
 
         function drawPieChart(data){
       const total = data.reduce((s,x)=>s+x.val,0);
-      // 啟用並準備顯示結果列表按鈕
-      document.getElementById('showAhListBtn').disabled = false;
       if (!total) return '<svg class="piechart"></svg>';
 
       const sz = 140, r = sz / 2 - 5, cx = sz / 2, cy = sz / 2;
@@ -650,11 +630,6 @@
             [aMinC,aMaxC] = range('ahCloseAwayExact','ahCloseAwayErr'),
             selO = document.getElementById('ahInitHand').value,
             selC = document.getElementById('ahCloseHand').value;
-      // 防呆：至少輸入一個篩選條件
-      if (!selO && !selC && hMin===null && aMin===null && hMinC===null && aMinC===null) {
-        alert('請至少輸入一個篩選條件');
-        return;
-      }
 
       const res = AH.filter(r=>{
         if(selO && r.AH_open_handicap != +selO) return false;
@@ -718,12 +693,6 @@
             [sMin,sMax] = range('ouSmallExact','ouSmallErr'),
             [bMinC,bMaxC] = range('ouBigExactC','ouBigErrC'),
             [sMinC,sMaxC] = range('ouSmallExactC','ouSmallErrC');
-      // 防呆：至少要有一個篩選條件
-      if (!selO && !selC && [bMin, sMin, bMinC, sMinC].every(x => x===null)) {
-        alert('請至少輸入一個篩選條件');
-        return;
-      }
-    
 
       const res = OU.filter(r=>{
         if(selO && r.OU_line != +selO) return false;
@@ -735,10 +704,7 @@
         return true;
       });
 
-        lastOuResult = res;
-  document.getElementById('ouTable').style.display = 'none';
-  document.getElementById('showOuListBtn').disabled = (res.length===0);
-let over=0, push=0, under=0;
+      let over=0, push=0, under=0;
       const tb = document.querySelector('#ouTable tbody');
       tb.innerHTML = '';
       res.forEach(r=>{
@@ -777,7 +743,6 @@ let over=0, push=0, under=0;
     <div><span style="background:#2166d1"></span>小球</div>
   </div>
 </div>`;
-      document.getElementById('showOuListBtn').disabled = false;
     }
 
     /***********************************************/
@@ -801,10 +766,7 @@ let over=0, push=0, under=0;
         return true;
       });
 
-        lastEuResult = res;
-  document.getElementById('euTable').style.display = 'none';
-  document.getElementById('showEuListBtn').disabled = (res.length===0);
-let w=0, d=0, l=0, d1=0, d2=0, d3=0;
+      let w=0, d=0, l=0, d1=0, d2=0, d3=0;
       const tb = document.querySelector('#euTable tbody');
       tb.innerHTML = '';
       res.forEach(r=>{
@@ -854,88 +816,7 @@ let w=0, d=0, l=0, d1=0, d2=0, d3=0;
     <div><span style="background:#2166d1"></span>客勝</div>
   </div>
 </div>`;
-      document.getElementById('showEuListBtn').disabled = false;
     }
-  
-    // 顯示按鈕監聽：顯示已生成的表格
-    
-document.getElementById('showAhListBtn').addEventListener('click', () => {
-  const tb = document.querySelector('#ahTable tbody');
-  tb.innerHTML = '';
-  lastAhResult.forEach(r => {
-    const [hs, as] = r.ft_score.split('-').map(Number);
-    const diff = hs + r.AH_close_handicap - as;
-    const out = diff > 0 ? '贏盤' : diff < 0 ? '輸盤' : '和盤';
-    tb.insertAdjacentHTML('beforeend', `
-      <tr>
-        <td>${r.season}</td>
-        <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-        <td>${r.AH_open_handicap}</td><td>${r.AH_open_home_odds}</td><td>${r.AH_open_away_odds}</td>
-        <td>${r.AH_close_handicap}</td><td>${r.AH_close_home_odds}</td><td>${r.AH_close_away_odds}</td>
-        <td>${out}</td>
-      </tr>
-    `);
-  });
-  document.getElementById('ahTable').style.display = '';
-});
-
-document.getElementById('showOuListBtn').addEventListener('click', () => {
-  const tb = document.querySelector('#ouTable tbody');
-  tb.innerHTML = '';
-  lastOuResult.forEach(r => {
-    const sum = r.ft_score.split('-').reduce((a,b)=>+a+ +b,0);
-    const out = sum > r.close_OU_line ? '大球' : sum < r.close_OU_line ? '小球' : '走盤';
-    tb.insertAdjacentHTML('beforeend', `
-      <tr>
-        <td>${r.season}</td>
-        <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-        <td>${r.open_OU_line}</td><td>${r.OU_open_over_odds}</td><td>${r.OU_open_under_odds}</td>
-        <td>${r.close_OU_line}</td><td>${r.OU_close_over_odds}</td><td>${r.OU_close_under_odds}</td>
-        <td>${out}</td>
-      </tr>
-    `);
-  });
-  document.getElementById('ouTable').style.display = '';
-});
-
-document.getElementById('showEuListBtn').addEventListener('click', () => {
-  const tb = document.querySelector('#euTable tbody');
-  tb.innerHTML = '';
-  lastEuResult.forEach(r => {
-    const [hs, as] = r.ft_score.split('-').map(Number);
-    const diff = hs - as;
-    const out = diff>0 ? '主勝' : diff<0 ? '客勝' : '和局';
-    tb.insertAdjacentHTML('beforeend', `
-      <tr>
-        <td>${r.season}</td>
-        <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-        <td>${r['1X2_open_home_odds']}</td><td>${r['1X2_open_draw_odds']}</td><td>${r['1X2_open_away_odds']}</td>
-        <td>${r['1X2_close_home_odds']}</td><td>${r['1X2_close_draw_odds']}</td><td>${r['1X2_close_away_odds']}</td>
-        <td>${out}</td>
-      </tr>
-    `);
-  });
-  document.getElementById('euTable').style.display = '';
-});
-// 重設按鈕監聽：清空表單、統計與表格
-    document.getElementById('resetAhBtn').addEventListener('click', () => {
-      document.getElementById('ahForm').reset();
-      document.getElementById('ahStat').innerHTML = '';
-      document.getElementById('showAhListBtn').disabled = true;
-      document.getElementById('ahTable').style.display = 'none';
-    });
-    document.getElementById('resetOuBtn').addEventListener('click', () => {
-      document.getElementById('ouForm').reset();
-      document.getElementById('ouStat').innerHTML = '';
-      document.getElementById('showOuListBtn').disabled = true;
-      document.getElementById('ouTable').style.display = 'none';
-    });
-    document.getElementById('resetEuBtn').addEventListener('click', () => {
-      document.getElementById('euForm').reset();
-      document.getElementById('euStat').innerHTML = '';
-      document.getElementById('showEuListBtn').disabled = true;
-      document.getElementById('euTable').style.display = 'none';
-    });
-</script>
+  </script>
 </body>
 </html>
