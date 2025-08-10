@@ -281,62 +281,35 @@
   background:rgba(255,255,255,.92); z-index:9999; color:#1666c1; font-size:1.05rem;
 }
 </style>
-<style id="fx-3d-dynamic">
-/* ========= FX 3D / Dynamic Pack ========= */
+<style id="fx-3d-safe">
+/* ===== Minimal FX (Safe) ===== */
 :root{
-  --brand:#1666c1;
-  --ink:#0ea5e9;
-  --accent:#e53b2d;
-  --ok:#27a146;
-  --muted:#2166d1;
-  --card-bg:#fff;
-  --shadow-1: 0 3px 18px rgba(138,179,233,.16);
-  --shadow-2: 0 10px 30px rgba(22,102,193,.18), 0 2px 6px rgba(0,0,0,.05);
+  --brand:#1666c1; --ink:#0ea5e9;
 }
 .header{
-  position: relative;
+  position:relative;
   background: linear-gradient(135deg,#1155ab 0%,#1a78db 40%,#16a1e6 100%);
   background-size: 300% 300%;
   animation: headerGrad 12s ease-in-out infinite;
   box-shadow: inset 0 -8px 20px rgba(0,0,0,.06);
 }
-.header h1{ text-shadow: 0 6px 18px rgba(0,0,0,.15); }
 @keyframes headerGrad{
   0%{ background-position: 0% 50%; }
   50%{ background-position: 100% 50%; }
   100%{ background-position: 0% 50%; }
 }
-.tabbar{ position:relative; overflow:hidden; }
+.tabbar{ position:relative; overflow:hidden; background:rgba(255,255,255,.92); backdrop-filter: blur(6px); }
 .tabbar button{ position:relative; }
 .tab-ink{
-  position:absolute; left:0; bottom:0;
-  height:3px; width:0; border-radius:3px;
+  position:absolute; left:0; bottom:0; height:3px; width:0; border-radius:3px;
   background: linear-gradient(90deg,var(--ink),#60a5fa);
   box-shadow: 0 2px 10px rgba(14,165,233,.6);
   transition: transform .35s ease, width .35s ease, left .35s ease;
 }
-.tabcontent{
-  transform-style: preserve-3d;
-  transition: box-shadow .25s ease, transform .25s ease;
-  box-shadow: var(--shadow-1);
-  will-change: transform;
-}
-@media (pointer:fine){
-  .tabcontent.fx-tilt:hover{
-    box-shadow: var(--shadow-2);
-  }
-}
-button.btn, .btn{
-  position:relative; overflow:hidden; transform: translateZ(0);
-  transition: transform .08s ease, box-shadow .2s ease !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,.06);
-}
-button.btn:active, .btn:active{
-  transform: translateY(1px);
-}
+/* Button ripple (pure cosmetic) */
+button.btn, .btn{ position:relative; overflow:hidden; transform: translateZ(0); }
 .fx-ripple{
-  position:absolute; border-radius:50%; pointer-events:none;
-  inset:auto auto; width:10px; height:10px; opacity:.35;
+  position:absolute; border-radius:50%; pointer-events:none; width:10px; height:10px; opacity:.35;
   background:radial-gradient(circle, rgba(255,255,255,.9) 0%, rgba(255,255,255,.2) 60%, transparent 70%);
   transform: translate(-50%,-50%) scale(0);
   animation: ripple .6s ease-out forwards;
@@ -344,6 +317,7 @@ button.btn:active, .btn:active{
 @keyframes ripple{
   to{ transform: translate(-50%,-50%) scale(18); opacity:0; }
 }
+/* Loading spinner */
 #loadingOverlay{
   position:fixed; inset:0; display:none; align-items:center; justify-content:center;
   background:rgba(255,255,255,.92); z-index:9999; color:var(--brand);
@@ -356,29 +330,16 @@ button.btn:active, .btn:active{
   box-shadow: 0 0 20px rgba(22,102,193,.25), inset 0 0 10px rgba(22,102,193,.1);
 }
 @keyframes spin{ to { transform: rotate(360deg); } }
+/* Safety: never hide content */
+.reveal{ opacity:1 !important; transform:none !important; }
+</style><style id="fx-lowrisk">
+/* ===== Low-Risk Visuals ===== */
 .piechart{ filter: drop-shadow(0 6px 14px rgba(0,0,0,.12)); }
 .piechart .slice{ transform-origin: 50% 50%; animation: piePop .55s cubic-bezier(.2,.7,.2,1) both; }
 @keyframes piePop{ from{ transform: scale(.85); opacity:.2; } to{ transform: scale(1); opacity:1; } }
-.reveal{ opacity:0; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease; }
-.reveal.in{ opacity:1; transform: none; }
-.table-wrap table thead th{
-  position:sticky; top:0; z-index:1; box-shadow: 0 2px 0 rgba(0,0,0,.04);
-  background: #fff;
-}
-.table-wrap table tbody tr{ transition: background .2s ease, transform .2s ease; }
-.table-wrap table tbody tr:hover{ background:#f8fbff; transform: translateZ(0); }
-@media (prefers-reduced-motion: reduce){
-  *{ animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: 0ms !important; }
-}
-</style><style id="fx-mobile-polish">
-/* ===== Mobile Polish (safe) ===== */
-.tabbar{
-  background: rgba(255,255,255,.92);
-  backdrop-filter: blur(6px);
-}
-@media (max-width: 480px){
-  .tab-ink{ height:4px; box-shadow: 0 3px 12px rgba(14,165,233,.55); }
-}
+.table-wrap table tbody tr{ transition: background .18s ease; }
+.table-wrap table tbody tr:hover{ background:#f8fbff; }
+.tabbar{ background: rgba(255,255,255,.92); backdrop-filter: blur(6px); }
 </style></head>
 <body><div aria-live="polite" id="loadingOverlay" role="alert"><div class="spinner3d"></div><span class="loading-text">資料載入中…</span></div>
 <div class="header">
@@ -1083,12 +1044,10 @@ button.btn:active, .btn:active{
         __hideLoading();
       }
     })();
-  </script><script id="fx-3d-dynamic-js">
-/* ===================== FX 3D / Dynamic JS ===================== */
+  </script>
+<script id="fx-3d-safe-js">
+/* ===== Minimal FX JS (no reveal, no tilt) ===== */
 (function(){
-  const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
-
   function updateInk(){
     const ink = document.getElementById('tabInk'); if(!ink) return;
     const tabs = [document.getElementById('tab1'), document.getElementById('tab2'), document.getElementById('tab3')].filter(Boolean);
@@ -1100,120 +1059,70 @@ button.btn:active, .btn:active{
     ink.style.left  = (box.left - wrap.left)+'px';
   }
   window.addEventListener('resize', updateInk);
-
-  function enableTiltOn(el){
-    if(!el || !hasFinePointer) return;
-    const max = 6; const persp = 900;
-    el.classList.add('fx-tilt');
-    el.style.perspective = persp+'px';
-    el.addEventListener('mousemove', e=>{
-      if(prefersReduce) return;
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width;
-      const y = (e.clientY - r.top)  / r.height;
-      const rx = (0.5 - y) * max;
-      const ry = (x - 0.5) * max;
-      el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
-    });
-    el.addEventListener('mouseleave', ()=>{ el.style.transform = ''; });
-  }
-
-  function attachRipple(){
-    document.addEventListener('click', e=>{
-      const btn = e.target.closest('button, .btn');
-      if(!btn) return;
-      const ripple = document.createElement('span');
-      ripple.className = 'fx-ripple';
-      const rect = btn.getBoundingClientRect();
-      ripple.style.left = (e.clientX - rect.left)+'px';
-      ripple.style.top  = (e.clientY - rect.top)+'px';
-      btn.appendChild(ripple);
-      setTimeout(()=>ripple.remove(), 650);
-    }, {passive:true});
-  }
-
-  function observeReveal(){
-    const io = new IntersectionObserver(es=>{
-      es.forEach(({isIntersecting, target})=>{
-        if(isIntersecting){ target.classList.add('in'); io.unobserve(target); }
-      });
-    }, {threshold: .12});
-    document.querySelectorAll('.stat-area, .table-wrap, .timestamp')
-            .forEach(n=>{ n.classList.add('reveal'); io.observe(n); });
-  }
-
-  // Override drawPieChart if exists
-  const overridePie = ()=>{
-    const prev = window.drawPieChart;
-    window.drawPieChart = function(data){
-      const total = (data||[]).reduce((s,x)=>s + (x.val||0), 0);
-      const sz=140, r=sz/2-5, cx=sz/2, cy=sz/2;
-      if(!total) return `<svg class="piechart" width="${sz}" height="${sz}"></svg>`;
-      let currentAngle = -Math.PI/2, idx=-1;
-      const slices = data.filter(d=>(d.val||0)>0);
-      const paths = slices.map(slice=>{
-        idx++;
-        const sliceAngle = (slice.val/total)*Math.PI*2;
-        const start = currentAngle;
-        const end   = currentAngle + sliceAngle;
-        const x1 = cx + r*Math.cos(start), y1 = cy + r*Math.sin(start);
-        const x2 = cx + r*Math.cos(end),   y2 = cy + r*Math.sin(end);
-        const large = sliceAngle > Math.PI ? 1 : 0;
-        currentAngle = end;
-        return `<path class="slice" style="animation-delay:${idx*90}ms" d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${slice.color}" />`;
-      }).join('');
-      return `<svg class="piechart" viewBox="0 0 ${sz} ${sz}">
-        <defs><filter id="ds"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25"/></filter></defs>
-        <g filter="url(#ds)">${paths}</g>
-      </svg>`;
-    };
-    // Keep a reference to restore if needed
-    window._drawPieChart_prev = prev;
-  };
-
+  // Hook showTab to move ink bar only
   (function hookShowTab(){
     const tryHook = ()=>{
       if(typeof window.showTab !== 'function') return false;
       const _orig = window.showTab;
       if(_orig && _orig.__hooked) return true;
-      const wrapped = function(i){
-        _orig(i);
-        updateInk();
-        const panel = document.getElementById('tc'+(i+1));
-        if(panel){ panel.classList.remove('in'); panel.classList.add('reveal'); requestAnimationFrame(()=>panel.classList.add('in')); }
-      };
+      const wrapped = function(i){ _orig(i); updateInk(); };
       wrapped.__hooked = true;
-      window.showTab = wrapped;
-      return true;
+      window.showTab = wrapped; return true;
     };
-    const ok = tryHook();
-    if(!ok){
-      // If not ready yet, try again after load
-      window.addEventListener('load', tryHook);
-    }
+    const ok = tryHook(); if(!ok) window.addEventListener('load', tryHook);
   })();
-
-  function initFX(){
-    updateInk();
-    ['tc1','tc2','tc3'].forEach(id=> enableTiltOn(document.getElementById(id)));
-    attachRipple();
-    observeReveal();
-    // Fail-safe: ensure all .reveal are visible even if IO doesn't fire
-    setTimeout(()=> document.querySelectorAll('.reveal').forEach(n=> n.classList.add('in')), 450);
-    overridePie();
+  function attachRipple(){
+    document.addEventListener('click', e=>{
+      const btn = e.target.closest('button, .btn'); if(!btn) return;
+      const r = document.createElement('span'); r.className='fx-ripple';
+      const rect = btn.getBoundingClientRect();
+      r.style.left = (e.clientX - rect.left)+'px';
+      r.style.top  = (e.clientY - rect.top)+'px';
+      btn.appendChild(r); setTimeout(()=>r.remove(), 650);
+    }, {passive:true});
   }
-  window.addEventListener('load', initFX);
+  window.addEventListener('load', ()=>{ updateInk(); attachRipple(); setTimeout(updateInk, 60); });
+  window.addEventListener('orientationchange', ()=> setTimeout(updateInk, 120));
 })();
-</script>
-<script id="fx-mobile-polish-js">
-/* ===== Mobile Polish JS ===== */
+</script><script id="fx-lowrisk-js">
+/* ===== Low-Risk Pie Override ===== */
 (function(){
-  function _upd(){ try{ (window.updateInk && window.updateInk()); }catch(e){} }
-  window.addEventListener('load', ()=>{
-    requestAnimationFrame(_upd);
-    setTimeout(_upd, 60);
-  });
-  window.addEventListener('orientationchange', ()=> setTimeout(_upd, 120));
+  const prev = window.drawPieChart;
+  window.drawPieChart = function(data){
+    try{
+      // Build our own animated SVG to avoid relying on previous structure
+      const total = (data||[]).reduce((s,x)=> s + (x.val||0), 0);
+      const sz=140, r=sz/2-5, cx=sz/2, cy=sz/2;
+      if(!total) return `<svg class="piechart" width="${sz}" height="${sz}"></svg>`;
+      const slices = data.filter(d=>(d.val||0)>0);
+      // Special case: one slice = full circle
+      if(slices.length===1){
+        const c = slices[0];
+        return `<svg class="piechart" viewBox="0 0 ${sz} ${sz}">
+          <defs><filter id="ds"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25"/></filter></defs>
+          <g filter="url(#ds)"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${c.color}"></circle></g>
+        </svg>`;
+      }
+      let currentAngle = -Math.PI/2, idx=-1;
+      const paths = slices.map(s=>{
+        idx++;
+        const ang = (s.val/total)*Math.PI*2;
+        const start = currentAngle, end = currentAngle + ang;
+        const x1 = cx + r*Math.cos(start), y1 = cy + r*Math.sin(start);
+        const x2 = cx + r*Math.cos(end),   y2 = cy + r*Math.sin(end);
+        const large = ang > Math.PI ? 1 : 0;
+        currentAngle = end;
+        return `<path class="slice" style="animation-delay:${idx*90}ms" d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${s.color}" />`;
+      }).join('');
+      return `<svg class="piechart" viewBox="0 0 ${sz} ${sz}">
+        <defs><filter id="ds"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25"/></filter></defs>
+        <g filter="url(#ds)">${paths}</g>
+      </svg>`;
+    }catch(e){
+      // fallback to previous implementation if ours fails for some reason
+      return prev ? prev(data) : '';
+    }
+  };
 })();
 </script></body>
 </html>
