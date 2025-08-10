@@ -276,8 +276,18 @@
 }
 </style>
 
+
+<style>
+#loadingOverlay{
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.92); z-index:9999; color:#1666c1; font-size:1.05rem;
+}
+</style>
+
 </head>
 <body>
+<div id="loadingOverlay" role="alert" aria-live="polite">資料載入中…</div>
+
 
 <div id="loadingOverlay" role="alert" aria-live="polite">資料載入中…</div>
 
@@ -599,12 +609,6 @@
     let AH = [], OU = [], EU = [];
     let lastAhResult = [], lastOuResult = [], lastEuResult = [];
 
-    Promise.all([
-      fetch('asian_handicap.json').then(r=>r.json()).then(d=>AH=d),
-      fetch('over_under.json').then(r=>r.json()).then(d=>OU=d),
-      fetch('european_odds.json').then(r=>r.json()).then(d=>EU=d),
-    ]).then(initAll);
-
     function initAll(){
       fillSelect('ahInitHand', new Set(AH.map(r=>r.AH_open_handicap)));
       fillSelect('ahCloseHand', new Set(AH.map(r=>r.AH_close_handicap)));
@@ -779,12 +783,12 @@
             [aMinC,aMaxC] = range('euAwayExactC','euAwayErrC');
 
       lastEuResult = EU.filter(r=>{
-        if(hMin!==null && (r['1X2_open_home_odds'] < hMin || r['1X2_open_home_odds'] > hMax)) return false;
-        if(dMin!==null && (r['1X2_open_draw_odds'] < dMin || r['1X2_open_draw_odds'] > dMax)) return false;
-        if(aMin!==null && (r['1X2_open_away_odds'] < aMin || r['1X2_open_away_odds'] > aMax)) return false;
-        if(hMinC!==null && (r['1X2_close_home_odds'] < hMinC || r['1X2_close_home_odds'] > hMaxC)) return false;
-        if(dMinC!==null && (r['1X2_close_draw_odds'] < dMinC || r['1X2_close_draw_odds'] > dMaxC)) return false;
-        if(aMinC!==null && (r['1X2_close_away_odds'] < aMinC || r['1X2_close_away_odds'] > aMaxC)) return false;
+        const oH = getEU(r,'open_home'); if(hMin!==null && (oH < hMin || oH > hMax)) return false;
+        const oD = getEU(r,'open_draw'); if(dMin!==null && (oD < dMin || oD > dMax)) return false;
+        const oA = getEU(r,'open_away'); if(aMin!==null && (oA < aMin || oA > aMax)) return false;
+        const cH = getEU(r,'close_home'); if(hMinC!==null && (cH < hMinC || cH > hMaxC)) return false;
+        const cD = getEU(r,'close_draw'); if(dMinC!==null && (cD < dMinC || cD > dMaxC)) return false;
+        const cA = getEU(r,'close_away'); if(aMinC!==null && (cA < aMinC || cA > aMaxC)) return false;
         return true;
       });
 
@@ -879,8 +883,8 @@
             return `<tr>
                 <td>${r.season}</td>
                 <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-                <td>${r['1X2_open_home_odds']}/${r['1X2_open_draw_odds']}/${r['1X2_open_away_odds']}</td>
-                <td>${r['1X2_close_home_odds']}/${r['1X2_close_draw_odds']}/${r['1X2_close_away_odds']}</td>
+                <td>${getEU(r,'open_home')}/${getEU(r,'open_draw')}/${getEU(r,'open_away')}</td>
+                <td>${getEU(r,'close_home')}/${getEU(r,'close_draw')}/${getEU(r,'close_away')}</td>
                 <td>${r.ft_score}</td><td>${out}</td><td>${diff}</td>
             </tr>`;
         });
@@ -999,6 +1003,88 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const needAH = document.getElementById('ahInitHand') || document.getElementById('ahCloseHand');
   if(needAH){ initAsianHandicapSelects().catch(console.error); }
 });
+</script>
+
+
+<script>
+/* ===== Loading overlay ===== */
+(function(){
+  const overlay = document.getElementById('loadingOverlay');
+  window.__showLoading = function(){ if(overlay) overlay.style.display='flex'; };
+  window.__hideLoading = function(){ if(overlay) overlay.style.display='none'; };
+})();
+
+/* ===== Trailing-number chunk loader ===== */
+async function loadWithTrailingNumbers(base, {subdir='', maxParts=10} = {}){
+  const prefix = subdir ? (subdir.replace(/\/$/, '') + '/') : '';
+  const urls = [ `${prefix}${base}.json` ];
+  for(let i=1;i<=maxParts;i++){ urls.push(`${prefix}${base}${i}.json`); }
+  const results = await Promise.allSettled(
+    urls.map(u => fetch(u, {cache:'no-store'}).then(r => r.ok ? r.json() : null))
+  );
+  const merged = [];
+  for(const r of results){
+    if(r.status === 'fulfilled' && Array.isArray(r.value)) merged.push(...r.value);
+  }
+  return merged;
+}
+
+/* ===== Datasets getters (lazy + cache) ===== */
+const DB = {
+  asian:     { base: 'asian_handicap', subdir: '' },
+  overUnder: { base: 'over_under',     subdir: '' },
+  european:  { base: 'european_odds',  subdir: '' }
+};
+let AH=null, OU=null, EU=null; // keep your globals
+
+async function getAsianData(opts={}){
+  if(!AH) AH = await loadWithTrailingNumbers(DB.asian.base, {subdir: DB.asian.subdir, maxParts: (opts.maxParts||10)});
+  return AH;
+}
+async function getOverUnderData(opts={}){
+  if(!OU) OU = await loadWithTrailingNumbers(DB.overUnder.base, {subdir: DB.overUnder.subdir, maxParts: (opts.maxParts||10)});
+  return OU;
+}
+async function getEuropeanData(opts={}){
+  if(!EU) EU = await loadWithTrailingNumbers(DB.european.base, {subdir: DB.european.subdir, maxParts: (opts.maxParts||10)});
+  return EU;
+}
+
+/* ===== Helper: EU fields compatibility (EU_* or 1X2_*) ===== */
+function getEU(r, which){
+  const map = {
+    open_home:['EU_open_home_odds','1X2_open_home_odds'],
+    open_draw:['EU_open_draw_odds','1X2_open_draw_odds'],
+    open_away:['EU_open_away_odds','1X2_open_away_odds'],
+    close_home:['EU_close_home_odds','1X2_close_home_odds'],
+    close_draw:['EU_close_draw_odds','1X2_close_draw_odds'],
+    close_away:['EU_close_away_odds','1X2_close_away_odds'],
+  };
+  const keys = map[which] || [];
+  for(const k of keys){ if(r[k] != null) return r[k]; }
+  return null;
+}
+</script>
+
+
+<script>
+(async function boot(){
+  try{
+    __showLoading && __showLoading();
+    await Promise.all([
+      getAsianData({maxParts:10}),
+      getOverUnderData({maxParts:10}),
+      getEuropeanData({maxParts:10})
+    ]);
+    // AH/OU/EU already set by getters
+    initAll();
+  }catch(e){
+    console.error('資料載入失敗', e);
+    alert('資料載入失敗，請稍後再試。');
+  }finally{
+    __hideLoading && __hideLoading();
+  }
+})();
 </script>
 
 </body>
