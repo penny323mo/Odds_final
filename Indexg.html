@@ -362,6 +362,9 @@ table tbody tr:hover{ background:#f8fbff; }
 @keyframes tabFadeOut{ from{ opacity:1; transform:none;} to{ opacity:0; transform: translateY(-4px);} }
 .tab-fade-in { animation: tabFadeIn .22s ease both; }
 .tab-fade-out{ animation: tabFadeOut .44s ease both; }
+</style><style id="fx-pie-canvas-css">
+/* ===== Pie Canvas (sweep) ===== */
+.piecanvas.piechart{ width:140px; height:140px; display:inline-block; filter: drop-shadow(0 6px 14px rgba(0,0,0,.12)); }
 </style></head>
 <body><div aria-live="polite" id="loadingOverlay" role="alert"><div class="spinner3d"></div><span class="loading-text">資料載入中…</span></div>
 <div class="header">
@@ -1341,6 +1344,86 @@ table tbody tr:hover{ background:#f8fbff; }
     };
     if(!tryHook()) window.addEventListener('load', tryHook);
   })();
+})();
+</script><script id="fx-pie-canvas">
+/* ===== Canvas-based Pie Sweep (robust on iOS/Safari) ===== */
+(function(){
+  const prev = window.drawPieChart;
+  // Return a canvas with encoded data; animation handled by observer
+  window.drawPieChart = function(data){
+    try{
+      const enc = encodeURIComponent(JSON.stringify(data||[]));
+      return `<canvas class="piechart piecanvas" width="140" height="140" data-pie="${enc}"></canvas>`;
+    }catch(e){
+      // fallback to previous
+      return prev ? prev(data) : '';
+    }
+  };
+
+  function drawFullPie(off, data){
+    const ctx = off.getContext('2d');
+    const sz = off.width, cx=sz/2, cy=sz/2, r=sz/2-5;
+    ctx.clearRect(0,0,sz,sz);
+    const total = (data||[]).reduce((s,x)=> s + (x.val||0), 0);
+    if(!total) return;
+    let ang = -Math.PI/2;
+    for(const d of data){
+      const v = (d.val||0); if(v<=0) continue;
+      const a = v/total * Math.PI*2;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r, ang, ang+a, false);
+      ctx.closePath();
+      ctx.fillStyle = d.color || '#ccc';
+      ctx.fill();
+      ang += a;
+    }
+  }
+
+  function animateCanvasPie(cv, dur=800){
+    if(!cv || cv.__swept) return;
+    cv.__swept = true;
+    const data = JSON.parse(decodeURIComponent(cv.getAttribute('data-pie')||'%5B%5D'));
+    const sz = cv.width, cx=sz/2, cy=sz/2, r=sz/2-5;
+    // Pre-render full pie
+    const off = document.createElement('canvas'); off.width=sz; off.height=sz;
+    drawFullPie(off, data);
+    const ctx = cv.getContext('2d');
+    let t0=null;
+    function step(ts){
+      if(!t0) t0=ts;
+      const p = Math.min(1, (ts-t0)/dur);
+      const theta = -Math.PI/2 + p*2*Math.PI;
+      ctx.clearRect(0,0,sz,sz);
+      ctx.save();
+      // wedge clip
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r, -Math.PI/2, theta, false);
+      ctx.closePath();
+      ctx.clip();
+      // draw pre-rendered full pie into wedge
+      ctx.drawImage(off,0,0);
+      ctx.restore();
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Observe inserted canvases
+  const mo = new MutationObserver(rs=>{
+    for(const r of rs){
+      r.addedNodes && r.addedNodes.forEach(n=>{
+        if(!(n instanceof Element)) return;
+        if(n.matches && n.matches('canvas.piecanvas')) animateCanvasPie(n);
+        n.querySelectorAll && n.querySelectorAll('canvas.piecanvas').forEach(animateCanvasPie);
+      });
+    }
+  });
+  mo.observe(document.documentElement, {subtree:true, childList:true});
+  window.addEventListener('load', ()=>{
+    document.querySelectorAll('canvas.piecanvas').forEach(animateCanvasPie);
+  });
 })();
 </script></body>
 </html>
