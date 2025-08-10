@@ -370,10 +370,17 @@ button.btn:active, .btn:active{
 @media (prefers-reduced-motion: reduce){
   *{ animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: 0ms !important; }
 }
+</style><style id="fx-mobile-polish">
+/* ===== Mobile Polish (safe) ===== */
+.tabbar{
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(6px);
+}
+@media (max-width: 480px){
+  .tab-ink{ height:4px; box-shadow: 0 3px 12px rgba(14,165,233,.55); }
+}
 </style></head>
 <body><div aria-live="polite" id="loadingOverlay" role="alert"><div class="spinner3d"></div><span class="loading-text">資料載入中…</span></div>
-
-
 <div class="header">
 <h1>足球歷史賠率篩選</h1>
 <div class="desc">
@@ -1131,7 +1138,7 @@ button.btn:active, .btn:active{
         if(isIntersecting){ target.classList.add('in'); io.unobserve(target); }
       });
     }, {threshold: .12});
-    document.querySelectorAll('.stat-area, .table-wrap, fieldset, .timestamp, .tabcontent')
+    document.querySelectorAll('.stat-area, .table-wrap, .timestamp')
             .forEach(n=>{ n.classList.add('reveal'); io.observe(n); });
   }
 
@@ -1191,10 +1198,22 @@ button.btn:active, .btn:active{
     ['tc1','tc2','tc3'].forEach(id=> enableTiltOn(document.getElementById(id)));
     attachRipple();
     observeReveal();
+    // Fail-safe: ensure all .reveal are visible even if IO doesn't fire
+    setTimeout(()=> document.querySelectorAll('.reveal').forEach(n=> n.classList.add('in')), 450);
     overridePie();
   }
   window.addEventListener('load', initFX);
 })();
 </script>
-</body>
+<script id="fx-mobile-polish-js">
+/* ===== Mobile Polish JS ===== */
+(function(){
+  function _upd(){ try{ (window.updateInk && window.updateInk()); }catch(e){} }
+  window.addEventListener('load', ()=>{
+    requestAnimationFrame(_upd);
+    setTimeout(_upd, 60);
+  });
+  window.addEventListener('orientationchange', ()=> setTimeout(_upd, 120));
+})();
+</script></body>
 </html>
