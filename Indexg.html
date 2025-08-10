@@ -332,10 +332,31 @@ button.btn, .btn{ position:relative; overflow:hidden; transform: translateZ(0); 
 @keyframes spin{ to { transform: rotate(360deg); } }
 /* Safety: never hide content */
 .reveal{ opacity:1 !important; transform:none !important; }
+</style><style id="fx-sweep-tabfade">
+/* ===== Sweep Pie + Tab Fade (Low risk) ===== */
+.piechart{ width:140px; height:140px; border-radius:50%; filter: drop-shadow(0 6px 14px rgba(0,0,0,.12)); }
+.pie-sweep{ 
+  /* reveal mask from 0deg -> var(--ang) */
+  -webkit-mask: conic-gradient(#000 0deg, #000 var(--ang,0deg), transparent var(--ang,0deg) 360deg);
+          mask: conic-gradient(#000 0deg, #000 var(--ang,0deg), transparent var(--ang,0deg) 360deg);
+}
+/* Small white ring for neat edge (optional) */
+.pie-sweep::after{
+  content:""; position:absolute; inset:-1px; border-radius:50%;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.8);
+  pointer-events:none;
+}
+@keyframes tabFade{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform:none; } }
+.tab-anim{ animation: tabFade .22s ease both; }
+
+/* Table hover already in lowrisk; ensure present even if table-wrap missing class */
+table tbody tr{ transition: background .18s ease; }
+table tbody tr:hover{ background:#f8fbff; }
+
+/* Tabbar glass already present; keep here as reinforcement */
+.tabbar{ background: rgba(255,255,255,.92); backdrop-filter: blur(6px); }
 </style></head>
 <body><div aria-live="polite" id="loadingOverlay" role="alert"><div class="spinner3d"></div><span class="loading-text">資料載入中…</span></div>
-
-
 <div class="header">
 <h1>足球歷史賠率篩選</h1>
 <div class="desc">
@@ -1077,6 +1098,99 @@ button.btn, .btn{ position:relative; overflow:hidden; transform: translateZ(0); 
   }
   window.addEventListener('load', ()=>{ updateInk(); attachRipple(); setTimeout(updateInk, 60); });
   window.addEventListener('orientationchange', ()=> setTimeout(updateInk, 120));
+})();
+</script><script id="fx-sweep-tabfade-js">
+/* ===== Sweep Pie + Tab Fade JS ===== */
+(function(){
+  // Build gradient stops string
+  function buildStops(data){
+    const total = (data||[]).reduce((s,x)=> s + (x.val||0), 0);
+    if(!total) return "";
+    let ang = 0;
+    const parts = [];
+    for(const d of data){
+      const v = (d.val||0);
+      if(v<=0) continue;
+      const span = v/total * 360;
+      const start = ang, end = ang + span;
+      const col = d.color || '#ccc';
+      parts.push(`${col} ${start}deg ${end}deg`);
+      ang = end;
+    }
+    return parts.join(", ");
+  }
+
+  const prev = window.drawPieChart;
+  window.drawPieChart = function(data){
+    try{
+      const stops = buildStops(data);
+      // Fallback to previous if no data
+      if(!stops){ return `<div class="piechart" style="background: radial-gradient(#f2f6ff, #eaf1ff);"></div>`; }
+      // Return a div-based pie with conic-gradient background and masked sweep
+      // inline style to set background and initial --ang
+      return `<div class="piechart pie-sweep" style="position:relative; --ang:0deg; background: conic-gradient(${stops});"></div>`;
+    }catch(e){
+      return prev ? prev(data) : '';
+    }
+  };
+
+  // Animate any newly inserted .pie-sweep from 0 -> 360deg (700ms)
+  const seen = new WeakSet();
+  function animateSweep(el, dur=700){
+    if(!el || seen.has(el)) return;
+    seen.add(el);
+    let t0=null;
+    function step(ts){
+      if(!t0) t0 = ts;
+      const p = Math.min(1, (ts - t0)/dur);
+      const ang = (360*p);
+      el.style.setProperty('--ang', ang+'deg');
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Observe DOM for added pies
+  const mo = new MutationObserver(records=>{
+    for(const r of records){
+      r.addedNodes && r.addedNodes.forEach(n=>{
+        if(!(n instanceof Element)) return;
+        if(n.matches && n.matches('.pie-sweep')) animateSweep(n);
+        n.querySelectorAll && n.querySelectorAll('.pie-sweep').forEach(animateSweep);
+      });
+    }
+  });
+  mo.observe(document.documentElement, {subtree:true, childList:true});
+
+  // Also kick any existing pies on load
+  window.addEventListener('load', ()=>{
+    document.querySelectorAll('.pie-sweep').forEach(animateSweep);
+  });
+
+  // Add Tab fade-in by wrapping showTab again (chain-safe)
+  (function hookTabFade(){
+    const tryHook = ()=>{
+      if(typeof window.showTab !== 'function') return false;
+      const _orig = window.showTab;
+      if(_orig && _orig.__fadeHooked) return true;
+      const wrapped = function(i){
+        _orig(i);
+        // pick active panel by your ids tc1/tc2/tc3
+        const panel = document.getElementById('tc'+(i+1));
+        if(panel){
+          panel.classList.remove('tab-anim'); // reset
+          // force reflow then add animation class
+          // eslint-disable-next-line no-unused-expressions
+          panel.offsetHeight;
+          panel.classList.add('tab-anim');
+        }
+      };
+      wrapped.__fadeHooked = true;
+      window.showTab = wrapped;
+      return true;
+    };
+    if(!tryHook()) window.addEventListener('load', tryHook);
+  })();
 })();
 </script></body>
 </html>
