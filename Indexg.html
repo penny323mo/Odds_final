@@ -1,146 +1,103 @@
 <!DOCTYPE html>
+
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <title>足球歷史賠率篩選</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
+<meta charset="utf-8"/>
+<title>足球歷史賠率篩選</title>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<style>
     /***********************************************/
-    /* 1. 全局與基礎樣式 (Global & Base)             */
+    /* 全局樣式                                    */
     /***********************************************/
-    :root {
-      --primary-color: #1666c1;
-      --primary-light: #e7f0fb;
-      --primary-dark: #1254a0;
-      --background-color: #f8fafd;
-      --card-bg-color: #ffffff;
-      --text-color: #444;
-      --win-color: #e53b2d;
-      --draw-color: #27a146;
-      --lose-color: #2166d1;
-      --shadow-light: rgba(138, 179, 233, .16);
-      --shadow-medium: rgba(50, 80, 130, .1);
-    }
-    
+    /* ---------- 全局重置 ---------- */
     body {
       margin: 0;
-      background: var(--background-color);
-      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
-      color: var(--text-color);
+      background: #f8fafd;
+      font-family: "PingFang TC","Microsoft JhengHei",sans-serif;
     }
-    a { text-decoration: none; }
-
-    /***********************************************/
-    /* 2. 頁首與分頁 (Header & Tabs)               */
-    /***********************************************/
+    a { text-decoration:none; }
+    /* ---------- Header ---------- */
     .header {
-      background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
+      background: #1666c1;
       color: #fff;
       text-align: center;
-      padding: 28px 12px 12px;
-      border-bottom: 4px solid var(--primary-dark);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 24px 0 8px;
     }
     .header h1 {
       margin: 0;
       font-size: 2.4rem;
       font-weight: bold;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     }
     .header .desc {
-      margin: 8px 12px 0;
-      font-size: clamp(0.8rem, 1.5vw, 1rem);
+      margin: 6px 12px 0;
+      font-size: clamp(0.8rem,1.5vw,1rem);
       font-weight: 300;
-      line-height: 1.4;
-      opacity: .9;
+      white-space: normal;
+      line-height:1.4;
     }
-
+    /* ---------- Tabs ---------- */
     .tabbar {
       display: flex;
-      background: var(--primary-light);
-      box-shadow: inset 0 2px 8px var(--shadow-light);
+      background: #e7f0fb;
+      border-bottom: 1px solid #dbe7f5;
     }
     .tabbar button {
       flex: 1;
-      padding: 14px 0;
+      padding: 12px 0;
       font-size: 1.1rem;
       font-weight: bold;
-      color: var(--primary-color);
       background: none;
       border: none;
-      border-bottom: 4px solid transparent;
+      border-bottom: 3px solid transparent;
       cursor: pointer;
-      transition: all .3s ease;
-      position: relative;
-      top: 0;
-    }
-    .tabbar button:hover:not(.active) {
-      background: rgba(255,255,255, .5);
-      top: -2px;
+      transition: .2s;
     }
     .tabbar button.active {
-      color: var(--primary-dark);
-      background: var(--card-bg-color);
-      border-bottom: 4px solid var(--primary-color);
-      box-shadow: 0 -4px 10px var(--shadow-light);
-      transform: translateY(-2px);
+      color: #1666c1;
+      background: #fff;
+      border-bottom: 3px solid #1666c1;
     }
-    
+    /* ---------- Timestamp ---------- */
     .timestamp {
       text-align: center;
-      color: #777;
-      font-size: .9rem;
-      margin: 12px 0;
+      color: #444;
+      font-size: .95rem;
+      margin: 10px 0 12px;
     }
-
-    /***********************************************/
-    /* 3. 內容與表單 (Content & Forms)             */
-    /***********************************************/
+    /* ---------- Container ---------- */
     .tabcontent {
       max-width: 920px;
       margin: 0 auto 24px;
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeIn .5s ease forwards;
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .form-container {
-      background: var(--card-bg-color);
-      border-radius: 12px;
-      padding: 20px 16px;
-      box-shadow: 0 5px 25px var(--shadow-light);
-      transition: all .3s ease;
-    }
-    
-    fieldset {
-      margin-bottom: 20px;
-      border: 1.5px solid #dbe7f5;
+      background: #fff;
       border-radius: 8px;
-      background: #fcfdff;
-      padding: 12px 16px 16px;
-      transition: all .3s ease;
+      padding: 20px 16px;
+      box-shadow: 0 3px 18px rgba(138,179,233,.16);
     }
-    fieldset:hover {
-      transform: translateY(-3px);
-      border-color: #c3daf7;
-      box-shadow: 0 4px 15px var(--shadow-light);
+    @media(max-width:850px) {
+      .tabcontent {
+        padding: 16px 4vw;
+      }
+    }
+    /* ---------- Fieldset & Form ---------- */
+    fieldset {
+      margin-bottom: 18px;
+      border: 1.5px solid #c3daf7;
+      border-radius: 6px;
+      background: #f9fcff;
+      padding: 12px 16px 16px;
     }
     legend {
-      padding: 0 10px;
-      font-size: 1.2rem;
+      padding: 0 8px;
+      font-size: 1.15rem;
       font-weight: bold;
-      color: var(--primary-color);
+      color: #1666c1;
     }
-
     .row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      margin: 10px 0;
+      margin: 8px 0;
     }
     .row label {
       width: 100px;
@@ -148,7 +105,6 @@
       margin-right: 12px;
       white-space: nowrap;
       font-size: 1.02rem;
-      font-weight: 500;
     }
     .input-wrap {
       flex: 1;
@@ -156,461 +112,527 @@
       gap: 8px;
       align-items: center;
     }
-
     input, select {
       border: 1px solid #b8cef1;
-      border-radius: 6px;
-      padding: 8px 10px;
+      border-radius: 4px;
+      padding: 6px 8px;
       font-size: 1rem;
       box-sizing: border-box;
-      transition: all .3s ease;
+    }
+    select {
+      min-width: 100px;
       background: #fff;
     }
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(22, 102, 193, 0.2);
+    .step-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
-
-    select { min-width: 100px; }
-    .step-group { display: inline-flex; align-items: center; gap: 4px; }
-    .step-group input { width: 70px; text-align: right; }
-    
-    /* General Button Style */
-    .btn {
-      transition: all 0.3s ease !important;
-      font-weight: bold !important;
-      border-radius: 6px !important;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    .step-group input {
+      width: 70px;
+      text-align: right;
     }
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-    .btn:active {
-      transform: translateY(0px) !important;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
-    }
-    .btn-primary {
-      background: linear-gradient(45deg, #1a73e8, #1666c1) !important;
-      border-color: var(--primary-dark) !important;
-    }
-    .btn-secondary {
-      background-color: #6c757d !important;
-    }
-
     .btn-wrap button {
-      padding: 4px 8px; font-size: 14px; line-height: 1;
-      background: #fff; border: 1px solid #b8cef1; cursor: pointer;
+      padding: 4px 8px;
+      font-size: 14px;
+      line-height: 1;
+      background: #fff;
+      border: 1px solid #b8cef1;
+      cursor: pointer;
     }
-    
-    /***********************************************/
-    /* 4. 統計與圖表 (Stats & Charts)              */
-    /***********************************************/
+    /* ---------- 統計區 ---------- */
     .stat-area {
       margin: 28px 0 0;
-      padding: 20px;
-      background: #fdfdff;
-      border-radius: 12px;
-      box-shadow: 0 5px 25px var(--shadow-light);
-      display: none; /* Initially hidden */
-      opacity: 0;
+      display: flex;
       flex-direction: column;
       align-items: flex-start;
     }
-    .stat-area.show {
-        display: flex;
-        animation: fadeIn .6s ease forwards;
-    }
-    
     .stat-row {
-      font-size: 1.3rem; font-weight: bold; display: flex;
-      flex-wrap: wrap; gap: 20px; width: 100%;
+      font-size: 1.3rem;
+      font-weight: bold;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
     }
-    .stat-row .win  { color: var(--win-color); }
-    .stat-row .draw { color: var(--draw-color); }
-    .stat-row .lose { color: var(--lose-color); }
-
-    .stat-info { font-size: 1.05rem; margin: 8px 0 12px; }
-
+    .stat-row .win  { color: #e53b2d; }
+    .stat-row .draw { color: #27a146; }
+    .stat-row .lose { color: #2166d1; }
+    .stat-info {
+      font-size: 1.05rem;
+      margin: 6px 0 10px;
+    }
     .piebox {
-      width: 100%;
-      display: flex; align-items: center; gap: 32px;
-      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-top: 12px;
     }
-
-    /* Donut Chart Style */
     .piechart {
-      --w: 140px;
-      width: var(--w); height: var(--w);
-      border-radius: 50%;
-      position: relative;
-      display: grid;
-      place-items: center;
-      transition: all .3s ease;
+      width: 140px;
+      height: 140px;
     }
-    .piechart:hover { transform: scale(1.05); }
-    .piechart::before {
-      content: '';
-      position: absolute;
-      width: 70%; height: 70%;
-      background: #fff;
-      border-radius: 50%;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .pie-legend { margin-left: -12px; }
     .pie-legend div {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 1rem; margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1rem;
+      margin-bottom: 4px;
     }
     .pie-legend span {
-      display: inline-block; width: 16px; height: 16px;
+      display: inline-block;
+      width: 16px; height: 16px;
       border-radius: 50%;
     }
-    
-    /***********************************************/
-    /* 5. 表格與載入動畫 (Table & Loading)         */
-    /***********************************************/
+    /* ---------- 表格 ---------- */
     .table-wrap {
-      width: 100%; overflow-x: auto; margin-top: 24px;
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 20px;
     }
     table {
-      width: 100%; table-layout: fixed;
-      border-collapse: collapse; font-size: 1.05rem;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 3px 15px var(--shadow-light);
-      overflow: hidden;
-      opacity: 0;
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      font-size: 1.05rem;
     }
-    table.show {
-        animation: fadeIn .5s ease forwards;
-    }
-
     th, td {
-      border: 1px solid #e5e5e5; padding: 10px 8px;
-      text-align: center; word-wrap: break-word; white-space: normal;
+      border: 1px solid #e5e5e5;
+      padding: 8px 6px;
+      text-align: center;
+      word-wrap: break-word;
+      white-space: normal;
     }
     th {
-      background: var(--primary-light);
-      color: var(--primary-dark);
-      font-weight: bold;
+      background: #f2f6fb;
     }
-    tbody tr:nth-child(even) { background-color: #f9fbfd; }
-    tbody tr:hover { background-color: #f1f5fa; }
-    
-    /* Loading Overlay */
-    #loadingOverlay {
-      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-      background:rgba(255,255,255,.95); z-index:9999;
-    }
-    .loader {
-      width: 60px; height: 60px;
-      border: 6px solid var(--primary-light);
-      border-top-color: var(--primary-color);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /***********************************************/
-    /* 6. 響應式設計 (Responsive Design)             */
-    /***********************************************/
+    /* ---------- 手機響應 (優化後 v3) ---------- */
     @media (max-width: 768px) {
       .header h1 { font-size: 2rem; }
       .stat-row { font-size: 1.1rem; gap: 12px; }
-      .piebox { flex-direction: column; align-items: center; gap: 20px; }
-      .piechart { --w: 120px; }
-      .pie-legend { margin-left: 0; align-self: center; }
-      
-      .form-container { padding: 16px 4vw; }
+      .piebox { flex-wrap: wrap; gap: 12px; }
+      .piechart { width: 120px; height: 120px; }
       table { font-size: .85rem; }
 
-      .row { flex-wrap: nowrap; gap: 6px; }
+      /* --- 表單同行排版邏輯 --- */
+      .row {
+        flex-wrap: nowrap;
+        gap: 6px;
+      }
+
       fieldset .row label {
-        width: auto; text-align: left;
-        margin-right: 0; flex-shrink: 0;
+        width: auto;
+        text-align: left;
+        margin-right: 0;
+        flex-shrink: 0;
       }
+      
       .input-wrap {
-        display: flex; flex-wrap: nowrap; align-items: center;
-        gap: 4px; min-width: 0;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
       }
-      .input-wrap > select,
+      
+      .input-wrap > select {
+          flex: 1 1 auto;
+          min-width: 0;
+      }
+
       .input-wrap > input[placeholder="精確值"] {
-        flex: 1 1 auto; min-width: 0;
+        flex: 1 1 auto;
+        min-width: 0;
       }
-      .input-wrap > span { flex-shrink: 0; }
+
+      .input-wrap > span {
+          flex-shrink: 0;
+      }
+      
       .step-group {
-        display: flex; align-items: center;
-        flex-shrink: 0; gap: 4px;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        gap: 4px;
       }
-      .step-group input { width: 55px; flex-shrink: 0; }
+
+      .step-group input {
+        width: 55px;
+        flex-shrink: 0;
+      }
+      
+      .btn-wrap button {
+          padding: 4px 6px;
+      }
+    }
+  
+    #ahTable, #ouTable, #euTable {
+      display: none;
     }
   </style>
-</head>
-<body>
+<style>
+#loadingOverlay{
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.92); z-index:9999; color:#1666c1; font-size:1.05rem;
+}
+</style>
+<style>
+#loadingOverlay{
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.92); z-index:9999; color:#1666c1; font-size:1.05rem;
+}
+</style>
+<style id="fx-3d-safe">
+/* ===== Minimal FX (Safe) ===== */
+:root{
+  --brand:#1666c1; --ink:#0ea5e9;
+}
+.header{
+  position:relative;
+  background: linear-gradient(135deg,#1155ab 0%,#1a78db 40%,#16a1e6 100%);
+  background-size: 300% 300%;
+  animation: headerGrad 12s ease-in-out infinite;
+  box-shadow: inset 0 -8px 20px rgba(0,0,0,.06);
+}
+@keyframes headerGrad{
+  0%{ background-position: 0% 50%; }
+  50%{ background-position: 100% 50%; }
+  100%{ background-position: 0% 50%; }
+}
+.tabbar{ position:relative; overflow:hidden; background:rgba(255,255,255,.92); backdrop-filter: blur(6px); }
+.tabbar button{ position:relative; }
+.tab-ink{
+  position:absolute; left:0; bottom:0; height:3px; width:0; border-radius:3px;
+  background: linear-gradient(90deg,var(--ink),#60a5fa);
+  box-shadow: 0 2px 10px rgba(14,165,233,.6);
+  transition: transform .35s ease, width .35s ease, left .35s ease;
+}
+/* Button ripple (pure cosmetic) */
+button.btn, .btn{ position:relative; overflow:hidden; transform: translateZ(0); }
+.fx-ripple{
+  position:absolute; border-radius:50%; pointer-events:none; width:10px; height:10px; opacity:.35;
+  background:radial-gradient(circle, rgba(255,255,255,.9) 0%, rgba(255,255,255,.2) 60%, transparent 70%);
+  transform: translate(-50%,-50%) scale(0);
+  animation: ripple .6s ease-out forwards;
+}
+@keyframes ripple{
+  to{ transform: translate(-50%,-50%) scale(18); opacity:0; }
+}
+/* Loading spinner */
+#loadingOverlay{
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.92); z-index:9999; color:var(--brand);
+  gap:14px; font-size:1.05rem;
+}
+.spinner3d{
+  width:28px; height:28px; border-radius:50%;
+  border:3px solid rgba(22,102,193,.18); border-top-color: var(--brand);
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 20px rgba(22,102,193,.25), inset 0 0 10px rgba(22,102,193,.1);
+}
+@keyframes spin{ to { transform: rotate(360deg); } }
+/* Safety: never hide content */
+.reveal{ opacity:1 !important; transform:none !important; }
+</style></head>
+<body><div aria-live="polite" id="loadingOverlay" role="alert"><div class="spinner3d"></div><span class="loading-text">資料載入中…</span></div>
 
-<div id="loadingOverlay" role="alert" aria-live="polite">
-  <div class="loader"></div>
-</div>
 
-  <div class="header">
-    <h1>足球歷史賠率篩選</h1>
-    <div class="desc">
+<div class="header">
+<h1>足球歷史賠率篩選</h1>
+<div class="desc">
       根據初盤、終盤所有條件組合快速篩選比賽。（2013-2025）
     </div>
-  </div>
-
-  <div class="tabbar">
-    <button id="tab1" class="active" onclick="showTab(0)">亞洲盤查詢</button>
-    <button id="tab2" onclick="showTab(1)">大小球查詢</button>
-    <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
-  </div>
-
-  <div class="timestamp" id="ts">
+</div>
+<div class="tabbar">
+<button class="active" id="tab1" onclick="showTab(0)">亞洲盤查詢</button>
+<button id="tab2" onclick="showTab(1)">大小球查詢</button>
+<button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
+<span class="tab-ink" id="tabInk"></span></div>
+<div class="timestamp" id="ts">
     版本時間：2025/08/01 上午 00:00:00 (GMT+8)
   </div>
-  
-  <div id="tc1" class="tabcontent">
-    <div class="form-container">
-      <form id="ahForm">
-        <fieldset><legend>初盤</legend>
-          <div class="row">
-          <label>盤口：</label>
-          <div class="input-wrap"><select id="ahInitHand"></select></div>
-        </div>
-        <div class="row">
-          <label>主隊賠率：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="ahHomeExact" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="ahHomeErr" value="0.05">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <label>客隊賠率：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="ahAwayExact" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="ahAwayErr" value="0.05">
-            </div>
-          </div>
-        </div>
-        </fieldset>
-        <fieldset><legend>終盤</legend>
-          <div class="row">
-          <label>盤口：</label>
-          <div class="input-wrap"><select id="ahCloseHand"></select></div>
-        </div>
-        <div class="row">
-          <label>主隊賠率：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="ahCloseHomeExact" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="ahCloseHomeErr" value="0.05">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <label>客隊賠率：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="ahCloseAwayExact" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="ahCloseAwayErr" value="0.05">
-            </div>
-          </div>
-        </div>
-        </fieldset>
-        
-        <div class="d-flex justify-content-center gap-3 mt-4">
-          <button type="button" class="btn btn-primary px-4 py-2" onclick="doAhSearch()">搜尋</button>
-          <button type="button" id="resetAhBtn" class="btn btn-secondary px-4 py-2">重設</button>
-        </div>
-      </form>
-    </div>
-    <div class="stat-area" id="ahStat"></div>
-    <div class="text-center mt-4">
-        <button type="button" id="showAhListBtn" class="btn btn-outline-primary" style="display: none;">輸出比賽列表</button>
-    </div>
-    <div class="table-wrap">
-      <table id="ahTable" style="display:none">
-        <thead>
-          <tr>
-            <th>賽季</th><th>比賽</th>
-            <th>初盤盤口</th><th>初盤主賠</th><th>初盤客賠</th>
-            <th>終盤盤口</th><th>終盤主賠</th><th>終盤客賠</th><th>盤口勝負</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div id="tc2" class="tabcontent" style="display:none">
-    <div class="form-container">
-      <form id="ouForm">
-        <fieldset><legend>初盤</legend>
-          <div class="row">
-          <label>盤口：</label>
-          <div class="input-wrap"><select id="ouInitLine"></select></div>
-        </div>
-        <div class="row">
-          <label>大球賠率：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="ouBigExact" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="ouBigErr" value="0.05">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <label>細球賠率：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="ouSmallExact" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="ouSmallErr" value="0.05">
-            </div>
-          </div>
-        </div>
-        </fieldset>
-        <fieldset><legend>終盤</legend>
-          <div class="row">
-          <label>盤口：</label>
-          <div class="input-wrap"><select id="ouCloseLine"></select></div>
-        </div>
-        <div class="row">
-          <label>大球賠率：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="ouBigExactC" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="ouBigErrC" value="0.05">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <label>細球賠率：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="ouSmallExactC" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="ouSmallErrC" value="0.05">
-            </div>
-          </div>
-        </div>
-        </fieldset>
-        
-        <div class="d-flex justify-content-center gap-3 mt-4">
-          <button type="button" class="btn btn-primary px-4 py-2" onclick="doOuSearch()">搜尋</button>
-          <button type="button" id="resetOuBtn" class="btn btn-secondary px-4 py-2">重設</button>
-        </div>
-      </form>
-    </div>
-    <div class="stat-area" id="ouStat"></div>
-    <div class="text-center mt-4">
-        <button type="button" id="showOuListBtn" class="btn btn-outline-primary" style="display: none;">輸出比賽列表</button>
-    </div>
-    <div class="table-wrap">
-      <table id="ouTable" style="display:none">
-        <thead>
-          <tr>
-            <th>賽季</th><th>比賽</th><th>初盤盤口</th><th>初盤大</th><th>初盤細</th>
-            <th>終盤盤口</th><th>終盤大</th><th>終盤細</th><th>結果</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div id="tc3" class="tabcontent" style="display:none">
-    <div class="form-container">
-      <form id="euForm">
-        <fieldset><legend>初盤</legend>
-          <div class="row">
-          <label>主勝：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="euHomeExact" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="euHomeErr" value="0.05">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <label>和局：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="euDrawExact" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="euDrawErr" value="0.05">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <label>客勝：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="euAwayExact" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="euAwayErr" value="0.05">
-            </div>
-          </div>
-        </div>
-        </fieldset>
-        <fieldset><legend>終盤</legend>
-          <div class="row">
-          <label>主勝：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="euHomeExactC" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="euHomeErrC" value="0.05">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <label>和局：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="euDrawExactC" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="euDrawErrC" value="0.05">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <label>客勝：</label>
-          <div class="input-wrap">
-            <input type="number" step="0.01" id="euAwayExactC" placeholder="精確值"><span>±</span>
-            <div class="step-group">
-              <input type="number" step="0.01" id="euAwayErrC" value="0.05">
-            </div>
-          </div>
-        </div>
-        </fieldset>
-        
-        <div class="d-flex justify-content-center gap-3 mt-4">
-          <button type="button" class="btn btn-primary px-4 py-2" onclick="doEuSearch()">搜尋</button>
-          <button type="button" id="resetEuBtn" class="btn btn-secondary px-4 py-2">重設</button>
-        </div>
-      </form>
-    </div>
-    <div class="stat-area" id="euStat"></div>
-    <div class="text-center mt-4">
-      <button type="button" id="showEuListBtn" class="btn btn-outline-primary" style="display: none;">輸出比賽列表</button>
-    </div>
-    <div class="table-wrap">
-      <table id="euTable" style="display:none">
-        <thead><tr>
-          <th>賽季</th><th>比賽</th><th>初盤(主/和/客)</th><th>終盤(主/和/客)</th>
-          <th>比分</th><th>勝負</th><th>淨勝球</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  
-   <script>
+<div class="tabcontent" id="tc1">
+<form id="ahForm">
+<fieldset><legend>初盤</legend>
+<div class="row">
+<label>盤口：</label>
+<div class="input-wrap"><select id="ahInitHand"></select></div>
+</div>
+<div class="row">
+<label>主隊賠率：</label>
+<div class="input-wrap">
+<input id="ahHomeExact" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="ahHomeErr" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('ahHomeErr',0.05)" type="button">▲</button>
+<button onclick="stepErr('ahHomeErr',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<label>客隊賠率：</label>
+<div class="input-wrap">
+<input id="ahAwayExact" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="ahAwayErr" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('ahAwayErr',0.05)" type="button">▲</button>
+<button onclick="stepErr('ahAwayErr',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+</fieldset>
+<fieldset><legend>終盤</legend>
+<div class="row">
+<label>盤口：</label>
+<div class="input-wrap"><select id="ahCloseHand"></select></div>
+</div>
+<div class="row">
+<label>主隊賠率：</label>
+<div class="input-wrap">
+<input id="ahCloseHomeExact" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="ahCloseHomeErr" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('ahCloseHomeErr',0.05)" type="button">▲</button>
+<button onclick="stepErr('ahCloseHomeErr',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<label>客隊賠率：</label>
+<div class="input-wrap">
+<input id="ahCloseAwayExact" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="ahCloseAwayErr" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('ahCloseAwayErr',0.05)" type="button">▲</button>
+<button onclick="stepErr('ahCloseAwayErr',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+</fieldset>
+<div class="d-flex justify-content-center gap-2 mt-4">
+<button class="btn btn-primary" onclick="doAhSearch()" type="button">搜尋</button>
+<button class="btn btn-secondary" id="resetAhBtn" type="button">重設</button>
+</div>
+</form>
+<div class="stat-area" id="ahStat"></div>
+<div class="text-center mt-4">
+<button class="btn btn-primary" id="showAhListBtn" style="display: none;" type="button">輸出比賽列表</button>
+</div>
+<div class="table-wrap">
+<table id="ahTable">
+<thead>
+<tr>
+<th>賽季</th><th>比賽</th>
+<th>初盤盤口</th><th>初盤主賠</th><th>初盤客賠</th>
+<th>終盤盤口</th><th>終盤主賠</th><th>終盤客賠</th><th>盤口勝負</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+<div class="tabcontent" id="tc2" style="display:none">
+<form id="ouForm">
+<fieldset><legend>初盤</legend>
+<div class="row">
+<label>盤口：</label>
+<div class="input-wrap"><select id="ouInitLine"></select></div>
+</div>
+<div class="row">
+<label>大球賠率：</label>
+<div class="input-wrap">
+<input id="ouBigExact" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="ouBigErr" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('ouBigErr',0.05)" type="button">▲</button>
+<button onclick="stepErr('ouBigErr',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<label>細球賠率：</label>
+<div class="input-wrap">
+<input id="ouSmallExact" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="ouSmallErr" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('ouSmallErr',0.05)" type="button">▲</button>
+<button onclick="stepErr('ouSmallErr',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+</fieldset>
+<fieldset><legend>終盤</legend>
+<div class="row">
+<label>盤口：</label>
+<div class="input-wrap"><select id="ouCloseLine"></select></div>
+</div>
+<div class="row">
+<label>大球賠率：</label>
+<div class="input-wrap">
+<input id="ouBigExactC" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="ouBigErrC" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('ouBigErrC',0.05)" type="button">▲</button>
+<button onclick="stepErr('ouBigErrC',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<label>細球賠率：</label>
+<div class="input-wrap">
+<input id="ouSmallExactC" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="ouSmallErrC" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('ouSmallErrC',0.05)" type="button">▲</button>
+<button onclick="stepErr('ouSmallErrC',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+</fieldset>
+<div class="d-flex justify-content-center gap-2 mt-4">
+<button class="btn btn-primary" onclick="doOuSearch()" type="button">搜尋</button>
+<button class="btn btn-secondary" id="resetOuBtn" type="button">重設</button>
+</div>
+</form>
+<div class="stat-area" id="ouStat"></div>
+<div class="text-center mt-4">
+<button class="btn btn-primary" id="showOuListBtn" style="display: none;" type="button">輸出比賽列表</button>
+</div>
+<div class="table-wrap">
+<table id="ouTable">
+<thead>
+<tr>
+<th>賽季</th><th>比賽</th><th>初盤盤口</th><th>初盤大</th><th>初盤細</th>
+<th>終盤盤口</th><th>終盤大</th><th>終盤細</th><th>結果</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+<div class="tabcontent" id="tc3" style="display:none">
+<form id="euForm">
+<fieldset><legend>初盤</legend>
+<div class="row">
+<label>主勝：</label>
+<div class="input-wrap">
+<input id="euHomeExact" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="euHomeErr" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('euHomeErr',0.05)" type="button">▲</button>
+<button onclick="stepErr('euHomeErr',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<label>和局：</label>
+<div class="input-wrap">
+<input id="euDrawExact" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="euDrawErr" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('euDrawErr',0.05)" type="button">▲</button>
+<button onclick="stepErr('euDrawErr',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<label>客勝：</label>
+<div class="input-wrap">
+<input id="euAwayExact" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="euAwayErr" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('euAwayErr',0.05)" type="button">▲</button>
+<button onclick="stepErr('euAwayErr',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+</fieldset>
+<fieldset><legend>終盤</legend>
+<div class="row">
+<label>主勝：</label>
+<div class="input-wrap">
+<input id="euHomeExactC" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="euHomeErrC" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('euHomeErrC',0.05)" type="button">▲</button>
+<button onclick="stepErr('euHomeErrC',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<label>和局：</label>
+<div class="input-wrap">
+<input id="euDrawExactC" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="euDrawErrC" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('euDrawErrC',0.05)" type="button">▲</button>
+<button onclick="stepErr('euDrawErrC',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<label>客勝：</label>
+<div class="input-wrap">
+<input id="euAwayExactC" placeholder="精確值" step="0.01" type="number"/><span>±</span>
+<div class="step-group">
+<input id="euAwayErrC" step="0.01" type="number" value="0.05"/>
+<div class="btn-wrap">
+<button onclick="stepErr('euAwayErrC',0.05)" type="button">▲</button>
+<button onclick="stepErr('euAwayErrC',-0.05)" type="button">▼</button>
+</div>
+</div>
+</div>
+</div>
+</fieldset>
+<div class="d-flex justify-content-center gap-2 mt-4">
+<button class="btn btn-primary" onclick="doEuSearch()" type="button">搜尋</button>
+<button class="btn btn-secondary" id="resetEuBtn" type="button">重設</button>
+</div>
+</form>
+<div class="stat-area" id="euStat"></div>
+<div class="text-center mt-4">
+<button class="btn btn-primary" id="showEuListBtn" style="display: none;" type="button">輸出比賽列表</button>
+</div>
+<div class="table-wrap">
+<table id="euTable">
+<thead><tr>
+<th>賽季</th><th>比賽</th><th>初盤(主/和/客)</th><th>終盤(主/和/客)</th>
+<th>比分</th><th>勝負</th><th>淨勝球</th>
+</tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+<script>
     /***********************************************/
     /* 1. 全局變數與設定 (Global Variables & Config) */
     /***********************************************/
+    // 統一宣告全局變數，用 null 初始化，表示資料未載入
     let AH = null, OU = null, EU = null;
     let lastAhResult = [], lastOuResult = [], lastEuResult = [];
 
@@ -619,10 +641,6 @@
       overUnder: { base: 'over_under',     subdir: '' },
       european:  { base: 'european_odds',  subdir: '' }
     };
-    
-    // --- 美化效果相關變數 ---
-    const TABS = ["tab1", "tab2", "tab3"];
-    const TAB_CONTENTS = ["tc1", "tc2", "tc3"];
 
     /***********************************************/
     /* 2. 核心功能與輔助函數 (Core & Helper Functions) */
@@ -631,33 +649,24 @@
     /* ===== Loading Overlay Control ===== */
     const overlay = document.getElementById('loadingOverlay');
     const __showLoading = () => { if(overlay) overlay.style.display = 'flex'; };
-    const __hideLoading = () => {
-        if(overlay) {
-            overlay.style.opacity = '0';
-            setTimeout(() => { overlay.style.display = 'none'; }, 300);
-        }
-    };
+    const __hideLoading = () => { if(overlay) overlay.style.display = 'none'; };
     
-    /* ===== Tabs UI (with Animation) ===== */
+    /* ===== Tabs UI ===== */
     function showTab(i) {
-      TABS.forEach((id, idx) => {
+      ["tab1", "tab2", "tab3"].forEach((id, idx) => {
         document.getElementById(id).classList.toggle("active", idx === i);
-      });
-      TAB_CONTENTS.forEach((id, idx) => {
-        const el = document.getElementById(id);
-        if (idx === i) {
-          el.style.display = "block";
-          // force reflow to restart animation
-          void el.offsetWidth; 
-          el.classList.add('fadeIn');
-        } else {
-          el.style.display = "none";
-          el.classList.remove('fadeIn');
-        }
+        document.getElementById("tc" + (idx + 1)).style.display = idx === i ? "block" : "none";
       });
     }
 
     /* ===== Form & Input Helpers ===== */
+    function stepErr(id, delta) {
+      const el = document.getElementById(id);
+      let v = parseFloat(el.value) || 0;
+      v = Math.max(0, +(v + delta).toFixed(2));
+      el.value = v.toFixed(2);
+    }
+
     function range(exId, erId) {
       const ex = parseFloat(document.getElementById(exId).value),
             er = parseFloat(document.getElementById(erId).value) || 0;
@@ -669,31 +678,48 @@
       return t ? ((n / t * 100).toFixed(1) + '%') : '0.0%';
     }
 
-    /* ===== Pie Chart Drawer (Upgraded to Donut Chart) ===== */
-    function drawDonutChart(data) {
-        const total = data.reduce((s, x) => s + x.val, 0);
-        if (!total) return '<div class="piechart"></div>';
+    /* ===== Pie Chart Drawer ===== */
+    function drawPieChart(data) {
+      const total = data.reduce((s, x) => s + x.val, 0);
+      if (!total) return '<svg class="piechart"></svg>';
 
-        let cumulativePercent = 0;
-        const gradients = data.filter(d => d.val > 0).map(d => {
-            const percent = d.val / total * 100;
-            const start = cumulativePercent;
-            const end = cumulativePercent + percent;
-            cumulativePercent += percent;
-            return `${d.color} ${start}% ${end}%`;
-        }).join(', ');
-        
-        return `<div class="piechart" style="background: conic-gradient(${gradients});"></div>`;
+      const sz = 140, r = sz / 2 - 5, cx = sz / 2, cy = sz / 2;
+      const slices = data.filter(d => d.val > 0);
+
+      if (slices.length === 1) {
+        return `<svg class="piechart" viewBox="0 0 ${sz} ${sz}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${slices[0].color}"></circle></svg>`;
+      }
+      
+      let currentAngle = -Math.PI / 2;
+      const paths = slices.map(slice => {
+        const sliceAngle = (slice.val / total) * 2 * Math.PI;
+        const startAngle = currentAngle;
+        const endAngle = currentAngle + sliceAngle;
+        const x1 = cx + r * Math.cos(startAngle);
+        const y1 = cy + r * Math.sin(startAngle);
+        const x2 = cx + r * Math.cos(endAngle);
+        const y2 = cy + r * Math.sin(endAngle);
+        const largeArcFlag = sliceAngle > Math.PI ? 1 : 0;
+        currentAngle = endAngle;
+        return `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z" fill="${slice.color}"></path>`;
+      }).join('');
+
+      return `<svg class="piechart" viewBox="0 0 ${sz} ${sz}">${paths}</svg>`;
     }
     
     /* ===== EU Odds Compatibility Helper ===== */
+    // 為歐洲盤提供欄位兼容性，可以讀取 EU_* 或 1X2_*
     function getEU(r, which) {
       const map = {
-        open_home: ['EU_open_home_odds', '1X2_open_home_odds'], open_draw: ['EU_open_draw_odds', '1X2_open_draw_odds'],
-        open_away: ['EU_open_away_odds', '1X2_open_away_odds'], close_home: ['EU_close_home_odds', '1X2_close_home_odds'],
-        close_draw: ['EU_close_draw_odds', '1X2_close_draw_odds'], close_away: ['EU_close_away_odds', '1X2_close_away_odds'],
+        open_home: ['EU_open_home_odds', '1X2_open_home_odds'],
+        open_draw: ['EU_open_draw_odds', '1X2_open_draw_odds'],
+        open_away: ['EU_open_away_odds', '1X2_open_away_odds'],
+        close_home: ['EU_close_home_odds', '1X2_close_home_odds'],
+        close_draw: ['EU_close_draw_odds', '1X2_close_draw_odds'],
+        close_away: ['EU_close_away_odds', '1X2_close_away_odds'],
       };
-      for (const k of map[which] || []) { if (r[k] != null) return r[k]; }
+      const keys = map[which] || [];
+      for (const k of keys) { if (r[k] != null) return r[k]; }
       return null;
     }
 
@@ -701,6 +727,8 @@
     /***********************************************/
     /* 3. 資料載入邏輯 (Data Loading Logic)           */
     /***********************************************/
+
+    /* ===== Trailing-number chunk loader ===== */
     async function loadWithTrailingNumbers(base, { subdir = '', maxParts = 10 } = {}) {
       const prefix = subdir ? (subdir.replace(/\/$/, '') + '/') : '';
       const urls = [`${prefix}${base}.json`];
@@ -709,7 +737,11 @@
       const results = await Promise.allSettled(
         urls.map(u => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null))
       );
-      return results.flatMap(r => (r.status === 'fulfilled' && Array.isArray(r.value)) ? r.value : []);
+      const merged = [];
+      for (const r of results) {
+        if (r.status === 'fulfilled' && Array.isArray(r.value)) merged.push(...r.value);
+      }
+      return merged;
     }
 
     /* ===== Datasets getters (lazy + cache) ===== */
@@ -729,6 +761,8 @@
     /***********************************************/
     /* 4. 初始化與搜尋邏輯 (Initialization & Search) */
     /***********************************************/
+
+    /* ===== Fill Select Options ===== */
     function fillSelect(id, set) {
       const arr = Array.from(set).filter(v => v != null).sort((a, b) => a - b);
       document.getElementById(id).innerHTML =
@@ -737,30 +771,29 @@
     }
 
     function initAll() {
-      if (!AH || !OU || !EU) { console.error("Data not loaded yet!"); return; }
+      // 確保資料已載入
+      if (!AH || !OU || !EU) {
+        console.error("Data not loaded yet!");
+        return;
+      }
       fillSelect('ahInitHand', new Set(AH.map(r => r.AH_open_handicap)));
       fillSelect('ahCloseHand', new Set(AH.map(r => r.AH_close_handicap)));
       fillSelect('ouInitLine', new Set(OU.map(r => r.OU_line)));
       fillSelect('ouCloseLine', new Set(OU.map(r => r.close_OU_line)));
     }
     
-    function showStatArea(statElId, htmlContent) {
-        const statEl = document.getElementById(statElId);
-        statEl.innerHTML = htmlContent;
-        statEl.classList.remove('show');
-        // Force reflow to restart animation
-        void statEl.offsetWidth;
-        statEl.classList.add('show');
-    }
-
-    /* ===== Search Functions (with animation trigger) ===== */
+    /* ===== Search Functions ===== */
     function doAhSearch() {
-      const [hMin, hMax] = range('ahHomeExact', 'ahHomeErr'), [aMin, aMax] = range('ahAwayExact', 'ahAwayErr'),
-            [hMinC, hMaxC] = range('ahCloseHomeExact', 'ahCloseHomeErr'), [aMinC, aMaxC] = range('ahCloseAwayExact', 'ahCloseAwayErr'),
-            selO = document.getElementById('ahInitHand').value, selC = document.getElementById('ahCloseHand').value;
+      const [hMin, hMax] = range('ahHomeExact', 'ahHomeErr'),
+            [aMin, aMax] = range('ahAwayExact', 'ahAwayErr'),
+            [hMinC, hMaxC] = range('ahCloseHomeExact', 'ahCloseHomeErr'),
+            [aMinC, aMaxC] = range('ahCloseAwayExact', 'ahCloseAwayErr'),
+            selO = document.getElementById('ahInitHand').value,
+            selC = document.getElementById('ahCloseHand').value;
 
       lastAhResult = AH.filter(r => {
-        if (selO && r.AH_open_handicap != +selO) return false; if (selC && r.AH_close_handicap != +selC) return false;
+        if (selO && r.AH_open_handicap != +selO) return false;
+        if (selC && r.AH_close_handicap != +selC) return false;
         if (hMin !== null && (r.AH_open_home_odds < hMin || r.AH_open_home_odds > hMax)) return false;
         if (aMin !== null && (r.AH_open_away_odds < aMin || r.AH_open_away_odds > aMax)) return false;
         if (hMinC !== null && (r.AH_close_home_odds < hMinC || r.AH_close_home_odds > hMaxC)) return false;
@@ -772,32 +805,41 @@
       lastAhResult.forEach(r => {
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs + r.AH_close_handicap - as;
-        if (diff > 0.01) w++; else if (diff < -0.01) l++; else d++;
+        if (diff > 0) w++; else if (diff < 0) l++; else d++;
       });
+
       const tot = lastAhResult.length;
-      const html = `
+      document.getElementById('ahStat').innerHTML = `
         <div class="stat-row">
-          <span class="win">贏盤 ${w} (${pct(w, tot)})</span><span class="draw">走盤 ${d} (${pct(d, tot)})</span><span class="lose">輸盤 ${l} (${pct(l, tot)})</span>
+          <span class="win">贏盤 ${w} (${pct(w, tot)})</span>
+          <span class="draw">和盤 ${d} (${pct(d, tot)})</span>
+          <span class="lose">輸盤 ${l} (${pct(l, tot)})</span>
         </div>
         <div class="stat-info">總場數：${tot}</div>
         <div class="piebox">
-          ${drawDonutChart([{ label: '贏盤', val: w, color: '#e53b2d' }, { label: '走盤', val: d, color: '#27a146' }, { label: '輸盤', val: l, color: '#2166d1' }])}
+          ${drawPieChart([{ label: '贏盤', val: w, color: '#e53b2d' }, { label: '和盤', val: d, color: '#27a146' }, { label: '輸盤', val: l, color: '#2166d1' }])}
           <div class="pie-legend">
-            <div><span style="background:#e53b2d"></span>贏盤 (${w})</div><div><span style="background:#27a146"></span>走盤 (${d})</div><div><span style="background:#2166d1"></span>輸盤 (${l})</div>
+            <div><span style="background:#e53b2d"></span>贏盤</div>
+            <div><span style="background:#27a146"></span>和盤</div>
+            <div><span style="background:#2166d1"></span>輸盤</div>
           </div>
         </div>`;
-      showStatArea('ahStat', html);
+      
       document.getElementById('ahTable').style.display = 'none';
       document.getElementById('showAhListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
     }
 
     function doOuSearch() {
-      const selO = document.getElementById('ouInitLine').value, selC = document.getElementById('ouCloseLine').value,
-            [bMin, bMax] = range('ouBigExact', 'ouBigErr'), [sMin, sMax] = range('ouSmallExact', 'ouSmallErr'),
-            [bMinC, bMaxC] = range('ouBigExactC', 'ouBigErrC'), [sMinC, sMaxC] = range('ouSmallExactC', 'ouSmallErrC');
-      
+      const selO = document.getElementById('ouInitLine').value,
+            selC = document.getElementById('ouCloseLine').value;
+      const [bMin, bMax] = range('ouBigExact', 'ouBigErr'),
+            [sMin, sMax] = range('ouSmallExact', 'ouSmallErr'),
+            [bMinC, bMaxC] = range('ouBigExactC', 'ouBigErrC'),
+            [sMinC, sMaxC] = range('ouSmallExactC', 'ouSmallErrC');
+
       lastOuResult = OU.filter(r => {
-        if (selO && r.OU_line != +selO) return false; if (selC && r.close_OU_line != +selC) return false;
+        if (selO && r.OU_line != +selO) return false;
+        if (selC && r.close_OU_line != +selC) return false;
         if (bMin !== null && (r.OU_open_over_odds < bMin || r.OU_open_over_odds > bMax)) return false;
         if (sMin !== null && (r.OU_open_under_odds < sMin || r.OU_open_under_odds > sMax)) return false;
         if (bMinC !== null && (r.OU_close_over_odds < bMinC || r.OU_close_over_odds > bMaxC)) return false;
@@ -808,30 +850,39 @@
       let over = 0, push = 0, under = 0;
       lastOuResult.forEach(r => {
         const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
-        const diff = sum - r.close_OU_line;
-        if (diff > 0.01) over++; else if (diff < -0.01) under++; else push++;
+        if (sum > r.close_OU_line) over++;
+        else if (sum < r.close_OU_line) under++;
+        else push++;
       });
+
       const tot = lastOuResult.length;
-      const html = `
+      document.getElementById('ouStat').innerHTML = `
         <div class="stat-row">
-          <span class="win">大球 ${over} (${pct(over, tot)})</span><span class="draw">走盤 ${push} (${pct(push, tot)})</span><span class="lose">小球 ${under} (${pct(under, tot)})</span>
+          <span class="win">大球 ${over} (${pct(over, tot)})</span>
+          <span class="draw">走盤 ${push} (${pct(push, tot)})</span>
+          <span class="lose">小球 ${under} (${pct(under, tot)})</span>
         </div>
         <div class="stat-info">總場數：${tot}</div>
         <div class="piebox">
-          ${drawDonutChart([{ label: '大球', val: over, color: '#e53b2d' }, { label: '走盤', val: push, color: '#27a146' }, { label: '小球', val: under, color: '#2166d1' }])}
+          ${drawPieChart([{ label: '大球', val: over, color: '#e53b2d' }, { label: '走盤', val: push, color: '#27a146' }, { label: '小球', val: under, color: '#2166d1' }])}
           <div class="pie-legend">
-            <div><span style="background:#e53b2d"></span>大球 (${over})</div><div><span style="background:#27a146"></span>走盤 (${push})</div><div><span style="background:#2166d1"></span>小球 (${under})</div>
+            <div><span style="background:#e53b2d"></span>大球</div>
+            <div><span style="background:#27a146"></span>走盤</div>
+            <div><span style="background:#2166d1"></span>小球</div>
           </div>
         </div>`;
-      showStatArea('ouStat', html);
+      
       document.getElementById('ouTable').style.display = 'none';
       document.getElementById('showOuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
     }
 
     function doEuSearch() {
-      const [hMin, hMax] = range('euHomeExact', 'euHomeErr'), [dMin, dMax] = range('euDrawExact', 'euDrawErr'),
-            [aMin, aMax] = range('euAwayExact', 'euAwayErr'), [hMinC, hMaxC] = range('euHomeExactC', 'euHomeErrC'),
-            [dMinC, dMaxC] = range('euDrawExactC', 'euDrawErrC'), [aMinC, aMaxC] = range('euAwayExactC', 'euAwayErrC');
+      const [hMin, hMax] = range('euHomeExact', 'euHomeErr'),
+            [dMin, dMax] = range('euDrawExact', 'euDrawErr'),
+            [aMin, aMax] = range('euAwayExact', 'euAwayErr'),
+            [hMinC, hMaxC] = range('euHomeExactC', 'euHomeErrC'),
+            [dMinC, dMaxC] = range('euDrawExactC', 'euDrawErrC'),
+            [aMinC, aMaxC] = range('euAwayExactC', 'euAwayErrC');
 
       lastEuResult = EU.filter(r => {
         const oH = getEU(r, 'open_home'); if (hMin !== null && (oH < hMin || oH > hMax)) return false;
@@ -847,59 +898,84 @@
       lastEuResult.forEach(r => {
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs - as;
-        if (diff > 0) { w++; if (diff === 1) d1++; else if (diff === 2) d2++; else d3++; } 
-        else if (diff < 0) { l++; } else { d++; }
+        if (diff > 0) {
+          w++;
+          if (diff === 1) d1++; else if (diff === 2) d2++; else d3++;
+        } else if (diff < 0) {
+          l++;
+        } else {
+          d++;
+        }
       });
+
       const tot = lastEuResult.length;
-      const html = `
+      document.getElementById('euStat').innerHTML = `
         <div class="stat-row">
-          <span class="win">主勝 ${w} (${pct(w, tot)})</span><span class="draw">和局 ${d} (${pct(d, tot)})</span><span class="lose">客勝 ${l} (${pct(l, tot)})</span>
+          <span class="win">主勝 ${w} (${pct(w, tot)})</span>
+          <span class="draw">和局 ${d} (${pct(d, tot)})</span>
+          <span class="lose">客勝 ${l} (${pct(l, tot)})</span>
         </div>
-        <div class="stat-info">總場數：${tot}<br>主勝淨勝球 ➜ 1球:${d1} | 2球:${d2} | 3+球:${d3}</div>
+        <div class="stat-info">
+          總場數：${tot}<br>
+          主勝淨勝球 ➜ 1球:${d1} | 2球:${d2} | 3+球:${d3}
+        </div>
         <div class="piebox">
-          ${drawDonutChart([{ label: '主勝', val: w, color: '#e53b2d' }, { label: '和局', val: d, color: '#27a146' }, { label: '客勝', val: l, color: '#2166d1' }])}
+          ${drawPieChart([{ label: '主勝', val: w, color: '#e53b2d' }, { label: '和局', val: d, color: '#27a146' }, { label: '客勝', val: l, color: '#2166d1' }])}
           <div class="pie-legend">
-            <div><span style="background:#e53b2d"></span>主勝 (${w})</div><div><span style="background:#27a146"></span>和局 (${d})</div><div><span style="background:#2166d1"></span>客勝 (${l})</div>
+            <div><span style="background:#e53b2d"></span>主勝</div>
+            <div><span style="background:#27a146"></span>和局</div>
+            <div><span style="background:#2166d1"></span>客勝</div>
           </div>
         </div>`;
-      showStatArea('euStat', html);
+        
       document.getElementById('euTable').style.display = 'none';
       document.getElementById('showEuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
     }
-    
+
     /***********************************************/
     /* 5. 事件監聽 (Event Listeners)               */
     /***********************************************/
+    
+    /* ===== Render Table Listeners ===== */
     function confirmAndRender(resultArray, tableId, renderFn) {
       if (resultArray.length > 20000) {
-        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) return;
+        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
+          return;
+        }
       }
       const table = document.getElementById(tableId);
       const tbody = table.querySelector('tbody');
-      tbody.innerHTML = resultArray.map(renderFn).join('');
+      tbody.innerHTML = '';
+      resultArray.forEach(r => tbody.insertAdjacentHTML('beforeend', renderFn(r)));
       table.style.display = 'table';
-      table.classList.add('show');
     }
 
     document.getElementById('showAhListBtn').addEventListener('click', () => {
       confirmAndRender(lastAhResult, 'ahTable', r => {
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs + r.AH_close_handicap - as;
-        const out = diff > 0.01 ? '贏盤' : diff < -0.01 ? '輸盤' : '走盤';
-        return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+        const out = diff > 0 ? '贏盤' : diff < 0 ? '輸盤' : '和盤';
+        return `<tr>
+          <td>${r.season}</td>
+          <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
           <td>${r.AH_open_handicap}</td><td>${r.AH_open_home_odds}</td><td>${r.AH_open_away_odds}</td>
-          <td>${r.AH_close_handicap}</td><td>${r.AH_close_home_odds}</td><td>${r.AH_close_away_odds}</td><td>${out}</td></tr>`;
+          <td>${r.AH_close_handicap}</td><td>${r.AH_close_home_odds}</td><td>${r.AH_close_away_odds}</td>
+          <td>${out}</td>
+        </tr>`;
       });
     });
 
     document.getElementById('showOuListBtn').addEventListener('click', () => {
       confirmAndRender(lastOuResult, 'ouTable', r => {
         const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
-        const diff = sum - r.close_OU_line;
-        const out = diff > 0.01 ? '大球' : diff < -0.01 ? '小球' : '走盤';
-        return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+        const out = sum > r.close_OU_line ? '大球' : sum < r.close_OU_line ? '小球' : '走盤';
+        return `<tr>
+          <td>${r.season}</td>
+          <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
           <td>${r.OU_line}</td><td>${r.OU_open_over_odds}</td><td>${r.OU_open_under_odds}</td>
-          <td>${r.close_OU_line}</td><td>${r.OU_close_over_odds}</td><td>${r.OU_close_under_odds}</td><td>${out}</td></tr>`;
+          <td>${r.close_OU_line}</td><td>${r.OU_close_over_odds}</td><td>${r.OU_close_under_odds}</td>
+          <td>${out}</td>
+        </tr>`;
       });
     });
 
@@ -908,31 +984,38 @@
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs - as;
         const out = diff > 0 ? '主勝' : diff < 0 ? '客勝' : '和局';
-        return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
-          <td>${getEU(r,'open_home')}/${getEU(r,'open_draw')}/${getEU(r,'open_away')}</td>
-          <td>${getEU(r,'close_home')}/${getEU(r,'close_draw')}/${getEU(r,'close_away')}</td>
-          <td>${r.ft_score}</td><td>${out}</td><td>${diff}</td></tr>`;
+        return `<tr>
+          <td>${r.season}</td>
+          <td>${r.home_team} vs ${r.away_team} (${r.ft_score})</td>
+          <td>${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</td>
+          <td>${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</td>
+          <td>${r.ft_score}</td><td>${out}</td><td>${diff}</td>
+        </tr>`;
       });
     });
 
     /* ===== Reset Button Listeners ===== */
-    const setupResetListener = (formId, statId, btnId, tableId, lastResultRef) => {
-        document.getElementById(formId.replace('Form', 'ResetBtn')).addEventListener('click', () => {
-            document.getElementById(formId).reset();
-            const statEl = document.getElementById(statId);
-            statEl.innerHTML = '';
-            statEl.classList.remove('show');
-            statEl.style.display = 'none';
-            document.getElementById(btnId).style.display = 'none';
-            const tableEl = document.getElementById(tableId);
-            tableEl.style.display = 'none';
-            tableEl.classList.remove('show');
-            lastResultRef.length = 0;
-        });
-    };
-    setupResetListener('ahForm', 'ahStat', 'showAhListBtn', 'ahTable', lastAhResult);
-    setupResetListener('ouForm', 'ouStat', 'showOuListBtn', 'ouTable', lastOuResult);
-    setupResetListener('euForm', 'euStat', 'showEuListBtn', 'euTable', lastEuResult);
+    document.getElementById('resetAhBtn').addEventListener('click', () => {
+      document.getElementById('ahForm').reset();
+      document.getElementById('ahStat').innerHTML = '';
+      document.getElementById('showAhListBtn').style.display = 'none';
+      document.getElementById('ahTable').style.display = 'none';
+      lastAhResult = [];
+    });
+    document.getElementById('resetOuBtn').addEventListener('click', () => {
+      document.getElementById('ouForm').reset();
+      document.getElementById('ouStat').innerHTML = '';
+      document.getElementById('showOuListBtn').style.display = 'none';
+      document.getElementById('ouTable').style.display = 'none';
+      lastOuResult = [];
+    });
+    document.getElementById('resetEuBtn').addEventListener('click', () => {
+      document.getElementById('euForm').reset();
+      document.getElementById('euStat').innerHTML = '';
+      document.getElementById('showEuListBtn').style.display = 'none';
+      document.getElementById('euTable').style.display = 'none';
+      lastEuResult = [];
+    });
 
     /***********************************************/
     /* 6. 啟動函數 (Boot Function)                  */
@@ -940,7 +1023,13 @@
     (async function boot() {
       try {
         __showLoading();
-        await Promise.all([ getAsianData(), getOverUnderData(), getEuropeanData() ]);
+        // 並行載入所有資料
+        await Promise.all([
+          getAsianData({ maxParts: 10 }),
+          getOverUnderData({ maxParts: 10 }),
+          getEuropeanData({ maxParts: 10 })
+        ]);
+        // 資料載入成功後，初始化頁面
         initAll();
       } catch (e) {
         console.error('資料載入失敗 (Data loading failed)', e);
@@ -950,6 +1039,44 @@
       }
     })();
   </script>
-
-</body>
+<script id="fx-3d-safe-js">
+/* ===== Minimal FX JS (no reveal, no tilt) ===== */
+(function(){
+  function updateInk(){
+    const ink = document.getElementById('tabInk'); if(!ink) return;
+    const tabs = [document.getElementById('tab1'), document.getElementById('tab2'), document.getElementById('tab3')].filter(Boolean);
+    const active = tabs.find(b=>b.classList.contains('active')) || tabs[0];
+    if(!active) return;
+    const box = active.getBoundingClientRect();
+    const wrap = active.parentElement.getBoundingClientRect();
+    ink.style.width = box.width+'px';
+    ink.style.left  = (box.left - wrap.left)+'px';
+  }
+  window.addEventListener('resize', updateInk);
+  // Hook showTab to move ink bar only
+  (function hookShowTab(){
+    const tryHook = ()=>{
+      if(typeof window.showTab !== 'function') return false;
+      const _orig = window.showTab;
+      if(_orig && _orig.__hooked) return true;
+      const wrapped = function(i){ _orig(i); updateInk(); };
+      wrapped.__hooked = true;
+      window.showTab = wrapped; return true;
+    };
+    const ok = tryHook(); if(!ok) window.addEventListener('load', tryHook);
+  })();
+  function attachRipple(){
+    document.addEventListener('click', e=>{
+      const btn = e.target.closest('button, .btn'); if(!btn) return;
+      const r = document.createElement('span'); r.className='fx-ripple';
+      const rect = btn.getBoundingClientRect();
+      r.style.left = (e.clientX - rect.left)+'px';
+      r.style.top  = (e.clientY - rect.top)+'px';
+      btn.appendChild(r); setTimeout(()=>r.remove(), 650);
+    }, {passive:true});
+  }
+  window.addEventListener('load', ()=>{ updateInk(); attachRipple(); setTimeout(updateInk, 60); });
+  window.addEventListener('orientationchange', ()=> setTimeout(updateInk, 120));
+})();
+</script></body>
 </html>
