@@ -1244,7 +1244,7 @@ table tbody tr:hover{ background:#f8fbff; }
         // full circle with mask sweep
         return `<svg class="piechart" viewBox="0 0 ${sz} ${sz}" data-sweep="1" data-mid="${mid}" data-wid="${wedge}">
           <defs>
-            <mask id="${mid}"><rect width="${sz}" height="${sz}" fill="black"></rect><path id="${wedge}" fill="white" d="${wedgePath(cx,cy,r,0)}"></path></mask>
+            <mask id="${mid}" maskUnits="userSpaceOnUse" x="0" y="0" width="${sz}" height="${sz}"><rect x="0" y="0" width="${sz}" height="${sz}" fill="black"></rect><path id="${wedge}" fill="white" d="${wedgePath(cx,cy,r,0)}"></path></mask>
             <filter id="ds"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25"/></filter>
           </defs>
           <g filter="url(#ds)" mask="url(#${mid})"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${single.color}"></circle></g>
@@ -1252,7 +1252,7 @@ table tbody tr:hover{ background:#f8fbff; }
       }
       return `<svg class="piechart" viewBox="0 0 ${sz} ${sz}" data-sweep="1" data-mid="${mid}" data-wid="${wedge}">
         <defs>
-          <mask id="${mid}"><rect width="${sz}" height="${sz}" fill="black"></rect><path id="${wedge}" fill="white" d="${wedgePath(cx,cy,r,0)}"></path></mask>
+          <mask id="${mid}" maskUnits="userSpaceOnUse" x="0" y="0" width="${sz}" height="${sz}"><rect x="0" y="0" width="${sz}" height="${sz}" fill="black"></rect><path id="${wedge}" fill="white" d="${wedgePath(cx,cy,r,0)}"></path></mask>
           <filter id="ds"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25"/></filter>
         </defs>
         <g filter="url(#ds)" mask="url(#${mid})">${paths}</g>
@@ -1269,7 +1269,7 @@ table tbody tr:hover{ background:#f8fbff; }
     seen.add(svg);
     const cx=70, cy=70, r=65; // from sz=140
     const wid = svg.getAttribute('data-wid');
-    const wedge = wid && svg.querySelector('#'+CSS.escape(wid));
+    const wedge = wid && svg.querySelector('#'+wid.replace(/([\\.#:[\]$])/g, '\\$1'));
     if(!wedge) return;
     let t0=null;
     function step(ts){
