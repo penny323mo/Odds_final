@@ -15,9 +15,12 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
+    /* =========================================
+       1. 基礎設定 (Base)
+       ========================================= */
     :root {
         --bg-dark: #064e3b; 
-        --glass-bg: rgba(6, 78, 59, 0.45);
+        --glass-bg: rgba(6, 78, 59, 0.55);
         --glass-border: rgba(255, 255, 255, 0.2);
         --brand-green: #10b981;
         --brand-green-light: #34d399;
@@ -35,11 +38,16 @@
         overflow-x: hidden;
         width: 100vw;
         box-sizing: border-box;
+        /* iPhone Safe Area */
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: calc(100px + env(safe-area-inset-bottom));
     }
 
     *, *::before, *::after { box-sizing: border-box; }
 
-    /* === 背景層 === */
+    /* =========================================
+       2. 背景特效 (Background)
+       ========================================= */
     .bg-layer {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-color: #064e3b;
@@ -56,226 +64,270 @@
         background-size: 40px 40px; opacity: 0.3; pointer-events: none;
     }
 
-    /* ---------- Header ---------- */
-    .header { position: relative; text-align: center; padding: 40px 20px 50px; z-index: 10; width: 100%; }
+    /* =========================================
+       3. 頂部導航 (Header & Tabs)
+       ========================================= */
+    .header { position: relative; text-align: center; padding: 20px 10px 10px; z-index: 10; width: 100%; }
     .header h1 {
         font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
-        font-size: clamp(1.8rem, 5vw, 2.8rem); margin: 0; color: #fff;
-        text-shadow: 0 2px 0 #065f46, 0 4px 0 #064e3b, 0 6px 12px rgba(0,0,0,0.6);
-        display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
+        font-size: clamp(1.5rem, 5vw, 2.2rem); margin: 0; color: #fff;
+        text-shadow: 0 2px 0 #065f46, 0 4px 10px rgba(0,0,0,0.5);
+        display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
     }
     .icon-ball {
-        font-size: 2.2rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        font-size: 1.8rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
         color: var(--brand-green-light); animation: floatBall 3s ease-in-out infinite;
     }
     @keyframes floatBall { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
     .header .desc {
-        margin-top: 12px; font-size: 1rem; color: #e0f2f1;
-        background: rgba(0,0,0,0.3); padding: 6px 18px; border-radius: 50px;
+        margin-top: 5px; font-size: 0.85rem; color: #e0f2f1;
+        background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 50px;
         border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px);
-        display: inline-block; max-width: 90%;
+        display: inline-block;
     }
-    .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8; }
+    .timestamp { font-size: 0.7rem; color: #6ee7b7; margin-top: 5px; opacity: 0.8; }
 
-    /* ---------- Tabs ---------- */
-    .nav-container { margin-top: -30px; padding: 0 15px; position: relative; z-index: 20; width: 100%; }
+    .nav-container { margin-top: -10px; padding: 0 10px; position: relative; z-index: 20; width: 100%; margin-bottom: 15px; }
     .custom-tabs {
         background: rgba(6, 78, 59, 0.8); border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 50px; padding: 5px; display: flex; gap: 5px;
+        border-radius: 50px; padding: 4px; display: flex; gap: 4px;
         box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
         max-width: 600px; margin: 0 auto; overflow-x: auto; scrollbar-width: none;
     }
     .custom-tabs::-webkit-scrollbar { display: none; }
     .custom-tabs button {
         flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.7);
-        padding: 10px 15px; font-weight: 700; font-size: 0.95rem; border-radius: 40px;
+        padding: 8px 10px; font-weight: 700; font-size: 0.9rem; border-radius: 40px;
         transition: all 0.3s; white-space: nowrap; 
     }
     .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
-    /* ---------- Main Content ---------- */
+    /* =========================================
+       4. 主容器與卡片 (Fit Screen Optimization)
+       ========================================= */
     .tabcontent {
-        width: 94%; max-width: 760px; margin: 35px auto; padding: 0; animation: fadeUp 0.6s ease-out;
+        width: 96%; max-width: 800px; margin: 0 auto; padding: 0; 
+        animation: fadeUp 0.5s ease-out;
     }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .form-card {
         background: var(--glass-bg); border: 1px solid var(--glass-border);
-        border-top: 1px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 20px;
-        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); width: 100%;
+        border-top: 1px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 15px;
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05); width: 100%;
+    }
+
+    /* iPad 佈局關鍵：左右分欄 */
+    .form-flex-container {
+        display: flex;
+        flex-direction: column; /* 手機預設上下 */
+        gap: 15px;
     }
 
     fieldset {
         border: 1px solid rgba(255,255,255,0.1); background: rgba(0, 0, 0, 0.2);
-        border-radius: 16px; padding: 15px; margin-bottom: 20px;
-        box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); width: 100%;
+        border-radius: 12px; padding: 12px; margin: 0; /* Margin handled by flex gap */
+        flex: 1; /* 讓兩個 fieldset 平分寬度 */
+        box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
     }
     legend {
-        color: var(--brand-green-light); font-weight: 700; font-size: 1.1rem;
-        text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;
-        text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        color: var(--brand-green-light); font-weight: 700; font-size: 1rem;
+        text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;
+        margin-bottom: 8px;
     }
 
-    /* ---------- Inputs ---------- */
-    .input-row { margin-bottom: 12px; }
+    /* =========================================
+       5. 輸入框 (Compact)
+       ========================================= */
+    .input-row { margin-bottom: 10px; }
     .input-label {
-        font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 6px; display: block;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        font-size: 0.8rem; color: #e2e8f0; font-weight: 600; margin-bottom: 4px; display: block;
     }
     .custom-input-group {
         display: flex; align-items: stretch; background: rgba(0, 20, 10, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px;
-        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4); transition: 0.3s; overflow: hidden; width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); overflow: hidden; width: 100%; height: 40px; /* Compact Height */
     }
     .custom-input-group:focus-within {
         border-color: var(--brand-green);
-        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
     }
     .main-input {
         flex: 1 1 auto; background: transparent; border: none; color: #fff; 
-        padding: 12px 10px; font-size: 1.1rem; font-family: monospace; min-width: 0;
+        padding: 0 10px; font-size: 1rem; font-family: monospace; min-width: 0;
     }
     .main-input:focus { outline: none; }
     .main-input::placeholder { color: rgba(255,255,255,0.3); }
     
     .divider-text {
-        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 10px; 
-        display: flex; align-items: center; font-weight: bold; 
+        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 8px; 
+        display: flex; align-items: center; font-weight: bold; font-size: 0.9rem;
         border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
     }
     .err-input {
-        width: 55px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; 
-        text-align: center; font-size: 0.95rem; flex-shrink: 0;
+        width: 45px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; 
+        text-align: center; font-size: 0.9rem; flex-shrink: 0;
     }
     .err-input:focus { outline: none; color: #fff; background: rgba(255,255,255,0.1); }
     .step-btns { 
-        display: flex; flex-direction: column; width: 36px;
+        display: flex; flex-direction: column; width: 30px;
         border-left: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
     }
     .step-btn {
         flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); 
-        cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;
+        font-size: 0.7rem;
     }
     .step-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
     .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
+    
     select.form-select-custom {
-        width: 100%; padding: 12px; background-color: rgba(2, 44, 34, 0.95); color: #fff; 
-        border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
-        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
+        width: 100%; padding: 0 10px; height: 40px; background-color: rgba(2, 44, 34, 0.95); color: #fff; 
+        border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
     }
 
-    /* ---------- Buttons ---------- */
+    /* =========================================
+       6. 3D 按鈕 (Action Row)
+       ========================================= */
+    .action-row { display: flex; gap: 10px; margin-top: 15px; }
     .btn-3d {
-        position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 1.1rem; 
-        padding: 16px 20px; border-radius: 50px; cursor: pointer; 
+        position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 1rem; 
+        padding: 12px; border-radius: 50px; cursor: pointer; flex: 1;
         transition: transform 0.1s, box-shadow 0.1s; 
-        display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
         text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
     .btn-green {
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
-        box-shadow: 0 6px 0 #047857, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 4px 0 #047857, 0 8px 15px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
     }
-    .btn-green:active { transform: translateY(6px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
+    .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
-        box-shadow: 0 6px 0 #1f2937, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
+        box-shadow: 0 4px 0 #1f2937, 0 8px 15px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
     }
-    .btn-grey:active { transform: translateY(6px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
+    .btn-grey:active { transform: translateY(4px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
 
-    /* ---------- Stats & Table ---------- */
-    .stat-area { margin-top: 30px; }
+    /* =========================================
+       7. 結果區域 (Seamless Results)
+       ========================================= */
+    .results-section {
+        margin-top: 25px; padding-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2);
+        display: none; /* Initially hidden */
+        animation: slideDown 0.5s ease-out;
+    }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
     .stat-cards { 
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; 
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; 
     }
     .stat-card {
         background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 12px; padding: 12px 4px; text-align: center;
+        border-radius: 12px; padding: 10px 4px; text-align: center;
         box-shadow: 0 8px 20px rgba(0,0,0,0.2); backdrop-filter: blur(5px);
         position: relative; overflow: hidden;
     }
-    .stat-card.win { border-bottom: 4px solid #ef4444; }
-    .stat-card.draw { border-bottom: 4px solid #22c55e; }
-    .stat-card.lose { border-bottom: 4px solid #3b82f6; }
-    .stat-card .label { font-size: 0.75rem; color: #a7f3d0; font-weight: 700; }
-    .stat-card .value { font-size: 1.4rem; font-weight: 900; margin: 4px 0; color: #fff; }
-    .stat-card .pct { font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px; color: #fff; }
+    .stat-card.win { border-bottom: 3px solid #ef4444; }
+    .stat-card.draw { border-bottom: 3px solid #22c55e; }
+    .stat-card.lose { border-bottom: 3px solid #3b82f6; }
+    .stat-card .label { font-size: 0.7rem; color: #a7f3d0; font-weight: 700; margin-bottom: 4px; }
+    .stat-card .value { font-size: 1.4rem; font-weight: 900; color: #fff; margin: 4px 0; }
+    .stat-card .pct { font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 8px; }
 
     .piebox {
         background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        border: 1px solid rgba(255,255,255,0.1); width: 100%;
+        border: 1px solid rgba(255,255,255,0.1); width: 100%; min-height: 280px;
     }
-    .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
-    .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
     
-    /* Pie Chart Animation Classes */
-    .pie-path { opacity: 0; transform: scale(0.8); transform-origin: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .pie-path.show { opacity: 1; transform: scale(1); }
-
-    /* Filter Input */
-    .filter-box {
-        display: none; margin-top: 20px; margin-bottom: 10px; width: 100%;
+    /* 扇形動畫 */
+    .pie-chart-circle {
+        width: 100%; height: 100%; border-radius: 50%;
+        /* Clip path starts hidden (0%) -> reveals to 100% */
+        clip-path: circle(0% at 50% 50%);
+        animation: openCircle 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
-    .filter-input {
-        width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.3);
-        background: rgba(0,0,0,0.3); color: #fff; font-size: 1rem; outline: none;
-        backdrop-filter: blur(5px);
-    }
-    .filter-input::placeholder { color: rgba(255,255,255,0.5); }
-    .filter-input:focus { border-color: var(--brand-green-light); background: rgba(0,0,0,0.5); }
+    @keyframes openCircle { to { clip-path: circle(75% at 50% 50%); } }
 
+    .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
+    .pie-legend span { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+
+    /* =========================================
+       8. 列表與篩選 (List Section)
+       ========================================= */
+    .list-section { margin-top: 25px; display: none; }
+    .list-controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+    .filter-select { 
+        width: 100%; padding: 10px; border-radius: 10px; 
+        background: rgba(0,0,0,0.3); color: #fff; 
+        border: 1px solid rgba(255,255,255,0.2); font-size: 0.95rem; 
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right .7em top 50%;
+        background-size: .65em auto;
+    }
+    
     .table-container {
-        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 16px; overflow: hidden; margin-top: 10px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.5); display: none;
+        background: rgba(0, 0, 0, 0.2); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
     }
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     
     table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
     th { 
-        background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 12px 8px; font-weight: 700; 
-        border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; user-select: none;
-        text-align: center;
+        background: rgba(2, 44, 34, 0.9); padding: 12px 8px; color: #a7f3d0; 
+        border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; text-align: center;
     }
-    th:hover { background: rgba(255,255,255,0.1); color: #fff; }
     td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
-    tr { transition: background 0.2s; cursor: pointer; }
-    tr:hover { background: rgba(255,255,255,0.15) !important; }
+    tr:hover { background: rgba(255,255,255,0.1); }
     
-    .badge-res { padding: 4px 8px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-    .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
-    .text-odds { color: #86efac; font-weight: bold; }
+    .badge-res { padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+    .bg-win { background: #ef4444; color: #fff; } 
+    .bg-draw { background: #22c55e; color: #fff; } 
+    .bg-lose { background: #3b82f6; color: #fff; }
+    .text-odds { color: #6ee7b7; font-weight: bold; }
 
-    /* Toast Notification */
+    /* =========================================
+       9. 提示與 Loading (Toast & Loader)
+       ========================================= */
     .toast-msg {
         position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-        background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 30px;
-        font-size: 0.9rem; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+        background: rgba(0,0,0,0.85); color: #fff; padding: 10px 20px; border-radius: 30px;
+        font-size: 0.9rem; z-index: 2000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
     }
     .toast-msg.show { opacity: 1; }
 
     #loadingOverlay {
         position: fixed; inset: 0; background: #064e3b; z-index: 9999;
-        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;
     }
     .spinner-ball {
-        width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #34d399; border-radius: 50%; animation: spin 1s linear infinite;
-        box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+        width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #34d399; 
+        border-radius: 50%; animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    @media (min-width: 992px) {
+    /* =========================================
+       10. iPad/Desktop 響應式 (Fit Screen Key)
+       ========================================= */
+    @media (min-width: 768px) {
         .tabcontent { max-width: 900px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .full-width { grid-column: span 2; }
-        .piebox { flex-direction: row; gap: 50px; justify-content: center; }
+        
+        /* 關鍵：iPad 上左右分欄顯示，節省垂直空間 */
+        .form-flex-container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+        
+        .stat-card .value { font-size: 1.8rem; }
+        .piebox { flex-direction: row; gap: 40px; justify-content: center; }
         .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
-        .header { padding-bottom: 120px; }
-        .nav-container { margin-top: -60px; }
-        .main-input { padding: 16px; }
+        
         table { font-size: 0.95rem; }
+        .main-input { padding: 0 16px; }
     }
 </style>
 </head>
@@ -291,25 +343,25 @@
 
 <div class="header">
     <h1><i class="bi bi-heptagon-fill icon-ball"></i> 足球歷史賠率篩選</h1>
-    <div class="desc">大數據分析：初盤、終盤賠率組合 (2013-2025)</div>
-    <div class="timestamp" id="ts">版本時間：2025/08/01 上午 00:00:00 (GMT+8)</div>
+    <div class="desc">大數據分析 (2013-2025)</div>
 </div>
 
 <div class="nav-container">
     <div class="custom-tabs">
-        <button class="active" id="tab1" onclick="showTab(0)">亞洲盤查詢</button>
-        <button id="tab2" onclick="showTab(1)">大小球查詢</button>
-        <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
+        <button class="active" id="tab1" onclick="showTab(0)">亞洲盤</button>
+        <button id="tab2" onclick="showTab(1)">大小球</button>
+        <button id="tab3" onclick="showTab(2)">歐洲盤</button>
     </div>
 </div>
 
-<!-- Tab Content 1: 亞洲盤 -->
+<!-- ======================= Tab 1: 亞洲盤 ======================= -->
 <div class="tabcontent" id="tc1">
     <div class="form-card">
-        <form id="ahForm">
-            <fieldset>
-                <legend><i class="bi bi-crosshair"></i> 初盤</legend>
-                <div class="form-grid">
+        <form id="ahForm" onsubmit="return false;">
+            <!-- iPad: Flex Container for Side-by-Side -->
+            <div class="form-flex-container">
+                <fieldset>
+                    <legend><i class="bi bi-crosshair"></i> 初盤</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ahInitHand" class="form-select-custom"></select>
@@ -338,12 +390,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
+                </fieldset>
 
-            <fieldset>
-                <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
-                <div class="form-grid">
+                <fieldset>
+                    <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ahCloseHand" class="form-select-custom"></select>
@@ -372,46 +422,51 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
+                </fieldset>
+            </div>
 
-            <div class="d-flex flex-column gap-3 mt-4">
+            <div class="action-row">
                 <button class="btn-3d btn-green" onclick="doAhSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
                 <button class="btn-3d btn-grey" id="resetAhBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
             </div>
         </form>
-    </div>
 
-    <div class="stat-area" id="ahStat"></div>
+        <!-- Seamless Result Section -->
+        <div id="ahResultSection" class="results-section">
+            <div id="ahStat"></div>
+            
+            <button class="btn-3d btn-grey" onclick="toggleList('ah')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
+                <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
+            </button>
 
-    <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light rounded-pill px-4" id="showAhListBtn" style="display: none;" type="button">顯示比賽列表</button>
-    </div>
-
-    <!-- 篩選器 -->
-    <div class="filter-box" id="ahFilterBox">
-        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱 (例如: 曼聯)..." onkeyup="filterTable('ahTable', this.value)">
-    </div>
-
-    <div class="table-container" id="ahTableContainer">
-        <div class="table-responsive">
-            <table id="ahTable">
-                <thead>
-                <tr>
-                    <th onclick="sortTable('ahTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ahTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ahTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ahTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ahTable', 4)">初盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ahTable', 5)">初盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ahTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ahTable', 7)">終盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ahTable', 8)">終盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ahTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="ahListSection" class="list-section">
+                <div class="list-controls">
+                    <select id="ahSeasonFilter" class="filter-select" onchange="applySeasonFilter('ah')">
+                        <option value="all">📅 所有賽季 (All Seasons)</option>
+                    </select>
+                </div>
+                <div class="table-container" id="ahTableContainer">
+                    <div class="table-responsive">
+                        <table id="ahTable">
+                            <thead>
+                            <tr>
+                                <th onclick="sortTable('ahTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ahTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ahTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ahTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ahTable', 4)">初盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ahTable', 5)">初盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ahTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ahTable', 7)">終盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ahTable', 8)">終盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ahTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -419,10 +474,10 @@
 <!-- Tab Content 2: 大小球 -->
 <div class="tabcontent" id="tc2" style="display:none">
     <div class="form-card">
-        <form id="ouForm">
-            <fieldset>
-                <legend><i class="bi bi-stopwatch"></i> 初盤</legend>
-                <div class="form-grid">
+        <form id="ouForm" onsubmit="return false;">
+            <div class="form-flex-container">
+                <fieldset>
+                    <legend><i class="bi bi-stopwatch"></i> 初盤</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ouInitLine" class="form-select-custom"></select>
@@ -451,12 +506,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
+                </fieldset>
 
-            <fieldset>
-                <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
-                <div class="form-grid">
+                <fieldset>
+                    <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ouCloseLine" class="form-select-custom"></select>
@@ -485,55 +538,62 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
+                </fieldset>
+            </div>
 
-            <div class="d-flex flex-column gap-3 mt-4">
+            <div class="action-row">
                 <button class="btn-3d btn-green" onclick="doOuSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
                 <button class="btn-3d btn-grey" id="resetOuBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
             </div>
         </form>
-    </div>
+        
+        <!-- Results -->
+        <div id="ouResultSection" class="results-section">
+            <div id="ouStat"></div>
+            
+            <button class="btn-3d btn-grey" onclick="toggleList('ou')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
+                <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
+            </button>
 
-    <div class="stat-area" id="ouStat"></div>
-
-    <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light rounded-pill px-4" id="showOuListBtn" style="display: none;" type="button">顯示比賽列表</button>
-    </div>
-
-    <div class="filter-box" id="ouFilterBox">
-        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱..." onkeyup="filterTable('ouTable', this.value)">
-    </div>
-
-    <div class="table-container" id="ouTableContainer">
-        <div class="table-responsive">
-            <table id="ouTable">
-                <thead>
-                <tr>
-                    <th onclick="sortTable('ouTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ouTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ouTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ouTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ouTable', 4)">初盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ouTable', 5)">初盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ouTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ouTable', 7)">終盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ouTable', 8)">終盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('ouTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="ouListSection" class="list-section">
+                <div class="list-controls">
+                    <select id="ouSeasonFilter" class="filter-select" onchange="applySeasonFilter('ou')">
+                        <option value="all">📅 所有賽季 (All Seasons)</option>
+                    </select>
+                </div>
+                <div class="table-container" id="ouTableContainer">
+                    <div class="table-responsive">
+                        <table id="ouTable">
+                            <thead>
+                            <tr>
+                                <th onclick="sortTable('ouTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ouTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ouTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ouTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ouTable', 4)">初盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ouTable', 5)">初盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ouTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ouTable', 7)">終盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ouTable', 8)">終盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('ouTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Tab Content 3: 歐洲盤 -->
 <div class="tabcontent" id="tc3" style="display:none">
     <div class="form-card">
-        <form id="euForm">
-            <fieldset>
-                <legend><i class="bi bi-globe-europe-africa"></i> 初盤</legend>
-                <div class="form-grid">
+        <form id="euForm" onsubmit="return false;">
+            <div class="form-flex-container">
+                <fieldset>
+                    <legend><i class="bi bi-globe-europe-africa"></i> 初盤</legend>
                     <div class="input-row">
                         <label class="input-label">主勝</label>
                         <div class="custom-input-group">
@@ -570,12 +630,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
+                </fieldset>
 
-            <fieldset>
-                <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
-                <div class="form-grid">
+                <fieldset>
+                    <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
                     <div class="input-row">
                         <label class="input-label">主勝</label>
                         <div class="custom-input-group">
@@ -612,42 +670,48 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
+                </fieldset>
+            </div>
 
-            <div class="d-flex flex-column gap-3 mt-4">
+            <div class="action-row">
                 <button class="btn-3d btn-green" onclick="doEuSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
                 <button class="btn-3d btn-grey" id="resetEuBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
             </div>
         </form>
-    </div>
+        
+        <!-- Results -->
+        <div id="euResultSection" class="results-section">
+            <div id="euStat"></div>
+            
+            <button class="btn-3d btn-grey" onclick="toggleList('eu')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
+                <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
+            </button>
 
-    <div class="stat-area" id="euStat"></div>
-
-    <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light rounded-pill px-4" id="showEuListBtn" style="display: none;" type="button">顯示比賽列表</button>
-    </div>
-
-    <div class="filter-box" id="euFilterBox">
-        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱..." onkeyup="filterTable('euTable', this.value)">
-    </div>
-
-    <div class="table-container" id="euTableContainer">
-        <div class="table-responsive">
-            <table id="euTable">
-                <thead>
-                <tr>
-                    <th onclick="sortTable('euTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('euTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('euTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('euTable', 3)">初盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('euTable', 4)">終盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('euTable', 5)">勝負 <i class="bi bi-arrow-down-up"></i></th>
-                    <th onclick="sortTable('euTable', 6)">淨勝球 <i class="bi bi-arrow-down-up"></i></th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="euListSection" class="list-section">
+                <div class="list-controls">
+                    <select id="euSeasonFilter" class="filter-select" onchange="applySeasonFilter('eu')">
+                        <option value="all">📅 所有賽季 (All Seasons)</option>
+                    </select>
+                </div>
+                <div class="table-container" id="euTableContainer">
+                    <div class="table-responsive">
+                        <table id="euTable">
+                            <thead>
+                            <tr>
+                                <th onclick="sortTable('euTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('euTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('euTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('euTable', 3)">初盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('euTable', 4)">終盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('euTable', 5)">勝負 <i class="bi bi-arrow-down-up"></i></th>
+                                <th onclick="sortTable('euTable', 6)">淨勝球 <i class="bi bi-arrow-down-up"></i></th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -756,8 +820,6 @@
         const idWin = prefix + 'Win';
         const idDraw = prefix + 'Draw';
         const idLose = prefix + 'Lose';
-        
-        // Start counting immediately
         setTimeout(() => {
             if(document.getElementById(idWin)) animateValue(document.getElementById(idWin), 0, w, 800);
             if(document.getElementById(idDraw)) animateValue(document.getElementById(idDraw), 0, d, 800);
@@ -765,13 +827,12 @@
         }, 100);
     }
 
-    // Function to draw pie AFTER delay
     function renderPieWithDelay(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, prefix) {
         const idPie = prefix + 'Pie';
         const pieContainer = document.getElementById(idPie);
         if(!pieContainer) return;
         
-        // Wait 1200ms (more than count up duration)
+        // Wait 800ms
         setTimeout(() => {
             pieContainer.innerHTML = `
               ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
@@ -782,42 +843,39 @@
               </div>
             `;
             // Trigger animation class for path
-            const paths = pieContainer.querySelectorAll('.pie-path');
+            const paths = pieContainer.querySelectorAll('.pie-chart-circle');
             setTimeout(() => {
                 paths.forEach(p => p.classList.add('show'));
             }, 50);
-        }, 1200);
+        }, 800);
     }
 
     function drawPieChart(data) {
       const total = data.reduce((s, x) => s + x.val, 0);
-      const sz = 210; // Increased size by 50% (140 * 1.5)
+      const sz = 240; // Size
       if (!total) return `<svg width="${sz}" height="${sz}"></svg>`;
 
       const r = sz / 2 - 10, cx = sz / 2, cy = sz / 2;
       const slices = data.filter(d => d.val > 0);
 
       if (slices.length === 1) {
-        return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">
-            <circle class="pie-path" cx="${cx}" cy="${cy}" r="${r}" fill="${slices[0].color}"></circle>
-        </svg>`;
+        return `<div style="width:${sz}px; height:${sz}px; border-radius:50%; background:${slices[0].color};" class="pie-chart-circle"></div>`;
       }
       
-      let currentAngle = -Math.PI / 2;
-      const paths = slices.map(slice => {
-        const sliceAngle = (slice.val / total) * 2 * Math.PI;
-        const startAngle = currentAngle;
-        const endAngle = currentAngle + sliceAngle;
-        const x1 = cx + r * Math.cos(startAngle);
-        const y1 = cy + r * Math.sin(startAngle);
-        const x2 = cx + r * Math.cos(endAngle);
-        const y2 = cy + r * Math.sin(endAngle);
-        const largeArcFlag = sliceAngle > Math.PI ? 1 : 0;
-        currentAngle = endAngle;
-        return `<path class="pie-path" d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z" fill="${slice.color}"></path>`;
-      }).join('');
-
-      return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">${paths}</svg>`;
+      let gradientParts = [];
+      let currentAngle = 0;
+      
+      data.forEach(slice => {
+          if(slice.val > 0) {
+              const angle = (slice.val / total) * 360;
+              gradientParts.push(`${slice.color} ${currentAngle}deg ${currentAngle + angle}deg`);
+              currentAngle += angle;
+          }
+      });
+      
+      const gradient = `conic-gradient(${gradientParts.join(', ')})`;
+      
+      return `<div class="pie-chart-circle" style="width:${sz}px; height:${sz}px; background:${gradient};"></div>`;
     }
     
     function getEU(r, which) {
@@ -884,16 +942,8 @@
         ['ah', 'ou', 'eu'].forEach(type => {
             const form = document.getElementById(type + 'Form');
             if(form) form.reset();
-            const stat = document.getElementById(type + 'Stat');
-            if(stat) stat.innerHTML = '';
-            const btn = document.getElementById('show' + type.charAt(0).toUpperCase() + type.slice(1) + 'ListBtn');
-            if(btn) btn.style.display = 'none';
-            const table = document.getElementById(type + 'Table');
-            if(table) table.style.display = 'none';
-            const container = document.getElementById(type + 'TableContainer');
-            if(container) container.style.display = 'none';
-            const filter = document.getElementById(type + 'FilterBox');
-            if(filter) filter.style.display = 'none';
+            const stat = document.getElementById(type + 'ResultSection');
+            if(stat) stat.style.display = 'none';
         });
         lastAhResult = []; lastOuResult = []; lastEuResult = [];
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -925,21 +975,20 @@
       });
 
       const tot = lastAhResult.length;
+      const resSec = document.getElementById('ahResultSection');
+      
       document.getElementById('ahStat').innerHTML = generateStatsHTML(
           w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, 'ah'
       );
+      
+      resSec.style.display = 'block';
+      setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      
       triggerCountUp(w, d, l, 'ah');
       renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', 'ah');
       
-      document.getElementById('ahTable').style.display = 'none';
-      document.getElementById('ahTableContainer').style.display = 'none';
-      document.getElementById('ahFilterBox').style.display = 'none';
-      document.getElementById('showAhListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
-
-      // Auto Scroll to Stats Area
-      setTimeout(() => {
-        document.getElementById('ahStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+      document.getElementById('ahListSection').style.display = 'none';
+      populateSeasons('ah', lastAhResult);
     }
 
     function doOuSearch() {
@@ -969,20 +1018,20 @@
       });
 
       const tot = lastOuResult.length;
+      const resSec = document.getElementById('ouResultSection');
+      
       document.getElementById('ouStat').innerHTML = generateStatsHTML(
           over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', tot, 'ou'
       );
+      
+      resSec.style.display = 'block';
+      setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
       triggerCountUp(over, push, under, 'ou');
       renderPieWithDelay(over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', 'ou');
       
-      document.getElementById('ouTable').style.display = 'none';
-      document.getElementById('ouTableContainer').style.display = 'none';
-      document.getElementById('ouFilterBox').style.display = 'none';
-      document.getElementById('showOuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
-
-      setTimeout(() => {
-        document.getElementById('ouStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+      document.getElementById('ouListSection').style.display = 'none';
+      populateSeasons('ou', lastOuResult);
     }
 
     function doEuSearch() {
@@ -1019,23 +1068,38 @@
 
       const tot = lastEuResult.length;
       const extra = `總場數：${tot} <br> <small style="color:#d1fae5">主勝淨勝球 ➜ 1球:${d1} | 2球:${d2} | 3+球:${d3}</small>`;
+      const resSec = document.getElementById('euResultSection');
+      
       document.getElementById('euStat').innerHTML = generateStatsHTML(
-          w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', tot, 'eu', extra
+          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '主勝', '和局', '客勝', tot, 'eu', extra
       );
-      triggerCountUp(w, d, l, 'eu');
-      renderPieWithDelay(w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', 'eu');
-        
-      document.getElementById('euTable').style.display = 'none';
-      document.getElementById('euTableContainer').style.display = 'none';
-      document.getElementById('euFilterBox').style.display = 'none';
-      document.getElementById('showEuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
+      
+      resSec.style.display = 'block';
+      setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 
-      setTimeout(() => {
-        document.getElementById('euStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+      triggerCountUp(w, d, l, 'eu');
+      renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', '主勝', '和局', '客勝', 'eu');
+        
+      document.getElementById('euListSection').style.display = 'none';
+      populateSeasons('eu', lastEuResult);
     }
 
-    /* === Enhanced Table Functions === */
+    function populateSeasons(type, data) {
+        const seasons = [...new Set(data.map(d => d.season))].sort().reverse();
+        const sel = document.getElementById(type + 'SeasonFilter');
+        if(sel) {
+             sel.innerHTML = '<option value="all">📅 所有賽季 (Show All)</option>' + 
+            seasons.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+    }
+    
+    function applySeasonFilter(type) {
+        const sel = document.getElementById(type + 'SeasonFilter').value;
+        const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
+        const filtered = (sel === 'all') ? sourceData : sourceData.filter(r => r.season == sel);
+        confirmAndRender(filtered, type + 'Table', null, true);
+    }
+
     function copyToClipboard(text) {
         if (!text) return;
         const el = document.createElement('textarea');
@@ -1044,25 +1108,21 @@
         el.select();
         document.execCommand('copy');
         document.body.removeChild(el);
-        
         const toast = document.getElementById('toast');
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    // Filter Logic
     function filterTable(tableId, query) {
         const table = document.getElementById(tableId);
         const trs = table.querySelectorAll('tbody tr');
         query = query.toLowerCase();
-        
         trs.forEach(tr => {
             const text = tr.innerText.toLowerCase();
             tr.style.display = text.includes(query) ? '' : 'none';
         });
     }
 
-    // Sorting Logic
     function sortTable(tableId, colIndex) {
         const table = document.getElementById(tableId);
         const tbody = table.querySelector('tbody');
@@ -1072,45 +1132,57 @@
         rows.sort((a, b) => {
             const aText = a.children[colIndex].innerText.trim();
             const bText = b.children[colIndex].innerText.trim();
-            
-            // Try numeric sort
             const aNum = parseFloat(aText.replace(/[^0-9.-]+/g,""));
             const bNum = parseFloat(bText.replace(/[^0-9.-]+/g,""));
-            
-            if (!isNaN(aNum) && !isNaN(bNum)) {
-                return isAsc ? aNum - bNum : bNum - aNum;
-            }
+            if (!isNaN(aNum) && !isNaN(bNum)) return isAsc ? aNum - bNum : bNum - aNum;
             return isAsc ? aText.localeCompare(bText) : bText.localeCompare(aText);
         });
         
         table.setAttribute('data-order', isAsc ? 'desc' : 'asc');
-        tbody.innerHTML = '';
-        rows.forEach(tr => tbody.appendChild(tr));
+        tbody.innerHTML = ''; rows.forEach(tr => tbody.appendChild(tr));
     }
 
-    /* ===== Turbo Render Implementation ===== */
-    function confirmAndRender(resultArray, tableId, renderFn) {
-      if (resultArray.length > 20000) {
-        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
-          return;
-        }
+    function confirmAndRender(resultArray, tableId, renderFn, skipConfirm) {
+      if (!skipConfirm && resultArray.length > 5000) {
+        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，顯示可能較慢，確定要繼續嗎？`)) return;
       }
+      
+      const type = tableId.replace('Table', '');
+      
+      if(!renderFn) {
+          if(type === 'ah') {
+              renderFn = r => {
+                const [hs, as] = r.ft_score.split('-').map(Number);
+                const diff = hs + r.AH_close_handicap - as;
+                const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
+                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.AH_open_handicap}</td><td class="text-odds">${r.AH_open_home_odds}</td><td class="text-odds">${r.AH_open_away_odds}</td><td>${r.AH_close_handicap}</td><td class="text-odds">${r.AH_close_home_odds}</td><td class="text-odds">${r.AH_close_away_odds}</td><td>${out}</td></tr>`;
+              };
+          } else if (type === 'ou') {
+              renderFn = r => {
+                const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
+                const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
+                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.OU_line}</td><td class="text-odds">${r.OU_open_over_odds}</td><td class="text-odds">${r.OU_open_under_odds}</td><td>${r.close_OU_line}</td><td class="text-odds">${r.OU_close_over_odds}</td><td class="text-odds">${r.OU_close_under_odds}</td><td>${out}</td></tr>`;
+              };
+          } else {
+              renderFn = r => {
+                const [hs, as] = r.ft_score.split('-').map(Number);
+                const diff = hs - as;
+                const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
+                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td><td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td><td>${out}</td><td>${diff > 0 ? '+'+diff : diff}</td></tr>`;
+              };
+          }
+      }
+
       const table = document.getElementById(tableId);
-      const container = document.getElementById(tableId + 'Container');
-      const filterBox = document.getElementById(tableId.replace('Table', 'FilterBox')); // e.g. ahFilterBox
+      const container = document.getElementById(type + 'TableContainer');
       const tbody = table.querySelector('tbody');
       
-      // Clear current content
       tbody.innerHTML = '';
-      
-      // Use efficient string concatenation
       const rowsHtml = resultArray.map(r => renderFn(r)).join('');
       tbody.innerHTML = rowsHtml;
       
-      // Setup event delegation for copy functionality
       const newTbody = tbody.cloneNode(true);
       tbody.parentNode.replaceChild(newTbody, tbody);
-      
       newTbody.addEventListener('click', function(e) {
           const tr = e.target.closest('tr');
           if (tr) {
@@ -1119,79 +1191,27 @@
           }
       });
 
-      // Show table
       table.style.display = 'table';
       container.style.display = 'block';
-      if(filterBox) filterBox.style.display = 'block';
-      
       container.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    document.getElementById('showAhListBtn').addEventListener('click', () => {
-      confirmAndRender(lastAhResult, 'ahTable', r => {
-        const [hs, as] = r.ft_score.split('-').map(Number);
-        const diff = hs + r.AH_close_handicap - as;
-        const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
-        // Corrected columns mapping
-        return `<tr>
-          <td>${r.season}</td>
-          <td>${r.home_team} vs ${r.away_team}</td>
-          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
-          <td>${r.AH_open_handicap}</td>
-          <td class="text-odds">${r.AH_open_home_odds}</td>
-          <td class="text-odds">${r.AH_open_away_odds}</td>
-          <td>${r.AH_close_handicap}</td>
-          <td class="text-odds">${r.AH_close_home_odds}</td>
-          <td class="text-odds">${r.AH_close_away_odds}</td>
-          <td>${out}</td>
-        </tr>`;
-      });
-    });
+    function toggleList(type) {
+        const listSec = document.getElementById(type + 'ListSection');
+        if (listSec.style.display === 'none') {
+            listSec.style.display = 'block';
+            const data = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
+            populateSeasons(type, data);
+            confirmAndRender(data, type + 'Table', null, true);
+        } else {
+            listSec.style.display = 'none';
+        }
+    }
 
-    document.getElementById('showOuListBtn').addEventListener('click', () => {
-      confirmAndRender(lastOuResult, 'ouTable', r => {
-        const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
-        const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
-        // Corrected columns mapping
-        return `<tr>
-          <td>${r.season}</td>
-          <td>${r.home_team} vs ${r.away_team}</td>
-          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
-          <td>${r.OU_line}</td>
-          <td class="text-odds">${r.OU_open_over_odds}</td>
-          <td class="text-odds">${r.OU_open_under_odds}</td>
-          <td>${r.close_OU_line}</td>
-          <td class="text-odds">${r.OU_close_over_odds}</td>
-          <td class="text-odds">${r.OU_close_under_odds}</td>
-          <td>${out}</td>
-        </tr>`;
-      });
-    });
-
-    document.getElementById('showEuListBtn').addEventListener('click', () => {
-      confirmAndRender(lastEuResult, 'euTable', r => {
-        const [hs, as] = r.ft_score.split('-').map(Number);
-        const diff = hs - as;
-        const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
-        // Corrected columns mapping - EU has 7 columns now
-        return `<tr>
-          <td>${r.season}</td>
-          <td>${r.home_team} vs ${r.away_team}</td>
-          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
-          <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
-          <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
-          <td>${out}</td>
-          <td>${diff > 0 ? '+'+diff : diff}</td>
-        </tr>`;
-      });
-    });
-
-    /* 重設按鈕 - Global Reset */
     ['resetAhBtn', 'resetOuBtn', 'resetEuBtn'].forEach(id => {
         document.getElementById(id).addEventListener('click', resetAll);
     });
 
-    /* 6. 啟動 */
     (async function boot() {
       try {
         __showLoading();
@@ -1203,10 +1223,8 @@
         initAll();
       } catch (e) {
         console.error('資料載入失敗', e);
-        /* 更詳細的錯誤提示 */
         document.querySelector('.spinner-ball').style.display = 'none';
-        document.querySelector('#loadingOverlay .loading-text').innerHTML = 
-            `<span style="color:#ef4444">⚠️ 數據載入失敗<br><small style="font-size:0.8rem; opacity:0.8">請確保 .json 檔案在同一目錄<br>(${e.message})</small></span>`;
+        document.querySelector('#loadingOverlay .loading-text').innerHTML = `<span style="color:#ef4444">⚠️ 數據載入失敗<br><small>請確保 .json 檔案在同一目錄</small></span>`;
       } finally {
         __hideLoading();
       }
