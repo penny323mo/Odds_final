@@ -228,17 +228,22 @@
         box-shadow: 0 15px 40px rgba(0,0,0,0.5); display: none;
     }
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; white-space: nowrap; }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
     th { 
-        background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 14px; font-weight: 700; 
+        background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 12px 8px; font-weight: 700; 
         border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; user-select: none;
-        transition: background 0.2s;
+        text-align: center;
     }
     th:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
     tr { transition: background 0.2s; cursor: pointer; }
     tr:hover { background: rgba(255,255,255,0.15) !important; }
     
+    .badge-res { padding: 4px 8px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+    .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
+    .text-odds { color: #86efac; font-weight: bold; } /* 賠率高亮顏色 */
+
     /* Toast Notification */
     .toast-msg {
         position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -246,9 +251,6 @@
         font-size: 0.9rem; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
     }
     .toast-msg.show { opacity: 1; }
-
-    .badge-res { padding: 5px 10px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-    .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
 
     #loadingOverlay {
         position: fixed; inset: 0; background: #064e3b; z-index: 9999;
@@ -268,7 +270,8 @@
         .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
         .header { padding-bottom: 120px; }
         .nav-container { margin-top: -60px; }
-        .main-input { padding: 16px; } 
+        .main-input { padding: 16px; }
+        table { font-size: 0.95rem; } /* 電腦版字體大啲 */
     }
 </style>
 </head>
@@ -296,6 +299,7 @@
     </div>
 </div>
 
+<!-- Tab Content 1: 亞洲盤 -->
 <div class="tabcontent" id="tc1">
     <div class="form-card">
         <form id="ahForm">
@@ -392,9 +396,14 @@
                 <tr>
                     <th onclick="sortTable('ahTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
                     <th onclick="sortTable('ahTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                    <th>初盤盤口</th><th>初盤主賠</th><th>初盤客賠</th>
-                    <th>終盤盤口</th><th>終盤主賠</th><th>終盤客賠</th>
-                    <th onclick="sortTable('ahTable', 8)">結果 <i class="bi bi-arrow-down-up"></i></th>
+                    <th>比分</th> <!-- 新增比分列 -->
+                    <th>初盤<br>盤口</th>
+                    <th>初盤<br>主賠</th>
+                    <th>初盤<br>客賠</th>
+                    <th>終盤<br>盤口</th>
+                    <th>終盤<br>主賠</th>
+                    <th>終盤<br>客賠</th>
+                    <th onclick="sortTable('ahTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -499,9 +508,14 @@
                 <tr>
                     <th onclick="sortTable('ouTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
                     <th onclick="sortTable('ouTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                    <th>初盤盤口</th><th>初盤大</th><th>初盤細</th>
-                    <th>終盤盤口</th><th>終盤大</th><th>終盤細</th>
-                    <th onclick="sortTable('ouTable', 8)">結果 <i class="bi bi-arrow-down-up"></i></th>
+                    <th>比分</th>
+                    <th>初盤<br>盤口</th>
+                    <th>初盤<br>大</th>
+                    <th>初盤<br>細</th>
+                    <th>終盤<br>盤口</th>
+                    <th>終盤<br>大</th>
+                    <th>終盤<br>細</th>
+                    <th onclick="sortTable('ouTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -693,7 +707,7 @@
             if (progress < 1) {
                 window.requestAnimationFrame(step);
             } else {
-                obj.innerHTML = end; // Ensure final value is exact
+                obj.innerHTML = end; 
             }
         };
         window.requestAnimationFrame(step);
@@ -701,7 +715,6 @@
 
     /* Motion: Render Stats with Animation */
     function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, extraInfo = '') {
-        // Prepare HTML structure first
         const html = `
         <div class="stat-cards">
             <div class="stat-card win">
@@ -730,8 +743,6 @@
           </div>
         </div>
         `;
-        
-        // Return HTML string, need to call animate function after insertion
         return html;
     }
 
@@ -1027,7 +1038,6 @@
       tbody.innerHTML = rowsHtml;
       
       // Setup event delegation for copy functionality
-      // Remove old listener if any (by cloning and replacing tbody - valid trick)
       const newTbody = tbody.cloneNode(true);
       tbody.parentNode.replaceChild(newTbody, tbody);
       
@@ -1052,11 +1062,17 @@
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs + r.AH_close_handicap - as;
         const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
+        // 對齊表頭的 10 個欄位
         return `<tr>
           <td>${r.season}</td>
-          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br><span style="color:#fff">(${r.ft_score})</span></td>
-          <td>${r.AH_open_handicap}<br><small style="color:#d1fae5">${r.AH_open_home_odds}/${r.AH_open_away_odds}</small></td>
-          <td>${r.AH_close_handicap}<br><small style="color:#d1fae5">${r.AH_close_home_odds}/${r.AH_close_away_odds}</small></td>
+          <td>${r.home_team} vs ${r.away_team}</td>
+          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+          <td>${r.AH_open_handicap}</td>
+          <td class="text-odds">${r.AH_open_home_odds}</td>
+          <td class="text-odds">${r.AH_open_away_odds}</td>
+          <td>${r.AH_close_handicap}</td>
+          <td class="text-odds">${r.AH_close_home_odds}</td>
+          <td class="text-odds">${r.AH_close_away_odds}</td>
           <td>${out}</td>
         </tr>`;
       });
@@ -1066,11 +1082,17 @@
       confirmAndRender(lastOuResult, 'ouTable', r => {
         const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
         const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
+        // 對齊表頭的 10 個欄位
         return `<tr>
           <td>${r.season}</td>
-          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br><span style="color:#fff">(${r.ft_score})</span></td>
-          <td>${r.OU_line}<br><small style="color:#d1fae5">${r.OU_open_over_odds}/${r.OU_open_under_odds}</small></td>
-          <td>${r.close_OU_line}<br><small style="color:#d1fae5">${r.OU_close_over_odds}/${r.OU_close_under_odds}</small></td>
+          <td>${r.home_team} vs ${r.away_team}</td>
+          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+          <td>${r.OU_line}</td>
+          <td class="text-odds">${r.OU_open_over_odds}</td>
+          <td class="text-odds">${r.OU_open_under_odds}</td>
+          <td>${r.close_OU_line}</td>
+          <td class="text-odds">${r.OU_close_over_odds}</td>
+          <td class="text-odds">${r.OU_close_under_odds}</td>
           <td>${out}</td>
         </tr>`;
       });
@@ -1081,11 +1103,13 @@
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs - as;
         const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
+        // 歐盤維持 7 欄
         return `<tr>
           <td>${r.season}</td>
-          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br><span style="color:#fff">(${r.ft_score})</span></td>
+          <td>${r.home_team} vs ${r.away_team}</td>
           <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
           <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
+          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
           <td>${out}</td>
           <td>${diff > 0 ? '+'+diff : diff}</td>
         </tr>`;
