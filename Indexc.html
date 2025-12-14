@@ -25,21 +25,21 @@
         --text-sub: #d1fae5;
     }
 
-    /* 全局設定：防止橫向溢出 */
+    /* 全局設定 */
     body {
         margin: 0;
         font-family: 'Noto Sans TC', sans-serif;
         color: var(--text-main);
         background-color: var(--bg-dark);
         min-height: 100vh;
-        padding-bottom: 100px; /* 預留底部空間 */
-        overflow-x: hidden; /* 禁止橫向捲動 */
+        padding-bottom: 100px;
+        overflow-x: hidden;
         width: 100vw;
         box-sizing: border-box;
     }
 
     *, *::before, *::after {
-        box-sizing: border-box; /* 確保 Padding 唔會撐大元素 */
+        box-sizing: border-box;
     }
 
     /* === 背景層 === */
@@ -75,7 +75,7 @@
     .header h1 {
         font-family: 'Noto Sans TC', sans-serif;
         font-weight: 900;
-        font-size: clamp(1.8rem, 5vw, 2.8rem); /* 字體隨螢幕縮放 */
+        font-size: clamp(1.8rem, 5vw, 2.8rem);
         margin: 0;
         color: #fff;
         text-shadow: 0 2px 0 #065f46, 0 4px 0 #064e3b, 0 6px 12px rgba(0,0,0,0.6);
@@ -83,7 +83,7 @@
         align-items: center;
         justify-content: center;
         gap: 12px;
-        flex-wrap: wrap; /* 容許換行，防止爆格 */
+        flex-wrap: wrap;
     }
     
     .icon-ball {
@@ -104,7 +104,7 @@
         border: 1px solid rgba(255,255,255,0.15);
         backdrop-filter: blur(4px);
         display: inline-block;
-        max-width: 90%; /* 防止文字太長 */
+        max-width: 90%;
     }
     
     .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8; }
@@ -119,12 +119,11 @@
         display: flex; gap: 5px;
         box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
         backdrop-filter: blur(10px);
-        /* 限制最大寬度，並確保在中間 */
         max-width: 600px; margin: 0 auto; 
-        overflow-x: auto; /* 容許橫向捲動 */
-        scrollbar-width: none; /* Firefox 隱藏捲軸 */
+        overflow-x: auto; 
+        scrollbar-width: none;
     }
-    .custom-tabs::-webkit-scrollbar { display: none; /* Chrome 隱藏捲軸 */ }
+    .custom-tabs::-webkit-scrollbar { display: none; }
 
     .custom-tabs button {
         flex: 1; border: none; background: transparent;
@@ -138,11 +137,10 @@
         background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    /* ---------- Main Content: iPad Fix ---------- */
+    /* ---------- Main Content ---------- */
     .tabcontent {
-        /* 重要：使用百分比寬度，並設上限 */
         width: 94%; 
-        max-width: 760px; /* iPad 直度通常是 768px，留少少邊 */
+        max-width: 760px;
         margin: 35px auto; 
         padding: 0;
         animation: fadeUp 0.6s ease-out;
@@ -154,10 +152,10 @@
         border: 1px solid var(--glass-border);
         border-top: 1px solid rgba(255,255,255,0.4);
         border-radius: 20px; 
-        padding: 20px; /* 稍微減少 padding 以爭取空間 */
+        padding: 20px;
         backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
-        width: 100%; /* 確保卡片不超過容器 */
+        width: 100%;
     }
 
     fieldset {
@@ -175,7 +173,7 @@
         text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
     }
 
-    /* ---------- Inputs: 彈性伸縮 ---------- */
+    /* ---------- Inputs ---------- */
     .input-row { margin-bottom: 12px; }
 
     .input-label {
@@ -185,14 +183,14 @@
 
     .custom-input-group {
         display: flex;
-        align-items: stretch; /* 確保高度一致 */
+        align-items: stretch;
         background: rgba(0, 20, 10, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 12px;
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
         transition: 0.3s; 
         overflow: hidden;
-        width: 100%; /* 佔滿整行 */
+        width: 100%;
     }
 
     .custom-input-group:focus-within {
@@ -201,10 +199,10 @@
     }
 
     .main-input {
-        flex: 1 1 auto; /* 允許伸縮 */
+        flex: 1 1 auto;
         background: transparent; border: none; color: #fff; 
         padding: 12px 10px; font-size: 1.1rem; font-family: monospace; 
-        min-width: 0; /* 關鍵：容許縮細至 0，防止撐爆 */
+        min-width: 0;
     }
     .main-input:focus { outline: none; }
     .main-input::placeholder { color: rgba(255,255,255,0.3); }
@@ -216,21 +214,21 @@
         display: flex; align-items: center; font-weight: bold; 
         border-left: 1px solid rgba(255,255,255,0.1); 
         border-right: 1px solid rgba(255,255,255,0.1);
-        flex-shrink: 0; /* 禁止壓縮 */
+        flex-shrink: 0;
     }
     
     .err-input {
-        width: 55px; /* 稍微調窄 */
+        width: 55px;
         background: rgba(255,255,255,0.03); 
         border: none; color: #d1fae5; text-align: center; font-size: 0.95rem;
-        flex-shrink: 0; /* 禁止壓縮 */
+        flex-shrink: 0;
     }
     .err-input:focus { outline: none; color: #fff; background: rgba(255,255,255,0.1); }
 
     .step-btns { 
-        display: flex; flex-direction: column; width: 36px; /* 稍微調窄 */
+        display: flex; flex-direction: column; width: 36px;
         border-left: 1px solid rgba(255,255,255,0.1); 
-        flex-shrink: 0; /* 禁止壓縮 */
+        flex-shrink: 0;
     }
     .step-btn {
         flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
@@ -272,8 +270,8 @@
     .stat-area { margin-top: 30px; }
     .stat-cards { 
         display: grid; 
-        grid-template-columns: repeat(3, 1fr); /* 強制 3 欄 */
-        gap: 8px; /* 減少間距以防爆格 */
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
         margin-bottom: 24px; 
     }
     
@@ -295,6 +293,7 @@
         background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;
         display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(255,255,255,0.1);
         width: 100%;
+        /* 默認 (手機/iPad直) 已經係 column + align-items:center = 置中 */
     }
     .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
     .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
@@ -312,7 +311,6 @@
     .badge-res { padding: 5px 10px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
 
-    /* ---------- Loading ---------- */
     #loadingOverlay {
         position: fixed; inset: 0; background: #064e3b; z-index: 9999;
         display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
@@ -324,11 +322,16 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ---------- iPad Pro / Desktop Layout ---------- */
+    /* 修正：加入 justify-content: center 確保圓餅圖在橫向時置中 */
     @media (min-width: 992px) {
         .tabcontent { max-width: 900px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .full-width { grid-column: span 2; }
-        .piebox { flex-direction: row; gap: 50px; }
+        .piebox { 
+            flex-direction: row; 
+            gap: 50px; 
+            justify-content: center; /* 關鍵修正：橫排時置中 */
+        }
         .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
         .header { padding-bottom: 120px; }
         .nav-container { margin-top: -60px; }
@@ -957,65 +960,6 @@
       document.getElementById('euTable').style.display = 'none';
       document.getElementById('showEuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
     }
-
-    function confirmAndRender(resultArray, tableId, renderFn) {
-      if (resultArray.length > 20000) {
-        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
-          return;
-        }
-      }
-      const table = document.getElementById(tableId);
-      const tbody = table.querySelector('tbody');
-      tbody.innerHTML = '';
-      resultArray.forEach(r => tbody.insertAdjacentHTML('beforeend', renderFn(r)));
-      table.style.display = 'table';
-      table.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    document.getElementById('showAhListBtn').addEventListener('click', () => {
-      confirmAndRender(lastAhResult, 'ahTable', r => {
-        const [hs, as] = r.ft_score.split('-').map(Number);
-        const diff = hs + r.AH_close_handicap - as;
-        const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
-        return `<tr>
-          <td>${r.season}</td>
-          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br><span style="color:#fff">(${r.ft_score})</span></td>
-          <td>${r.AH_open_handicap}<br><small style="color:#d1fae5">${r.AH_open_home_odds}/${r.AH_open_away_odds}</small></td>
-          <td>${r.AH_close_handicap}<br><small style="color:#d1fae5">${r.AH_close_home_odds}/${r.AH_close_away_odds}</small></td>
-          <td>${out}</td>
-        </tr>`;
-      });
-    });
-
-    document.getElementById('showOuListBtn').addEventListener('click', () => {
-      confirmAndRender(lastOuResult, 'ouTable', r => {
-        const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
-        const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
-        return `<tr>
-          <td>${r.season}</td>
-          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br><span style="color:#fff">(${r.ft_score})</span></td>
-          <td>${r.OU_line}<br><small style="color:#d1fae5">${r.OU_open_over_odds}/${r.OU_open_under_odds}</small></td>
-          <td>${r.close_OU_line}<br><small style="color:#d1fae5">${r.OU_close_over_odds}/${r.OU_close_under_odds}</small></td>
-          <td>${out}</td>
-        </tr>`;
-      });
-    });
-
-    document.getElementById('showEuListBtn').addEventListener('click', () => {
-      confirmAndRender(lastEuResult, 'euTable', r => {
-        const [hs, as] = r.ft_score.split('-').map(Number);
-        const diff = hs - as;
-        const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
-        return `<tr>
-          <td>${r.season}</td>
-          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br><span style="color:#fff">(${r.ft_score})</span></td>
-          <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
-          <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
-          <td>${out}</td>
-          <td>${diff > 0 ? '+'+diff : diff}</td>
-        </tr>`;
-      });
-    });
 
     /* 重設按鈕 */
     document.getElementById('resetAhBtn').addEventListener('click', () => {
