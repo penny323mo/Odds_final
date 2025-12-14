@@ -2,25 +2,23 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"/>
-<title>足球歷史賠率篩選 (Pro)</title>
+<title>足球歷史賠率篩選</title>
 <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"/>
-<!-- 引入字體 -->
+<!-- 引入粗體風格字體 -->
 <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
     :root {
-        /* 基礎色調 */
-        --bg-dark: #064e3b; /* 森綠色 */
-        --glass-bg: rgba(6, 78, 59, 0.35); /* 更通透 */
+        /* 基礎色調：森綠色系 */
+        --bg-dark: #064e3b; 
+        --glass-bg: rgba(6, 78, 59, 0.35);
         --glass-border: rgba(255, 255, 255, 0.2);
         
         /* 品牌色 */
         --brand-green: #10b981;
         --brand-green-light: #34d399;
-        --brand-shadow: #065f46;
         
         --text-main: #ffffff;
         --text-sub: #d1fae5;
@@ -36,11 +34,11 @@
         overflow-x: hidden;
     }
 
-    /* === 背景層 (Background Layers) === */
+    /* === 背景層 === */
     .bg-layer {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-color: #064e3b;
-        /* 1. 聚光燈效果 2. 真實草地圖 */
+        /* 真實草地圖 + 聚光燈效果 */
         background-image: 
             radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.8) 85%),
             url("https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop");
@@ -49,7 +47,7 @@
         background-attachment: fixed;
     }
 
-    /* 網紋紋理 (後備) */
+    /* 後備網紋 (以防圖片載入失敗時仍有質感) */
     .bg-texture {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
@@ -59,7 +57,7 @@
         pointer-events: none;
     }
 
-    /* ---------- Header ---------- */
+    /* ---------- Header: 浮雕字體 ---------- */
     .header {
         position: relative;
         text-align: center;
@@ -73,6 +71,7 @@
         font-size: clamp(2rem, 6vw, 3rem);
         margin: 0;
         color: #fff;
+        /* 立體文字陰影 */
         text-shadow: 
             0 2px 0 #065f46,
             0 4px 0 #064e3b,
@@ -107,30 +106,24 @@
     
     .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8; }
 
-    /* ---------- Tabs ---------- */
-    .nav-container {
-        margin-top: -30px; padding: 0 10px; position: relative; z-index: 20;
-    }
+    /* ---------- Tabs: 懸浮膠囊 ---------- */
+    .nav-container { margin-top: -30px; padding: 0 10px; position: relative; z-index: 20; }
 
     .custom-tabs {
         background: rgba(6, 78, 59, 0.8);
         border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 50px;
-        padding: 5px;
+        border-radius: 50px; padding: 5px;
         display: flex; gap: 5px;
         box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
         backdrop-filter: blur(10px);
-        max-width: 600px;
-        margin: 0 auto;
-        overflow-x: auto;
+        max-width: 600px; margin: 0 auto; overflow-x: auto;
     }
 
     .custom-tabs button {
         flex: 1; border: none; background: transparent;
         color: rgba(255,255,255,0.7);
         padding: 10px 20px; font-weight: 700; font-size: 0.95rem;
-        border-radius: 40px;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border-radius: 40px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         white-space: nowrap; position: relative;
     }
 
@@ -138,7 +131,7 @@
         background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    /* ---------- Main Card ---------- */
+    /* ---------- Main Card: 透視玻璃 ---------- */
     .tabcontent {
         max-width: 760px; margin: 35px auto; padding: 0 15px; animation: fadeUp 0.6s ease-out;
     }
@@ -167,7 +160,7 @@
         text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
     }
 
-    /* ---------- Inputs ---------- */
+    /* ---------- Inputs (Deep Recessed) ---------- */
     .input-label {
         font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 8px; display: block;
         text-shadow: 0 1px 2px rgba(0,0,0,0.5);
@@ -214,7 +207,7 @@
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
     }
 
-    /* ---------- Buttons (3D Pill) ---------- */
+    /* ---------- Buttons (3D Pill Shape) ---------- */
     .btn-3d {
         position: relative; border: none; outline: none; color: white; 
         font-weight: 700; font-size: 1.1rem; 
@@ -225,28 +218,24 @@
         text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
 
+    /* 綠色搜尋掣 */
     .btn-green {
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
-        box-shadow: 0 6px 0 #047857, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
+        box-shadow: 
+            0 6px 0 #047857, 
+            0 12px 20px rgba(0,0,0,0.3), 
+            inset 0 2px 0 rgba(255,255,255,0.4);
     }
     .btn-green:active { transform: translateY(6px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
 
+    /* 灰色重設掣 */
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
         box-shadow: 0 6px 0 #1f2937, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
     }
     .btn-grey:active { transform: translateY(6px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
 
-    .btn-ai-3d {
-        background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
-        box-shadow: 0 6px 0 #6b21a8, 0 0 25px rgba(147, 51, 234, 0.4), inset 0 2px 0 rgba(255,255,255,0.4);
-        margin-top: 25px;
-        animation: pulseGlow 2.5s infinite ease-in-out;
-    }
-    @keyframes pulseGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-    .btn-ai-3d:active { transform: translateY(6px); box-shadow: 0 0 0 #6b21a8; animation: none; }
-
-    /* ---------- Stats ---------- */
+    /* ---------- Stats & Table ---------- */
     .stat-area { margin-top: 30px; }
     .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
     
@@ -270,15 +259,6 @@
     }
     .pie-legend { display: flex; gap: 15px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
     .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
-
-    .ai-result-box {
-        margin-top: 25px; padding: 25px;
-        background: rgba(15, 23, 42, 0.95); border: 1px solid #a855f7;
-        box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
-        border-radius: 16px; color: #f3f4f6; line-height: 1.7; display: none; text-align: left;
-    }
-    .ai-result-box h3 { color: #d8b4fe; margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; font-size: 1.2rem; }
-    .ai-result-box strong { color: #fff; }
 
     .table-container {
         background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; margin-top: 30px;
@@ -326,12 +306,14 @@
     <div class="loading-text" style="color:#d1fae5; font-weight:bold; letter-spacing:1px;">資料載入中...</div>
 </div>
 
+<!-- Header -->
 <div class="header">
     <h1><i class="bi bi-heptagon-fill icon-ball"></i> 足球歷史賠率篩選</h1>
     <div class="desc">大數據分析：初盤、終盤賠率組合 (2013-2025)</div>
     <div class="timestamp" id="ts">版本時間：2025/08/01 上午 00:00:00 (GMT+8)</div>
 </div>
 
+<!-- Tabs -->
 <div class="nav-container">
     <div class="custom-tabs">
         <button class="active" id="tab1" onclick="showTab(0)">亞洲盤查詢</button>
@@ -340,6 +322,7 @@
     </div>
 </div>
 
+<!-- Tab Content 1: 亞洲盤 -->
 <div class="tabcontent" id="tc1">
     <div class="form-card">
         <form id="ahForm">
@@ -441,6 +424,7 @@
     </div>
 </div>
 
+<!-- Tab Content 2: 大小球 -->
 <div class="tabcontent" id="tc2" style="display:none">
     <div class="form-card">
         <form id="ouForm">
@@ -659,7 +643,6 @@
     /* 1. Global Vars */
     let AH = null, OU = null, EU = null;
     let lastAhResult = [], lastOuResult = [], lastEuResult = [];
-    const apiKey = ""; 
 
     const DB = {
       asian:     { base: 'asian_handicap', subdir: '' },
@@ -823,91 +806,7 @@
             <div><span style="background:${lColor}"></span>${lLabel}</div>
           </div>
         </div>
-        
-        <div class="mt-3">
-            <button class="btn-3d btn-ai-3d" onclick="triggerAIAnalysis('${wLabel}','${dLabel}','${lLabel}', ${w}, ${d}, ${l}, ${tot})">
-                <i class="bi bi-stars"></i> ✨ Gemini AI 智能趨勢分析
-            </button>
-            <div id="aiResultArea" class="ai-result-box"></div>
-        </div>
         `;
-    }
-
-    async function triggerAIAnalysis(wLabel, dLabel, lLabel, w, d, l, tot) {
-        const resBox = document.getElementById('aiResultArea');
-        resBox.style.display = 'block';
-        resBox.innerHTML = '<div style="text-align:center; color:#d8b4fe;"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 正在聯絡 AI 分析師...</div>';
-
-        let tab = 'Asian Handicap';
-        let context = '';
-        if(document.getElementById('tab2').classList.contains('active')) tab = 'Over/Under';
-        if(document.getElementById('tab3').classList.contains('active')) tab = 'European 1x2';
-
-        if(tab === 'Asian Handicap') {
-            context = `
-            模式：亞洲盤
-            初盤盤口：${document.getElementById('ahInitHand').value || '不限'}
-            初盤賠率 (主/客)：${document.getElementById('ahHomeExact').value || 'N/A'} / ${document.getElementById('ahAwayExact').value || 'N/A'}
-            終盤盤口：${document.getElementById('ahCloseHand').value || '不限'}
-            終盤賠率 (主/客)：${document.getElementById('ahCloseHomeExact').value || 'N/A'} / ${document.getElementById('ahCloseAwayExact').value || 'N/A'}
-            `;
-        } else if (tab === 'Over/Under') {
-            context = `
-            模式：大小球
-            初盤盤口：${document.getElementById('ouInitLine').value || '不限'}
-            初盤賠率 (大/細)：${document.getElementById('ouBigExact').value || 'N/A'} / ${document.getElementById('ouSmallExact').value || 'N/A'}
-            終盤盤口：${document.getElementById('ouCloseLine').value || '不限'}
-            `;
-        } else {
-            context = `
-            模式：歐洲盤
-            初盤賠率 (主/和/客)：${document.getElementById('euHomeExact').value || 'N/A'} / ${document.getElementById('euDrawExact').value || 'N/A'} / ${document.getElementById('euAwayExact').value || 'N/A'}
-            `;
-        }
-
-        const prompt = `
-        我正在分析足球歷史賠率數據。請根據以下篩選條件和統計結果，提供專業的趨勢分析。
-        
-        【篩選條件】
-        ${context}
-
-        【歷史統計結果 (共 ${tot} 場)】
-        - ${wLabel}: ${w} 場 (${pct(w, tot)})
-        - ${dLabel}: ${d} 場 (${pct(d, tot)})
-        - ${lLabel}: ${l} 場 (${pct(l, tot)})
-
-        【任務】
-        1. 分析這個賠率組合是否具有顯著的傾向性（例如主場優勢明顯、誘盤等）。
-        2. 如果樣本數少於 30 場，請強調數據不足的風險。
-        3. 請用繁體中文回答，語氣像專業足球評論員，簡潔有力。
-        4. 使用 Markdown 格式。
-        `;
-
-        try {
-            const text = await getGeminiAnalysis(prompt);
-            resBox.innerHTML = marked.parse(text);
-        } catch (err) {
-            resBox.innerHTML = `<span style="color:#f87171">分析失敗：請稍後再試。(${err.message})</span>`;
-        }
-    }
-
-    async function getGeminiAnalysis(prompt) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-        const payload = {
-            contents: [{ parts: [{ text: prompt }] }],
-            systemInstruction: { parts: [{ text: "你是專業的足球賠率分析師。請用繁體中文提供簡短、專業的分析。重點關注勝率是否顯著，以及賠率變化的潛在含義。" }] }
-        };
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) throw new Error("API Connection Failed");
-
-        const data = await response.json();
-        return data.candidates?.[0]?.content?.parts?.[0]?.text || "無法生成分析，請檢查輸入。";
     }
 
     function doAhSearch() {
