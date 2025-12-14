@@ -2,25 +2,25 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"/>
-<title>足球歷史賠率篩選 (AI Features)</title>
-<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"/>
+<title>足球歷史賠率篩選</title>
+<!-- PWA 設定 -->
+<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" name="viewport"/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#064e3b">
+
 <!-- 引入字體 -->
 <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
     :root {
-        /* 基礎色調 */
-        --bg-dark: #064e3b; /* 森綠色 */
-        --glass-bg: rgba(6, 78, 59, 0.35);
+        --bg-dark: #064e3b; 
+        --glass-bg: rgba(6, 78, 59, 0.45);
         --glass-border: rgba(255, 255, 255, 0.2);
-        
-        /* 品牌色 */
         --brand-green: #10b981;
         --brand-green-light: #34d399;
-        
         --text-main: #ffffff;
         --text-sub: #d1fae5;
     }
@@ -31,9 +31,13 @@
         color: var(--text-main);
         background-color: var(--bg-dark);
         min-height: 100vh;
-        padding-bottom: 80px;
+        padding-bottom: 100px;
         overflow-x: hidden;
+        width: 100vw;
+        box-sizing: border-box;
     }
+
+    *, *::before, *::after { box-sizing: border-box; }
 
     /* === 背景層 === */
     .bg-layer {
@@ -42,276 +46,213 @@
         background-image: 
             radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.8) 85%),
             url("https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
+        background-size: cover; background-position: center; background-attachment: fixed;
     }
 
     .bg-texture {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-        background-size: 40px 40px;
-        opacity: 0.3;
-        pointer-events: none;
+        background-size: 40px 40px; opacity: 0.3; pointer-events: none;
     }
 
     /* ---------- Header ---------- */
-    .header {
-        position: relative;
-        text-align: center;
-        padding: 45px 20px 55px;
-        z-index: 10;
-    }
-
+    .header { position: relative; text-align: center; padding: 40px 20px 50px; z-index: 10; width: 100%; }
     .header h1 {
-        font-family: 'Noto Sans TC', sans-serif;
-        font-weight: 900;
-        font-size: clamp(2rem, 6vw, 3rem);
-        margin: 0;
-        color: #fff;
-        text-shadow: 
-            0 2px 0 #065f46,
-            0 4px 0 #064e3b,
-            0 6px 12px rgba(0,0,0,0.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        flex-wrap: wrap;
+        font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
+        font-size: clamp(1.8rem, 5vw, 2.8rem); margin: 0; color: #fff;
+        text-shadow: 0 2px 0 #065f46, 0 4px 0 #064e3b, 0 6px 12px rgba(0,0,0,0.6);
+        display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
     }
-    
     .icon-ball {
-        font-size: 2.2rem;
-        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
-        color: var(--brand-green-light);
-        animation: floatBall 3s ease-in-out infinite;
+        font-size: 2.2rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        color: var(--brand-green-light); animation: floatBall 3s ease-in-out infinite;
     }
     @keyframes floatBall { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-
     .header .desc {
-        margin-top: 12px;
-        font-size: 1rem;
-        color: #e0f2f1;
-        background: rgba(0,0,0,0.3);
-        padding: 6px 18px;
-        border-radius: 50px;
-        border: 1px solid rgba(255,255,255,0.15);
-        backdrop-filter: blur(4px);
-        display: inline-block;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        margin-top: 12px; font-size: 1rem; color: #e0f2f1;
+        background: rgba(0,0,0,0.3); padding: 6px 18px; border-radius: 50px;
+        border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px);
+        display: inline-block; max-width: 90%;
     }
-    
     .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8; }
 
-    /* Key Button */
-    .key-btn {
-        position: absolute; top: 20px; right: 20px;
-        background: rgba(0,0,0,0.4); color: #fff;
-        border: 1px solid rgba(255,255,255,0.2);
-        padding: 8px 15px; border-radius: 20px; font-size: 0.85rem;
-        cursor: pointer; backdrop-filter: blur(5px); transition: 0.2s;
-    }
-    .key-btn:hover { background: rgba(255,255,255,0.1); }
-
     /* ---------- Tabs ---------- */
-    .nav-container { margin-top: -30px; padding: 0 10px; position: relative; z-index: 20; }
-
+    .nav-container { margin-top: -30px; padding: 0 15px; position: relative; z-index: 20; width: 100%; }
     .custom-tabs {
-        background: rgba(6, 78, 59, 0.8);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 50px; padding: 5px;
-        display: flex; gap: 5px;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
-        backdrop-filter: blur(10px);
-        max-width: 600px; margin: 0 auto; overflow-x: auto;
+        background: rgba(6, 78, 59, 0.8); border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 50px; padding: 5px; display: flex; gap: 5px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+        max-width: 600px; margin: 0 auto; overflow-x: auto; scrollbar-width: none;
     }
-
+    .custom-tabs::-webkit-scrollbar { display: none; }
     .custom-tabs button {
-        flex: 1; border: none; background: transparent;
-        color: rgba(255,255,255,0.7);
-        padding: 10px 20px; font-weight: 700; font-size: 0.95rem;
-        border-radius: 40px; transition: all 0.3s;
-        white-space: nowrap; position: relative;
+        flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.7);
+        padding: 10px 15px; font-weight: 700; font-size: 0.95rem; border-radius: 40px;
+        transition: all 0.3s; white-space: nowrap; 
     }
+    .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
-    .custom-tabs button.active {
-        background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    /* ---------- Main Card ---------- */
+    /* ---------- Main Content ---------- */
     .tabcontent {
-        max-width: 760px; margin: 35px auto; padding: 0 15px; animation: fadeUp 0.6s ease-out;
+        width: 94%; max-width: 760px; margin: 35px auto; padding: 0; animation: fadeUp 0.6s ease-out;
     }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
     .form-card {
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        border-top: 1px solid rgba(255,255,255,0.4);
-        border-radius: 24px; padding: 28px;
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
+        background: var(--glass-bg); border: 1px solid var(--glass-border);
+        border-top: 1px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 20px;
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); width: 100%;
     }
 
     fieldset {
-        border: 1px solid rgba(255,255,255,0.1);
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 16px; padding: 20px 24px; margin-bottom: 24px;
-        box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255,255,255,0.1); background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px; padding: 15px; margin-bottom: 20px;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); width: 100%;
     }
-
     legend {
-        color: var(--brand-green-light);
-        font-weight: 700; font-size: 1.15rem; text-transform: uppercase;
-        letter-spacing: 1px; display: flex; align-items: center; gap: 8px;
+        color: var(--brand-green-light); font-weight: 700; font-size: 1.1rem;
+        text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;
         text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
     }
 
     /* ---------- Inputs ---------- */
+    .input-row { margin-bottom: 12px; }
     .input-label {
-        font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 8px; display: block;
+        font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 6px; display: block;
         text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
-
     .custom-input-group {
-        display: flex;
-        background: rgba(0, 20, 10, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
-        transition: 0.3s; overflow: hidden;
+        display: flex; align-items: stretch; background: rgba(0, 20, 10, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px;
+        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4); transition: 0.3s; overflow: hidden; width: 100%;
     }
-
     .custom-input-group:focus-within {
         border-color: var(--brand-green);
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
     }
-
     .main-input {
-        flex: 1; background: transparent; border: none; color: #fff; padding: 14px; font-size: 1.1rem; font-family: monospace; min-width: 60px;
+        flex: 1 1 auto; background: transparent; border: none; color: #fff; 
+        padding: 12px 10px; font-size: 1.1rem; font-family: monospace; min-width: 0;
     }
     .main-input:focus { outline: none; }
     .main-input::placeholder { color: rgba(255,255,255,0.3); }
     
     .divider-text {
-        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 12px; display: flex; align-items: center; font-weight: bold; border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1);
+        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 10px; 
+        display: flex; align-items: center; font-weight: bold; 
+        border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
     }
-    
     .err-input {
-        width: 60px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; text-align: center; font-size: 0.95rem;
+        width: 55px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; 
+        text-align: center; font-size: 0.95rem; flex-shrink: 0;
     }
     .err-input:focus { outline: none; color: #fff; background: rgba(255,255,255,0.1); }
-
-    .step-btns { display: flex; flex-direction: column; width: 40px; border-left: 1px solid rgba(255,255,255,0.1); }
+    .step-btns { 
+        display: flex; flex-direction: column; width: 36px;
+        border-left: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+    }
     .step-btn {
-        flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+        flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); 
+        cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
     }
     .step-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
     .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
-
     select.form-select-custom {
-        width: 100%; padding: 14px; background-color: rgba(2, 44, 34, 0.95); color: #fff; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+        width: 100%; padding: 12px; background-color: rgba(2, 44, 34, 0.95); color: #fff; 
+        border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
     }
 
-    /* ---------- Buttons (3D Pill) ---------- */
+    /* ---------- Buttons ---------- */
     .btn-3d {
-        position: relative; border: none; outline: none; color: white; 
-        font-weight: 700; font-size: 1.1rem; 
-        padding: 16px 36px; border-radius: 50px; cursor: pointer; 
+        position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 1.1rem; 
+        padding: 16px 20px; border-radius: 50px; cursor: pointer; 
         transition: transform 0.1s, box-shadow 0.1s; 
         display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
-        text-transform: uppercase; letter-spacing: 1px;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
-
     .btn-green {
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
         box-shadow: 0 6px 0 #047857, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
     }
     .btn-green:active { transform: translateY(6px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
-
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
         box-shadow: 0 6px 0 #1f2937, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
     }
     .btn-grey:active { transform: translateY(6px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
 
-    /* AI Analysis Button (Purple) */
-    .btn-ai-3d {
-        background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
-        box-shadow: 0 6px 0 #6b21a8, 0 0 25px rgba(147, 51, 234, 0.4), inset 0 2px 0 rgba(255,255,255,0.4);
-        flex: 1; /* For flex layout */
-        animation: pulsePurple 3s infinite ease-in-out;
-    }
-    @keyframes pulsePurple { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-    .btn-ai-3d:active { transform: translateY(6px); box-shadow: 0 0 0 #6b21a8; animation: none; }
-
-    /* AI Simulation Button (Orange/Gold) */
-    .btn-sim-3d {
-        background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
-        box-shadow: 0 6px 0 #92400e, 0 0 25px rgba(245, 158, 11, 0.4), inset 0 2px 0 rgba(255,255,255,0.4);
-        flex: 1;
-        animation: pulseGold 3.5s infinite ease-in-out;
-        animation-delay: 1.5s;
-    }
-    @keyframes pulseGold { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-    .btn-sim-3d:active { transform: translateY(6px); box-shadow: 0 0 0 #92400e; animation: none; }
-
-    .ai-btn-group {
-        display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap;
-    }
-
-    /* ---------- Stats ---------- */
+    /* ---------- Stats & Table (Updated) ---------- */
     .stat-area { margin-top: 30px; }
-    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
-    
+    .stat-cards { 
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; 
+    }
     .stat-card {
         background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 16px; padding: 15px 5px; text-align: center;
+        border-radius: 12px; padding: 12px 4px; text-align: center;
         box-shadow: 0 8px 20px rgba(0,0,0,0.2); backdrop-filter: blur(5px);
         position: relative; overflow: hidden;
     }
     .stat-card.win { border-bottom: 4px solid #ef4444; }
     .stat-card.draw { border-bottom: 4px solid #22c55e; }
     .stat-card.lose { border-bottom: 4px solid #3b82f6; }
-
-    .stat-card .label { font-size: 0.8rem; color: #a7f3d0; font-weight: 700; letter-spacing: 1px; }
-    .stat-card .value { font-size: 1.6rem; font-weight: 900; margin: 5px 0; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .stat-card .pct { font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 10px; color: #fff; }
+    .stat-card .label { font-size: 0.75rem; color: #a7f3d0; font-weight: 700; }
+    .stat-card .value { font-size: 1.4rem; font-weight: 900; margin: 4px 0; color: #fff; }
+    .stat-card .pct { font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px; color: #fff; }
 
     .piebox {
         background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;
-        display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(255,255,255,0.1);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        border: 1px solid rgba(255,255,255,0.1); width: 100%;
     }
-    .pie-legend { display: flex; gap: 15px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
+    .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
     .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-    /* AI Result Box */
-    .ai-result-box {
-        margin-top: 25px; padding: 25px;
-        background: rgba(15, 23, 42, 0.95); 
-        border-radius: 16px; color: #f3f4f6; line-height: 1.7; display: none; text-align: left;
-        position: relative;
+    /* Filter Input */
+    .filter-box {
+        display: none; /* hidden initially */
+        margin-top: 20px; margin-bottom: 10px; width: 100%;
     }
-    .ai-result-box.analysis { border: 1px solid #a855f7; box-shadow: 0 0 30px rgba(168, 85, 247, 0.2); }
-    .ai-result-box.simulation { border: 1px solid #d97706; box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); }
-
-    .ai-result-box h3 { color: #fff; margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;}
-    .ai-result-box strong { color: #fff; }
+    .filter-input {
+        width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.3);
+        background: rgba(0,0,0,0.3); color: #fff; font-size: 1rem; outline: none;
+        backdrop-filter: blur(5px);
+    }
+    .filter-input::placeholder { color: rgba(255,255,255,0.5); }
+    .filter-input:focus { border-color: var(--brand-green-light); background: rgba(0,0,0,0.5); }
 
     .table-container {
-        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; margin-top: 30px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 16px; overflow: hidden; margin-top: 10px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.5); display: none;
     }
-    .table-responsive { overflow-x: auto; }
+    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table { width: 100%; border-collapse: collapse; font-size: 0.9rem; white-space: nowrap; }
-    th { background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 16px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
-    tr:hover { background: rgba(255,255,255,0.1); }
+    th { 
+        background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 14px; font-weight: 700; 
+        border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; user-select: none;
+        transition: background 0.2s;
+    }
+    th:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    tr { transition: background 0.2s; cursor: pointer; }
+    tr:hover { background: rgba(255,255,255,0.15) !important; }
+    
+    /* Animation for Table Rows */
+    @keyframes fadeInRow { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .row-animate { opacity: 0; animation: fadeInRow 0.4s ease-out forwards; }
 
-    .badge-res { padding: 5px 12px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+    /* Toast Notification */
+    .toast-msg {
+        position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+        background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 30px;
+        font-size: 0.9rem; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .toast-msg.show { opacity: 1; }
+
+    .badge-res { padding: 5px 10px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
 
     #loadingOverlay {
@@ -326,9 +267,9 @@
 
     @media (min-width: 992px) {
         .tabcontent { max-width: 900px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .full-width { grid-column: span 2; }
-        .piebox { flex-direction: row; gap: 50px; }
+        .piebox { flex-direction: row; gap: 50px; justify-content: center; }
         .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
         .header { padding-bottom: 120px; }
         .nav-container { margin-top: -60px; }
@@ -346,15 +287,12 @@
     <div class="loading-text" style="color:#d1fae5; font-weight:bold; letter-spacing:1px;">資料載入中...</div>
 </div>
 
-<!-- Header -->
 <div class="header">
-    <button class="key-btn" onclick="setApiKey()"><i class="bi bi-key-fill"></i> 設定 API Key</button>
     <h1><i class="bi bi-heptagon-fill icon-ball"></i> 足球歷史賠率篩選</h1>
     <div class="desc">大數據分析：初盤、終盤賠率組合 (2013-2025)</div>
     <div class="timestamp" id="ts">版本時間：2025/08/01 上午 00:00:00 (GMT+8)</div>
 </div>
 
-<!-- Tabs -->
 <div class="nav-container">
     <div class="custom-tabs">
         <button class="active" id="tab1" onclick="showTab(0)">亞洲盤查詢</button>
@@ -363,7 +301,6 @@
     </div>
 </div>
 
-<!-- Tab Content 1: 亞洲盤 -->
 <div class="tabcontent" id="tc1">
     <div class="form-card">
         <form id="ahForm">
@@ -442,21 +379,27 @@
         </form>
     </div>
 
-    <!-- Stats Result Area -->
     <div class="stat-area" id="ahStat"></div>
 
     <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light rounded-pill px-4" id="showAhListBtn" style="display: none;" type="button">輸出比賽列表</button>
+        <button class="btn btn-outline-light rounded-pill px-4" id="showAhListBtn" style="display: none;" type="button">顯示比賽列表</button>
     </div>
 
-    <div class="table-container">
+    <!-- 篩選器 -->
+    <div class="filter-box" id="ahFilterBox">
+        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱 (例如: 曼聯)..." onkeyup="filterTable('ahTable', this.value)">
+    </div>
+
+    <div class="table-container" id="ahTableContainer">
         <div class="table-responsive">
-            <table id="ahTable" style="display:none;">
+            <table id="ahTable">
                 <thead>
                 <tr>
-                    <th>賽季</th><th>比賽</th>
+                    <th onclick="sortTable('ahTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
                     <th>初盤盤口</th><th>初盤主賠</th><th>初盤客賠</th>
-                    <th>終盤盤口</th><th>終盤主賠</th><th>終盤客賠</th><th>盤口勝負</th>
+                    <th>終盤盤口</th><th>終盤主賠</th><th>終盤客賠</th>
+                    <th onclick="sortTable('ahTable', 8)">結果 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -547,16 +490,23 @@
     <div class="stat-area" id="ouStat"></div>
 
     <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light rounded-pill px-4" id="showOuListBtn" style="display: none;" type="button">輸出比賽列表</button>
+        <button class="btn btn-outline-light rounded-pill px-4" id="showOuListBtn" style="display: none;" type="button">顯示比賽列表</button>
     </div>
 
-    <div class="table-container">
+    <div class="filter-box" id="ouFilterBox">
+        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱..." onkeyup="filterTable('ouTable', this.value)">
+    </div>
+
+    <div class="table-container" id="ouTableContainer">
         <div class="table-responsive">
-            <table id="ouTable" style="display:none;">
+            <table id="ouTable">
                 <thead>
                 <tr>
-                    <th>賽季</th><th>比賽</th><th>初盤盤口</th><th>初盤大</th><th>初盤細</th>
-                    <th>終盤盤口</th><th>終盤大</th><th>終盤細</th><th>結果</th>
+                    <th onclick="sortTable('ouTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                    <th>初盤盤口</th><th>初盤大</th><th>初盤細</th>
+                    <th>終盤盤口</th><th>終盤大</th><th>終盤細</th>
+                    <th onclick="sortTable('ouTable', 8)">結果 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -662,16 +612,24 @@
     <div class="stat-area" id="euStat"></div>
 
     <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light rounded-pill px-4" id="showEuListBtn" style="display: none;" type="button">輸出比賽列表</button>
+        <button class="btn btn-outline-light rounded-pill px-4" id="showEuListBtn" style="display: none;" type="button">顯示比賽列表</button>
     </div>
 
-    <div class="table-container">
+    <div class="filter-box" id="euFilterBox">
+        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱..." onkeyup="filterTable('euTable', this.value)">
+    </div>
+
+    <div class="table-container" id="euTableContainer">
         <div class="table-responsive">
-            <table id="euTable" style="display:none;">
+            <table id="euTable">
                 <thead>
                 <tr>
-                    <th>賽季</th><th>比賽</th><th>初盤(主/和/客)</th><th>終盤(主/和/客)</th>
-                    <th>比分</th><th>勝負</th><th>淨勝球</th>
+                    <th onclick="sortTable('euTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('euTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                    <th>初盤(主/和/客)</th><th>終盤(主/和/客)</th>
+                    <th>比分</th>
+                    <th onclick="sortTable('euTable', 5)">勝負 <i class="bi bi-arrow-down-up"></i></th>
+                    <th>淨勝球</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -679,6 +637,8 @@
         </div>
     </div>
 </div>
+
+<div class="toast-msg" id="toast">已複製比賽詳情！</div>
 
 <script>
     /* 1. Global Vars */
@@ -726,6 +686,66 @@
     
     function pct(n, t) {
       return t ? ((n / t * 100).toFixed(1) + '%') : '0.0%';
+    }
+
+    /* Motion: Count Up Animation */
+    function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = Math.floor(progress * (end - start) + start);
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                obj.innerHTML = end; // Ensure final value is exact
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    /* Motion: Render Stats with Animation */
+    function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, extraInfo = '') {
+        // Prepare HTML structure first
+        const html = `
+        <div class="stat-cards">
+            <div class="stat-card win">
+                <span class="label">${wLabel}</span>
+                <span class="value" id="valWin">0</span>
+                <span class="pct">${pct(w, tot)}</span>
+            </div>
+            <div class="stat-card draw">
+                <span class="label">${dLabel}</span>
+                <span class="value" id="valDraw">0</span>
+                <span class="pct">${pct(d, tot)}</span>
+            </div>
+            <div class="stat-card lose">
+                <span class="label">${lLabel}</span>
+                <span class="value" id="valLose">0</span>
+                <span class="pct">${pct(l, tot)}</span>
+            </div>
+        </div>
+        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.9rem; color:#d1fae5;">${extraInfo}</div>` : ''}
+        <div class="piebox">
+          ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
+          <div class="pie-legend">
+            <div><span style="background:${wColor}"></span>${wLabel}</div>
+            <div><span style="background:${dColor}"></span>${dLabel}</div>
+            <div><span style="background:${lColor}"></span>${lLabel}</div>
+          </div>
+        </div>
+        `;
+        
+        // Return HTML string, need to call animate function after insertion
+        return html;
+    }
+
+    function triggerCountUp(w, d, l) {
+        setTimeout(() => {
+            if(document.getElementById("valWin")) animateValue(document.getElementById("valWin"), 0, w, 800);
+            if(document.getElementById("valDraw")) animateValue(document.getElementById("valDraw"), 0, d, 800);
+            if(document.getElementById("valLose")) animateValue(document.getElementById("valLose"), 0, l, 800);
+        }, 100);
     }
 
     function drawPieChart(data) {
@@ -819,163 +839,6 @@
       fillSelect('ouCloseLine', new Set(OU.map(r => r.close_OU_line)));
     }
     
-    function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, extraInfo = '') {
-        return `
-        <div class="stat-cards">
-            <div class="stat-card win">
-                <span class="label">${wLabel}</span>
-                <span class="value">${w}</span>
-                <span class="pct">${pct(w, tot)}</span>
-            </div>
-            <div class="stat-card draw">
-                <span class="label">${dLabel}</span>
-                <span class="value">${d}</span>
-                <span class="pct">${pct(d, tot)}</span>
-            </div>
-            <div class="stat-card lose">
-                <span class="label">${lLabel}</span>
-                <span class="value">${l}</span>
-                <span class="pct">${pct(l, tot)}</span>
-            </div>
-        </div>
-        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.9rem; color:#d1fae5;">${extraInfo}</div>` : ''}
-        <div class="piebox">
-          ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
-          <div class="pie-legend">
-            <div><span style="background:${wColor}"></span>${wLabel}</div>
-            <div><span style="background:${dColor}"></span>${dLabel}</div>
-            <div><span style="background:${lColor}"></span>${lLabel}</div>
-          </div>
-        </div>
-        
-        <div class="ai-btn-group">
-            <button class="btn-3d btn-ai-3d" onclick="triggerAIAnalysis('${wLabel}','${dLabel}','${lLabel}', ${w}, ${d}, ${l}, ${tot})">
-                <i class="bi bi-bar-chart-fill"></i> ✨ 智能趨勢分析
-            </button>
-            <button class="btn-3d btn-sim-3d" onclick="triggerAISimulation('${wLabel}','${dLabel}','${lLabel}', ${w}, ${d}, ${l}, ${tot})">
-                <i class="bi bi-magic"></i> 🔮 AI 賽況模擬
-            </button>
-        </div>
-        <div id="aiResultArea" class="ai-result-box"></div>
-        `;
-    }
-
-    /* === AI Function with Secure Storage === */
-    function setApiKey() {
-        const key = prompt("請輸入你的 Google Gemini API Key:\n(此 Key 只會儲存在你的瀏覽器中，不會上傳)");
-        if(key) {
-            localStorage.setItem('gemini_api_key', key);
-            alert("API Key 已儲存！你可以開始使用 AI 分析功能。");
-        }
-    }
-
-    function getApiKey() {
-        return localStorage.getItem('gemini_api_key');
-    }
-
-    // Common Logic for AI Calls
-    async function handleAICall(type, promptText) {
-        const apiKey = getApiKey();
-        if(!apiKey) {
-            if(confirm("尚未設定 API Key。現在去設定嗎？")) { setApiKey(); }
-            return;
-        }
-
-        const resBox = document.getElementById('aiResultArea');
-        resBox.style.display = 'block';
-        resBox.className = 'ai-result-box ' + type; // analysis or simulation
-        resBox.innerHTML = '<div style="text-align:center; color:#fff; padding:10px;"><div class="spinner-border spinner-border-sm text-light" role="status"></div> 正在連線 Gemini AI...</div>';
-
-        try {
-            const text = await getGeminiResponse(promptText, apiKey);
-            // Simulate typing effect
-            let i = 0;
-            resBox.innerHTML = ''; // Clear spinner
-            const parsedHTML = marked.parse(text);
-            // Simple fade in instead of complex typing for HTML content
-            resBox.innerHTML = parsedHTML;
-            resBox.style.opacity = 0;
-            let op = 0;
-            const timer = setInterval(function () {
-                if (op >= 1){ clearInterval(timer); }
-                resBox.style.opacity = op;
-                op += 0.1;
-            }, 30);
-        } catch (err) {
-            resBox.innerHTML = `<span style="color:#ef4444">連線失敗：請檢查 API Key。(${err.message})</span>`;
-        }
-    }
-
-    async function triggerAIAnalysis(wLabel, dLabel, lLabel, w, d, l, tot) {
-        const context = getContext();
-        const prompt = `
-        你是一位專業的足球數據分析師。請分析以下「歷史賠率統計數據」並給出建議。
-        
-        【篩選條件】
-        ${context}
-
-        【統計結果 (共 ${tot} 場)】
-        - ${wLabel}: ${w} 場 (${pct(w, tot)})
-        - ${dLabel}: ${d} 場 (${pct(d, tot)})
-        - ${lLabel}: ${l} 場 (${pct(l, tot)})
-
-        【你的任務】
-        1. **趨勢判斷**：這個賠率組合是否顯示出莊家明顯的傾向？（例如：誘盤、真實看好等）
-        2. **風險提示**：如果樣本少於 30 場，請強調數據樣本不足的風險。
-        3. **投注建議**：基於數據，哪個方向值博率較高？
-        4. 請用繁體中文，語氣專業、客觀。使用 Markdown 格式（列點、粗體）。
-        `;
-        handleAICall('analysis', prompt);
-    }
-
-    async function triggerAISimulation(wLabel, dLabel, lLabel, w, d, l, tot) {
-        const context = getContext();
-        const prompt = `
-        你是一位充滿想像力的足球評述員。請根據以下賠率數據，發揮創意**模擬一場虛構的比賽劇本**。
-        
-        【數據背景】
-        ${context}
-        歷史概率：${wLabel} ${pct(w, tot)} | ${dLabel} ${pct(d, tot)} | ${lLabel} ${pct(l, tot)}
-
-        【你的任務】
-        1. **劇本創作**：根據勝率最高的結果，寫一段 100 字左右的比賽流程模擬（例如：誰先進球？有無紅牌？最後時刻絕殺？）。
-        2. **波膽預測**：基於劇本給出一個具體的比分預測。
-        3. 語氣要生動、激情，像在講波一樣。用繁體中文。
-        `;
-        handleAICall('simulation', prompt);
-    }
-
-    function getContext() {
-        let tab = 'Asian Handicap';
-        let context = '';
-        if(document.getElementById('tab2').classList.contains('active')) tab = 'Over/Under';
-        if(document.getElementById('tab3').classList.contains('active')) tab = 'European 1x2';
-
-        if(tab === 'Asian Handicap') {
-            context = `模式：亞洲盤 | 初盤：${document.getElementById('ahInitHand').value||'-'} (${document.getElementById('ahHomeExact').value||'-'}/${document.getElementById('ahAwayExact').value||'-'}) | 終盤：${document.getElementById('ahCloseHand').value||'-'} (${document.getElementById('ahCloseHomeExact').value||'-'}/${document.getElementById('ahCloseAwayExact').value||'-'})`;
-        } else if (tab === 'Over/Under') {
-            context = `模式：大小球 | 初盤：${document.getElementById('ouInitLine').value||'-'} (${document.getElementById('ouBigExact').value||'-'}/${document.getElementById('ouSmallExact').value||'-'}) | 終盤：${document.getElementById('ouCloseLine').value||'-'}`;
-        } else {
-            context = `模式：歐洲盤 | 初盤：${document.getElementById('euHomeExact').value||'-'}/${document.getElementById('euDrawExact').value||'-'}/${document.getElementById('euAwayExact').value||'-'}`;
-        }
-        return context;
-    }
-
-    async function getGeminiResponse(prompt, key) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${key}`;
-        const payload = {
-            contents: [{ parts: [{ text: prompt }] }]
-        };
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if (!response.ok) throw new Error("API Error");
-        const data = await response.json();
-        return data.candidates?.[0]?.content?.parts?.[0]?.text || "無回應";
-    }
-
     function doAhSearch() {
       const [hMin, hMax] = range('ahHomeExact', 'ahHomeErr'),
             [aMin, aMax] = range('ahAwayExact', 'ahAwayErr'),
@@ -1003,10 +866,13 @@
 
       const tot = lastAhResult.length;
       document.getElementById('ahStat').innerHTML = generateStatsHTML(
-          w, d, l, '#e53b2d', '#27a146', '#2166d1', '贏盤', '和盤', '輸盤', tot, `總場數：${tot}`
+          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, `總場數：${tot}`
       );
+      triggerCountUp(w, d, l);
       
       document.getElementById('ahTable').style.display = 'none';
+      document.getElementById('ahTableContainer').style.display = 'none';
+      document.getElementById('ahFilterBox').style.display = 'none';
       document.getElementById('showAhListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
     }
 
@@ -1038,10 +904,13 @@
 
       const tot = lastOuResult.length;
       document.getElementById('ouStat').innerHTML = generateStatsHTML(
-          over, push, under, '#e53b2d', '#27a146', '#2166d1', '大球', '走盤', '小球', tot, `總場數：${tot}`
+          over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', tot, `總場數：${tot}`
       );
+      triggerCountUp(over, push, under);
       
       document.getElementById('ouTable').style.display = 'none';
+      document.getElementById('ouTableContainer').style.display = 'none';
+      document.getElementById('ouFilterBox').style.display = 'none';
       document.getElementById('showOuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
     }
 
@@ -1082,9 +951,65 @@
       document.getElementById('euStat').innerHTML = generateStatsHTML(
           w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', tot, extra
       );
+      triggerCountUp(w, d, l);
         
       document.getElementById('euTable').style.display = 'none';
+      document.getElementById('euTableContainer').style.display = 'none';
+      document.getElementById('euFilterBox').style.display = 'none';
       document.getElementById('showEuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
+    }
+
+    /* === Enhanced Table Functions === */
+    function copyToClipboard(text) {
+        if (!text) return;
+        const el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Filter Logic
+    function filterTable(tableId, query) {
+        const table = document.getElementById(tableId);
+        const trs = table.querySelectorAll('tbody tr');
+        query = query.toLowerCase();
+        
+        trs.forEach(tr => {
+            const text = tr.innerText.toLowerCase();
+            tr.style.display = text.includes(query) ? '' : 'none';
+        });
+    }
+
+    // Sorting Logic
+    function sortTable(tableId, colIndex) {
+        const table = document.getElementById(tableId);
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const isAsc = table.getAttribute('data-order') === 'asc';
+        
+        rows.sort((a, b) => {
+            const aText = a.children[colIndex].innerText.trim();
+            const bText = b.children[colIndex].innerText.trim();
+            
+            // Try numeric sort
+            const aNum = parseFloat(aText.replace(/[^0-9.-]+/g,""));
+            const bNum = parseFloat(bText.replace(/[^0-9.-]+/g,""));
+            
+            if (!isNaN(aNum) && !isNaN(bNum)) {
+                return isAsc ? aNum - bNum : bNum - aNum;
+            }
+            return isAsc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+        });
+        
+        table.setAttribute('data-order', isAsc ? 'desc' : 'asc');
+        tbody.innerHTML = '';
+        rows.forEach(tr => tbody.appendChild(tr));
     }
 
     function confirmAndRender(resultArray, tableId, renderFn) {
@@ -1094,11 +1019,38 @@
         }
       }
       const table = document.getElementById(tableId);
+      const container = document.getElementById(tableId + 'Container');
+      const filterBox = document.getElementById(tableId.replace('Table', 'FilterBox')); // e.g. ahFilterBox
       const tbody = table.querySelector('tbody');
+      
       tbody.innerHTML = '';
-      resultArray.forEach(r => tbody.insertAdjacentHTML('beforeend', renderFn(r)));
+      
+      // Render with delay for animation
+      resultArray.forEach((r, idx) => {
+          const trStr = renderFn(r);
+          // Create temp element to parse HTML string
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = trStr;
+          const tr = tempDiv.firstElementChild;
+          
+          // Add Copy Event
+          tr.onclick = function() {
+              const info = Array.from(this.children).map(td => td.innerText).join(' | ');
+              copyToClipboard(info);
+          };
+          
+          // Add Animation Delay
+          tr.style.animationDelay = `${Math.min(idx * 0.03, 1)}s`; // Cap delay at 1s
+          tr.classList.add('row-animate');
+          
+          tbody.appendChild(tr);
+      });
+      
       table.style.display = 'table';
-      table.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      container.style.display = 'block';
+      if(filterBox) filterBox.style.display = 'block';
+      
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     document.getElementById('showAhListBtn').addEventListener('click', () => {
@@ -1152,6 +1104,8 @@
       document.getElementById('ahStat').innerHTML = '';
       document.getElementById('showAhListBtn').style.display = 'none';
       document.getElementById('ahTable').style.display = 'none';
+      document.getElementById('ahTableContainer').style.display = 'none';
+      document.getElementById('ahFilterBox').style.display = 'none';
       lastAhResult = [];
     });
     document.getElementById('resetOuBtn').addEventListener('click', () => {
@@ -1159,6 +1113,8 @@
       document.getElementById('ouStat').innerHTML = '';
       document.getElementById('showOuListBtn').style.display = 'none';
       document.getElementById('ouTable').style.display = 'none';
+      document.getElementById('ouTableContainer').style.display = 'none';
+      document.getElementById('ouFilterBox').style.display = 'none';
       lastOuResult = [];
     });
     document.getElementById('resetEuBtn').addEventListener('click', () => {
@@ -1166,6 +1122,8 @@
       document.getElementById('euStat').innerHTML = '';
       document.getElementById('showEuListBtn').style.display = 'none';
       document.getElementById('euTable').style.display = 'none';
+      document.getElementById('euTableContainer').style.display = 'none';
+      document.getElementById('euFilterBox').style.display = 'none';
       lastEuResult = [];
     });
 
