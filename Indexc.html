@@ -209,6 +209,10 @@
     }
     .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
     .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+    
+    /* Pie Chart Animation Classes */
+    .pie-path { opacity: 0; transform: scale(0.8); transform-origin: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .pie-path.show { opacity: 1; transform: scale(1); }
 
     /* Filter Input */
     .filter-box {
@@ -720,6 +724,7 @@
         const idWin = prefix + 'Win';
         const idDraw = prefix + 'Draw';
         const idLose = prefix + 'Lose';
+        const idPie = prefix + 'Pie';
         
         const html = `
         <div class="stat-cards">
@@ -740,13 +745,8 @@
             </div>
         </div>
         ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.9rem; color:#d1fae5;">${extraInfo}</div>` : ''}
-        <div class="piebox">
-          ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
-          <div class="pie-legend">
-            <div><span style="background:${wColor}"></span>${wLabel}</div>
-            <div><span style="background:${dColor}"></span>${dLabel}</div>
-            <div><span style="background:${lColor}"></span>${lLabel}</div>
-          </div>
+        <div class="piebox" id="${idPie}">
+          <!-- Pie chart will be injected here after delay -->
         </div>
         `;
         return html;
@@ -756,6 +756,8 @@
         const idWin = prefix + 'Win';
         const idDraw = prefix + 'Draw';
         const idLose = prefix + 'Lose';
+        
+        // Start counting immediately
         setTimeout(() => {
             if(document.getElementById(idWin)) animateValue(document.getElementById(idWin), 0, w, 800);
             if(document.getElementById(idDraw)) animateValue(document.getElementById(idDraw), 0, d, 800);
@@ -763,9 +765,33 @@
         }, 100);
     }
 
+    // Function to draw pie AFTER delay
+    function renderPieWithDelay(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, prefix) {
+        const idPie = prefix + 'Pie';
+        const pieContainer = document.getElementById(idPie);
+        if(!pieContainer) return;
+        
+        // Wait 1200ms (more than count up duration)
+        setTimeout(() => {
+            pieContainer.innerHTML = `
+              ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
+              <div class="pie-legend">
+                <div><span style="background:${wColor}"></span>${wLabel}</div>
+                <div><span style="background:${dColor}"></span>${dLabel}</div>
+                <div><span style="background:${lColor}"></span>${lLabel}</div>
+              </div>
+            `;
+            // Trigger animation class for path
+            const paths = pieContainer.querySelectorAll('.pie-path');
+            setTimeout(() => {
+                paths.forEach(p => p.classList.add('show'));
+            }, 50);
+        }, 1200);
+    }
+
     function drawPieChart(data) {
       const total = data.reduce((s, x) => s + x.val, 0);
-      const sz = 160; 
+      const sz = 210; // Increased size by 50% (140 * 1.5)
       if (!total) return `<svg width="${sz}" height="${sz}"></svg>`;
 
       const r = sz / 2 - 10, cx = sz / 2, cy = sz / 2;
@@ -773,7 +799,7 @@
 
       if (slices.length === 1) {
         return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">
-            <circle cx="${cx}" cy="${cy}" r="${r}" fill="${slices[0].color}"></circle>
+            <circle class="pie-path" cx="${cx}" cy="${cy}" r="${r}" fill="${slices[0].color}"></circle>
         </svg>`;
       }
       
@@ -788,7 +814,7 @@
         const y2 = cy + r * Math.sin(endAngle);
         const largeArcFlag = sliceAngle > Math.PI ? 1 : 0;
         currentAngle = endAngle;
-        return `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z" fill="${slice.color}" stroke="rgba(255,255,255,0.2)" stroke-width="2"></path>`;
+        return `<path class="pie-path" d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z" fill="${slice.color}"></path>`;
       }).join('');
 
       return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">${paths}</svg>`;
@@ -854,6 +880,25 @@
       fillSelect('ouCloseLine', new Set(OU.map(r => r.close_OU_line)));
     }
     
+    function resetAll() {
+        ['ah', 'ou', 'eu'].forEach(type => {
+            const form = document.getElementById(type + 'Form');
+            if(form) form.reset();
+            const stat = document.getElementById(type + 'Stat');
+            if(stat) stat.innerHTML = '';
+            const btn = document.getElementById('show' + type.charAt(0).toUpperCase() + type.slice(1) + 'ListBtn');
+            if(btn) btn.style.display = 'none';
+            const table = document.getElementById(type + 'Table');
+            if(table) table.style.display = 'none';
+            const container = document.getElementById(type + 'TableContainer');
+            if(container) container.style.display = 'none';
+            const filter = document.getElementById(type + 'FilterBox');
+            if(filter) filter.style.display = 'none';
+        });
+        lastAhResult = []; lastOuResult = []; lastEuResult = [];
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function doAhSearch() {
       const [hMin, hMax] = range('ahHomeExact', 'ahHomeErr'),
             [aMin, aMax] = range('ahAwayExact', 'ahAwayErr'),
@@ -884,6 +929,7 @@
           w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, 'ah'
       );
       triggerCountUp(w, d, l, 'ah');
+      renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', 'ah');
       
       document.getElementById('ahTable').style.display = 'none';
       document.getElementById('ahTableContainer').style.display = 'none';
@@ -927,6 +973,7 @@
           over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', tot, 'ou'
       );
       triggerCountUp(over, push, under, 'ou');
+      renderPieWithDelay(over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', 'ou');
       
       document.getElementById('ouTable').style.display = 'none';
       document.getElementById('ouTableContainer').style.display = 'none';
@@ -976,6 +1023,7 @@
           w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', tot, 'eu', extra
       );
       triggerCountUp(w, d, l, 'eu');
+      renderPieWithDelay(w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', 'eu');
         
       document.getElementById('euTable').style.display = 'none';
       document.getElementById('euTableContainer').style.display = 'none';
@@ -1138,33 +1186,9 @@
       });
     });
 
-    /* 重設按鈕 */
-    document.getElementById('resetAhBtn').addEventListener('click', () => {
-      document.getElementById('ahForm').reset();
-      document.getElementById('ahStat').innerHTML = '';
-      document.getElementById('showAhListBtn').style.display = 'none';
-      document.getElementById('ahTable').style.display = 'none';
-      document.getElementById('ahTableContainer').style.display = 'none';
-      document.getElementById('ahFilterBox').style.display = 'none';
-      lastAhResult = [];
-    });
-    document.getElementById('resetOuBtn').addEventListener('click', () => {
-      document.getElementById('ouForm').reset();
-      document.getElementById('ouStat').innerHTML = '';
-      document.getElementById('showOuListBtn').style.display = 'none';
-      document.getElementById('ouTable').style.display = 'none';
-      document.getElementById('ouTableContainer').style.display = 'none';
-      document.getElementById('ouFilterBox').style.display = 'none';
-      lastOuResult = [];
-    });
-    document.getElementById('resetEuBtn').addEventListener('click', () => {
-      document.getElementById('euForm').reset();
-      document.getElementById('euStat').innerHTML = '';
-      document.getElementById('showEuListBtn').style.display = 'none';
-      document.getElementById('euTable').style.display = 'none';
-      document.getElementById('euTableContainer').style.display = 'none';
-      document.getElementById('euFilterBox').style.display = 'none';
-      lastEuResult = [];
+    /* 重設按鈕 - Global Reset */
+    ['resetAhBtn', 'resetOuBtn', 'resetEuBtn'].forEach(id => {
+        document.getElementById(id).addEventListener('click', resetAll);
     });
 
     /* 6. 啟動 */
