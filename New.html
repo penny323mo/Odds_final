@@ -184,7 +184,7 @@
     }
     .btn-grey:active { transform: translateY(6px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
 
-    /* ---------- Stats & Table (Updated) ---------- */
+    /* ---------- Stats & Table ---------- */
     .stat-area { margin-top: 30px; }
     .stat-cards { 
         display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; 
@@ -212,8 +212,7 @@
 
     /* Filter Input */
     .filter-box {
-        display: none; /* hidden initially */
-        margin-top: 20px; margin-bottom: 10px; width: 100%;
+        display: none; margin-top: 20px; margin-bottom: 10px; width: 100%;
     }
     .filter-input {
         width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.3);
@@ -240,10 +239,6 @@
     tr { transition: background 0.2s; cursor: pointer; }
     tr:hover { background: rgba(255,255,255,0.15) !important; }
     
-    /* Animation for Table Rows */
-    @keyframes fadeInRow { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .row-animate { opacity: 0; animation: fadeInRow 0.4s ease-out forwards; }
-
     /* Toast Notification */
     .toast-msg {
         position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -1012,6 +1007,7 @@
         rows.forEach(tr => tbody.appendChild(tr));
     }
 
+    /* ===== Turbo Render Implementation ===== */
     function confirmAndRender(resultArray, tableId, renderFn) {
       if (resultArray.length > 20000) {
         if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
@@ -1023,29 +1019,27 @@
       const filterBox = document.getElementById(tableId.replace('Table', 'FilterBox')); // e.g. ahFilterBox
       const tbody = table.querySelector('tbody');
       
+      // Clear current content
       tbody.innerHTML = '';
       
-      // Render with delay for animation
-      resultArray.forEach((r, idx) => {
-          const trStr = renderFn(r);
-          // Create temp element to parse HTML string
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = trStr;
-          const tr = tempDiv.firstElementChild;
-          
-          // Add Copy Event
-          tr.onclick = function() {
-              const info = Array.from(this.children).map(td => td.innerText).join(' | ');
-              copyToClipboard(info);
-          };
-          
-          // Add Animation Delay
-          tr.style.animationDelay = `${Math.min(idx * 0.03, 1)}s`; // Cap delay at 1s
-          tr.classList.add('row-animate');
-          
-          tbody.appendChild(tr);
-      });
+      // Use efficient string concatenation
+      const rowsHtml = resultArray.map(r => renderFn(r)).join('');
+      tbody.innerHTML = rowsHtml;
       
+      // Setup event delegation for copy functionality
+      // Remove old listener if any (by cloning and replacing tbody - valid trick)
+      const newTbody = tbody.cloneNode(true);
+      tbody.parentNode.replaceChild(newTbody, tbody);
+      
+      newTbody.addEventListener('click', function(e) {
+          const tr = e.target.closest('tr');
+          if (tr) {
+              const info = Array.from(tr.children).map(td => td.innerText).join(' | ');
+              copyToClipboard(info);
+          }
+      });
+
+      // Show table
       table.style.display = 'table';
       container.style.display = 'block';
       if(filterBox) filterBox.style.display = 'block';
