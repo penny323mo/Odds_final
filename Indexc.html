@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"/>
-<title>足球歷史賠率篩選 (Premium 3D)</title>
+<title>足球歷史賠率篩選 (Pro)</title>
 <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"/>
 <!-- 引入字體 -->
 <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -40,9 +40,7 @@
     .bg-layer {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-color: #064e3b;
-        /* 1. 聚光燈效果：中間透光，四周壓暗 
-           2. 真實草地圖 (Unsplash)
-        */
+        /* 1. 聚光燈效果 2. 真實草地圖 */
         background-image: 
             radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.8) 85%),
             url("https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop");
@@ -51,7 +49,7 @@
         background-attachment: fixed;
     }
 
-    /* 網紋紋理 (增加細節) */
+    /* 網紋紋理 (後備) */
     .bg-texture {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
@@ -61,7 +59,7 @@
         pointer-events: none;
     }
 
-    /* ---------- Header: 浮雕字體 ---------- */
+    /* ---------- Header ---------- */
     .header {
         position: relative;
         text-align: center;
@@ -75,7 +73,6 @@
         font-size: clamp(2rem, 6vw, 3rem);
         margin: 0;
         color: #fff;
-        /* 多重文字陰影製造立體感 */
         text-shadow: 
             0 2px 0 #065f46,
             0 4px 0 #064e3b,
@@ -108,25 +105,19 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     
-    .timestamp {
-        font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8;
-    }
+    .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8; }
 
-    /* ---------- Tabs: 懸浮膠囊 ---------- */
+    /* ---------- Tabs ---------- */
     .nav-container {
-        margin-top: -30px;
-        padding: 0 10px;
-        position: relative;
-        z-index: 20;
+        margin-top: -30px; padding: 0 10px; position: relative; z-index: 20;
     }
 
     .custom-tabs {
         background: rgba(6, 78, 59, 0.8);
         border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 50px; /* 膠囊形狀 */
+        border-radius: 50px;
         padding: 5px;
-        display: flex;
-        gap: 5px;
+        display: flex; gap: 5px;
         box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
         backdrop-filter: blur(10px);
         max-width: 600px;
@@ -135,73 +126,48 @@
     }
 
     .custom-tabs button {
-        flex: 1;
-        border: none;
-        background: transparent;
+        flex: 1; border: none; background: transparent;
         color: rgba(255,255,255,0.7);
-        padding: 10px 20px;
-        font-weight: 700;
-        font-size: 0.95rem;
+        padding: 10px 20px; font-weight: 700; font-size: 0.95rem;
         border-radius: 40px;
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        white-space: nowrap;
-        position: relative;
+        white-space: nowrap; position: relative;
     }
 
-    /* Tab Active: 發光白底 */
     .custom-tabs button.active {
-        background: #fff;
-        color: #064e3b;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    /* ---------- Glass Card (Crystal Clear) ---------- */
+    /* ---------- Main Card ---------- */
     .tabcontent {
-        max-width: 760px; 
-        margin: 35px auto;
-        padding: 0 15px;
-        animation: fadeUp 0.6s ease-out;
+        max-width: 760px; margin: 35px auto; padding: 0 15px; animation: fadeUp 0.6s ease-out;
     }
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
     .form-card {
-        /* 高透明度玻璃 */
         background: var(--glass-bg);
         border: 1px solid var(--glass-border);
-        /* 頂部高光邊框，模擬厚度 */
         border-top: 1px solid rgba(255,255,255,0.4);
-        border-radius: 24px;
-        padding: 28px;
-        backdrop-filter: blur(8px); /* 保持適度模糊 */
-        -webkit-backdrop-filter: blur(8px);
-        box-shadow: 
-            0 30px 60px -15px rgba(0,0,0,0.6),
-            inset 0 0 0 1px rgba(255,255,255,0.05);
+        border-radius: 24px; padding: 28px;
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
     }
 
     fieldset {
         border: 1px solid rgba(255,255,255,0.1);
-        background: rgba(0, 0, 0, 0.2); /* 加深底層對比 */
-        border-radius: 16px;
-        padding: 20px 24px;
-        margin-bottom: 24px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px; padding: 20px 24px; margin-bottom: 24px;
         box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
     }
 
     legend {
         color: var(--brand-green-light);
-        font-weight: 700;
-        font-size: 1.15rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        display: flex; align-items: center; gap: 8px;
+        font-weight: 700; font-size: 1.15rem; text-transform: uppercase;
+        letter-spacing: 1px; display: flex; align-items: center; gap: 8px;
         text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
     }
 
-    /* ---------- Inputs (Deep Recessed) ---------- */
+    /* ---------- Inputs ---------- */
     .input-label {
         font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 8px; display: block;
         text-shadow: 0 1px 2px rgba(0,0,0,0.5);
@@ -209,20 +175,16 @@
 
     .custom-input-group {
         display: flex;
-        background: rgba(0, 20, 10, 0.6); /* 深色背景 */
+        background: rgba(0, 20, 10, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 12px;
-        /* 強烈內部陰影 -> 凹陷感 */
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
-        transition: 0.3s;
-        overflow: hidden;
+        transition: 0.3s; overflow: hidden;
     }
 
     .custom-input-group:focus-within {
         border-color: var(--brand-green);
-        box-shadow: 
-            inset 0 3px 6px rgba(0,0,0,0.4),
-            0 0 0 2px rgba(16, 185, 129, 0.3);
+        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
     }
 
     .main-input {
@@ -252,47 +214,29 @@
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
     }
 
-    /* ---------- 3D Buttons (Oval/Pill Shape) ---------- */
+    /* ---------- Buttons (3D Pill) ---------- */
     .btn-3d {
         position: relative; border: none; outline: none; color: white; 
         font-weight: 700; font-size: 1.1rem; 
-        padding: 16px 36px; 
-        border-radius: 50px; /* 橢圓形 (Pill) */
-        cursor: pointer; 
+        padding: 16px 36px; border-radius: 50px; cursor: pointer; 
         transition: transform 0.1s, box-shadow 0.1s; 
         display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        text-transform: uppercase; letter-spacing: 1px;
         text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
 
-    /* 綠色搜尋掣 (Glossy Green) */
     .btn-green {
-        /* 漸變光澤 */
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
-        box-shadow: 
-            0 6px 0 #047857, /* 深綠色厚度 */
-            0 12px 20px rgba(0,0,0,0.3), /* 投影 */
-            inset 0 2px 0 rgba(255,255,255,0.4); /* 頂部反光 */
+        box-shadow: 0 6px 0 #047857, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
     }
-    .btn-green:hover { filter: brightness(1.1); }
-    .btn-green:active {
-        transform: translateY(6px); 
-        box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3);
-    }
+    .btn-green:active { transform: translateY(6px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
 
-    /* 灰色重設掣 (Glossy Grey) */
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
         box-shadow: 0 6px 0 #1f2937, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
     }
-    .btn-grey:hover { filter: brightness(1.1); }
-    .btn-grey:active {
-        transform: translateY(6px);
-        box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3);
-    }
+    .btn-grey:active { transform: translateY(6px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
 
-    /* AI 掣 (Glossy Purple) */
     .btn-ai-3d {
         background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
         box-shadow: 0 6px 0 #6b21a8, 0 0 25px rgba(147, 51, 234, 0.4), inset 0 2px 0 rgba(255,255,255,0.4);
@@ -302,16 +246,14 @@
     @keyframes pulseGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
     .btn-ai-3d:active { transform: translateY(6px); box-shadow: 0 0 0 #6b21a8; animation: none; }
 
-    /* ---------- Stats & Table ---------- */
+    /* ---------- Stats ---------- */
     .stat-area { margin-top: 30px; }
     .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
     
     .stat-card {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
         border-radius: 16px; padding: 15px 5px; text-align: center;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        backdrop-filter: blur(5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2); backdrop-filter: blur(5px);
         position: relative; overflow: hidden;
     }
     .stat-card.win { border-bottom: 4px solid #ef4444; }
@@ -331,8 +273,7 @@
 
     .ai-result-box {
         margin-top: 25px; padding: 25px;
-        background: rgba(15, 23, 42, 0.95);
-        border: 1px solid #a855f7;
+        background: rgba(15, 23, 42, 0.95); border: 1px solid #a855f7;
         box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
         border-radius: 16px; color: #f3f4f6; line-height: 1.7; display: none; text-align: left;
     }
@@ -340,8 +281,7 @@
     .ai-result-box strong { color: #fff; }
 
     .table-container {
-        background: rgba(6, 78, 59, 0.85); /* 實色底 */
-        border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; margin-top: 30px;
+        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; margin-top: 30px;
         box-shadow: 0 15px 40px rgba(0,0,0,0.5);
     }
     .table-responsive { overflow-x: auto; }
@@ -383,7 +323,7 @@
 
 <div aria-live="polite" id="loadingOverlay" role="alert">
     <div class="spinner-ball"></div>
-    <div style="color:#d1fae5; font-weight:bold; letter-spacing:1px;">資料準備中...</div>
+    <div class="loading-text" style="color:#d1fae5; font-weight:bold; letter-spacing:1px;">資料載入中...</div>
 </div>
 
 <div class="header">
@@ -478,6 +418,7 @@
         </form>
     </div>
 
+    <!-- Stats Result Area -->
     <div class="stat-area" id="ahStat"></div>
 
     <div class="text-center mt-4 mb-3">
@@ -1174,7 +1115,10 @@
         initAll();
       } catch (e) {
         console.error('資料載入失敗', e);
-        alert('資料載入失敗，請稍後再試。');
+        /* 更詳細的錯誤提示 */
+        document.querySelector('.spinner-ball').style.display = 'none';
+        document.querySelector('#loadingOverlay .loading-text').innerHTML = 
+            `<span style="color:#ef4444">⚠️ 數據載入失敗<br><small style="font-size:0.8rem; opacity:0.8">請確保 .json 檔案在同一目錄<br>(${e.message})</small></span>`;
       } finally {
         __hideLoading();
       }
