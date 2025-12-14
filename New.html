@@ -700,7 +700,7 @@
 
     /* Motion: Count Up Animation */
     function animateValue(obj, start, end, duration) {
-        if (!obj) return; // Safety check
+        if (!obj) return; 
         let startTimestamp = null;
         const step = (timestamp) => {
             if (!startTimestamp) startTimestamp = timestamp;
@@ -717,7 +717,6 @@
 
     /* Motion: Render Stats with Animation */
     function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, prefix, extraInfo = '') {
-        // Unique IDs for each tab to prevent conflict
         const idWin = prefix + 'Win';
         const idDraw = prefix + 'Draw';
         const idLose = prefix + 'Lose';
@@ -890,6 +889,11 @@
       document.getElementById('ahTableContainer').style.display = 'none';
       document.getElementById('ahFilterBox').style.display = 'none';
       document.getElementById('showAhListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
+
+      // Auto Scroll to Stats Area
+      setTimeout(() => {
+        document.getElementById('ahStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
 
     function doOuSearch() {
@@ -928,6 +932,10 @@
       document.getElementById('ouTableContainer').style.display = 'none';
       document.getElementById('ouFilterBox').style.display = 'none';
       document.getElementById('showOuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
+
+      setTimeout(() => {
+        document.getElementById('ouStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
 
     function doEuSearch() {
@@ -973,6 +981,10 @@
       document.getElementById('euTableContainer').style.display = 'none';
       document.getElementById('euFilterBox').style.display = 'none';
       document.getElementById('showEuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
+
+      setTimeout(() => {
+        document.getElementById('euStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
 
     /* === Enhanced Table Functions === */
