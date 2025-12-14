@@ -25,7 +25,6 @@
         --text-sub: #d1fae5;
     }
 
-    /* 全局設定 */
     body {
         margin: 0;
         font-family: 'Noto Sans TC', sans-serif;
@@ -38,9 +37,7 @@
         box-sizing: border-box;
     }
 
-    *, *::before, *::after {
-        box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
     /* === 背景層 === */
     .bg-layer {
@@ -49,217 +46,138 @@
         background-image: 
             radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.8) 85%),
             url("https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
+        background-size: cover; background-position: center; background-attachment: fixed;
     }
 
     .bg-texture {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-        background-size: 40px 40px;
-        opacity: 0.3;
-        pointer-events: none;
+        background-size: 40px 40px; opacity: 0.3; pointer-events: none;
     }
 
     /* ---------- Header ---------- */
-    .header {
-        position: relative;
-        text-align: center;
-        padding: 40px 20px 50px;
-        z-index: 10;
-        width: 100%;
-    }
-
+    .header { position: relative; text-align: center; padding: 40px 20px 50px; z-index: 10; width: 100%; }
     .header h1 {
-        font-family: 'Noto Sans TC', sans-serif;
-        font-weight: 900;
-        font-size: clamp(1.8rem, 5vw, 2.8rem);
-        margin: 0;
-        color: #fff;
+        font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
+        font-size: clamp(1.8rem, 5vw, 2.8rem); margin: 0; color: #fff;
         text-shadow: 0 2px 0 #065f46, 0 4px 0 #064e3b, 0 6px 12px rgba(0,0,0,0.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        flex-wrap: wrap;
+        display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
     }
-    
     .icon-ball {
-        font-size: 2.2rem;
-        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
-        color: var(--brand-green-light);
-        animation: floatBall 3s ease-in-out infinite;
+        font-size: 2.2rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        color: var(--brand-green-light); animation: floatBall 3s ease-in-out infinite;
     }
     @keyframes floatBall { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-
     .header .desc {
-        margin-top: 12px;
-        font-size: 1rem;
-        color: #e0f2f1;
-        background: rgba(0,0,0,0.3);
-        padding: 6px 18px;
-        border-radius: 50px;
-        border: 1px solid rgba(255,255,255,0.15);
-        backdrop-filter: blur(4px);
-        display: inline-block;
-        max-width: 90%;
+        margin-top: 12px; font-size: 1rem; color: #e0f2f1;
+        background: rgba(0,0,0,0.3); padding: 6px 18px; border-radius: 50px;
+        border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px);
+        display: inline-block; max-width: 90%;
     }
-    
     .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8; }
 
     /* ---------- Tabs ---------- */
     .nav-container { margin-top: -30px; padding: 0 15px; position: relative; z-index: 20; width: 100%; }
-
     .custom-tabs {
-        background: rgba(6, 78, 59, 0.8);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 50px; padding: 5px;
-        display: flex; gap: 5px;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
-        backdrop-filter: blur(10px);
-        max-width: 600px; margin: 0 auto; 
-        overflow-x: auto; 
-        scrollbar-width: none;
+        background: rgba(6, 78, 59, 0.8); border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 50px; padding: 5px; display: flex; gap: 5px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+        max-width: 600px; margin: 0 auto; overflow-x: auto; scrollbar-width: none;
     }
     .custom-tabs::-webkit-scrollbar { display: none; }
-
     .custom-tabs button {
-        flex: 1; border: none; background: transparent;
-        color: rgba(255,255,255,0.7);
-        padding: 10px 15px; font-weight: 700; font-size: 0.95rem;
-        border-radius: 40px; transition: all 0.3s;
-        white-space: nowrap; 
+        flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.7);
+        padding: 10px 15px; font-weight: 700; font-size: 0.95rem; border-radius: 40px;
+        transition: all 0.3s; white-space: nowrap; 
     }
-
-    .custom-tabs button.active {
-        background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
+    .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
     /* ---------- Main Content ---------- */
     .tabcontent {
-        width: 94%; 
-        max-width: 760px;
-        margin: 35px auto; 
-        padding: 0;
-        animation: fadeUp 0.6s ease-out;
+        width: 94%; max-width: 760px; margin: 35px auto; padding: 0; animation: fadeUp 0.6s ease-out;
     }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
     .form-card {
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        border-top: 1px solid rgba(255,255,255,0.4);
-        border-radius: 20px; 
-        padding: 20px;
+        background: var(--glass-bg); border: 1px solid var(--glass-border);
+        border-top: 1px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 20px;
         backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
-        width: 100%;
+        box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); width: 100%;
     }
 
     fieldset {
-        border: 1px solid rgba(255,255,255,0.1);
-        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255,255,255,0.1); background: rgba(0, 0, 0, 0.2);
         border-radius: 16px; padding: 15px; margin-bottom: 20px;
-        box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
-        width: 100%;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); width: 100%;
     }
-
     legend {
-        color: var(--brand-green-light);
-        font-weight: 700; font-size: 1.1rem; text-transform: uppercase;
-        letter-spacing: 1px; display: flex; align-items: center; gap: 8px;
+        color: var(--brand-green-light); font-weight: 700; font-size: 1.1rem;
+        text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;
         text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
     }
 
     /* ---------- Inputs ---------- */
     .input-row { margin-bottom: 12px; }
-
     .input-label {
         font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 6px; display: block;
         text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
-
     .custom-input-group {
-        display: flex;
-        align-items: stretch;
-        background: rgba(0, 20, 10, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
-        transition: 0.3s; 
-        overflow: hidden;
-        width: 100%;
+        display: flex; align-items: stretch; background: rgba(0, 20, 10, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px;
+        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4); transition: 0.3s; overflow: hidden; width: 100%;
     }
-
     .custom-input-group:focus-within {
         border-color: var(--brand-green);
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
     }
-
     .main-input {
-        flex: 1 1 auto;
-        background: transparent; border: none; color: #fff; 
-        padding: 12px 10px; font-size: 1.1rem; font-family: monospace; 
-        min-width: 0;
+        flex: 1 1 auto; background: transparent; border: none; color: #fff; 
+        padding: 12px 10px; font-size: 1.1rem; font-family: monospace; min-width: 0;
     }
     .main-input:focus { outline: none; }
     .main-input::placeholder { color: rgba(255,255,255,0.3); }
     
     .divider-text {
-        color: var(--brand-green-light); 
-        background: rgba(255,255,255,0.03); 
-        padding: 0 10px; 
+        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 10px; 
         display: flex; align-items: center; font-weight: bold; 
-        border-left: 1px solid rgba(255,255,255,0.1); 
-        border-right: 1px solid rgba(255,255,255,0.1);
-        flex-shrink: 0;
+        border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
     }
-    
     .err-input {
-        width: 55px;
-        background: rgba(255,255,255,0.03); 
-        border: none; color: #d1fae5; text-align: center; font-size: 0.95rem;
-        flex-shrink: 0;
+        width: 55px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; 
+        text-align: center; font-size: 0.95rem; flex-shrink: 0;
     }
     .err-input:focus { outline: none; color: #fff; background: rgba(255,255,255,0.1); }
-
     .step-btns { 
         display: flex; flex-direction: column; width: 36px;
-        border-left: 1px solid rgba(255,255,255,0.1); 
-        flex-shrink: 0;
+        border-left: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
     }
     .step-btn {
-        flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+        flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); 
+        cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
     }
     .step-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
     .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
-
     select.form-select-custom {
-        width: 100%; padding: 12px; 
-        background-color: rgba(2, 44, 34, 0.95); color: #fff; 
+        width: 100%; padding: 12px; background-color: rgba(2, 44, 34, 0.95); color: #fff; 
         border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
     }
 
     /* ---------- Buttons ---------- */
     .btn-3d {
-        position: relative; border: none; outline: none; color: white; 
-        font-weight: 700; font-size: 1.1rem; 
+        position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 1.1rem; 
         padding: 16px 20px; border-radius: 50px; cursor: pointer; 
         transition: transform 0.1s, box-shadow 0.1s; 
         display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
-        text-transform: uppercase; letter-spacing: 1px;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
-
     .btn-green {
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
         box-shadow: 0 6px 0 #047857, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
     }
     .btn-green:active { transform: translateY(6px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
-
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
         box-shadow: 0 6px 0 #1f2937, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
@@ -269,12 +187,8 @@
     /* ---------- Stats & Table ---------- */
     .stat-area { margin-top: 30px; }
     .stat-cards { 
-        display: grid; 
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        margin-bottom: 24px; 
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; 
     }
-    
     .stat-card {
         background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
         border-radius: 12px; padding: 12px 4px; text-align: center;
@@ -284,32 +198,59 @@
     .stat-card.win { border-bottom: 4px solid #ef4444; }
     .stat-card.draw { border-bottom: 4px solid #22c55e; }
     .stat-card.lose { border-bottom: 4px solid #3b82f6; }
-
     .stat-card .label { font-size: 0.75rem; color: #a7f3d0; font-weight: 700; }
     .stat-card .value { font-size: 1.4rem; font-weight: 900; margin: 4px 0; color: #fff; }
     .stat-card .pct { font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px; color: #fff; }
 
     .piebox {
         background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;
-        display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(255,255,255,0.1);
-        width: 100%;
-        /* 默認 (手機/iPad直) 已經係 column + align-items:center = 置中 */
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        border: 1px solid rgba(255,255,255,0.1); width: 100%;
     }
     .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
     .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
+    /* Filter Input */
+    .filter-box {
+        display: none; margin-top: 20px; margin-bottom: 10px; width: 100%;
+    }
+    .filter-input {
+        width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.3);
+        background: rgba(0,0,0,0.3); color: #fff; font-size: 1rem; outline: none;
+        backdrop-filter: blur(5px);
+    }
+    .filter-input::placeholder { color: rgba(255,255,255,0.5); }
+    .filter-input:focus { border-color: var(--brand-green-light); background: rgba(0,0,0,0.5); }
+
     .table-container {
-        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; margin-top: 30px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 16px; overflow: hidden; margin-top: 10px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.5); display: none;
     }
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; white-space: nowrap; }
-    th { background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 14px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
-    tr:hover { background: rgba(255,255,255,0.1); }
-
-    .badge-res { padding: 5px 10px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
+    th { 
+        background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 12px 8px; font-weight: 700; 
+        border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; user-select: none;
+        text-align: center;
+    }
+    th:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    tr { transition: background 0.2s; cursor: pointer; }
+    tr:hover { background: rgba(255,255,255,0.15) !important; }
+    
+    .badge-res { padding: 4px 8px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
+    .text-odds { color: #86efac; font-weight: bold; }
+
+    /* Toast Notification */
+    .toast-msg {
+        position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+        background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 30px;
+        font-size: 0.9rem; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .toast-msg.show { opacity: 1; }
 
     #loadingOverlay {
         position: fixed; inset: 0; background: #064e3b; z-index: 9999;
@@ -321,21 +262,16 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ---------- iPad Pro / Desktop Layout ---------- */
-    /* 修正：加入 justify-content: center 確保圓餅圖在橫向時置中 */
     @media (min-width: 992px) {
         .tabcontent { max-width: 900px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .full-width { grid-column: span 2; }
-        .piebox { 
-            flex-direction: row; 
-            gap: 50px; 
-            justify-content: center; /* 關鍵修正：橫排時置中 */
-        }
+        .piebox { flex-direction: row; gap: 50px; justify-content: center; }
         .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
         .header { padding-bottom: 120px; }
         .nav-container { margin-top: -60px; }
-        .main-input { padding: 16px; } 
+        .main-input { padding: 16px; }
+        table { font-size: 0.95rem; }
     }
 </style>
 </head>
@@ -442,21 +378,32 @@
         </form>
     </div>
 
-    <!-- Stats Result Area -->
     <div class="stat-area" id="ahStat"></div>
 
     <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light rounded-pill px-4" id="showAhListBtn" style="display: none;" type="button">輸出比賽列表</button>
+        <button class="btn btn-outline-light rounded-pill px-4" id="showAhListBtn" style="display: none;" type="button">顯示比賽列表</button>
     </div>
 
-    <div class="table-container">
+    <!-- 篩選器 -->
+    <div class="filter-box" id="ahFilterBox">
+        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱 (例如: 曼聯)..." onkeyup="filterTable('ahTable', this.value)">
+    </div>
+
+    <div class="table-container" id="ahTableContainer">
         <div class="table-responsive">
-            <table id="ahTable" style="display:none;">
+            <table id="ahTable">
                 <thead>
                 <tr>
-                    <th>賽季</th><th>比賽</th>
-                    <th>初盤盤口</th><th>初盤主賠</th><th>初盤客賠</th>
-                    <th>終盤盤口</th><th>終盤主賠</th><th>終盤客賠</th><th>盤口勝負</th>
+                    <th onclick="sortTable('ahTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 4)">初盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 5)">初盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 7)">終盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 8)">終盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -547,16 +494,28 @@
     <div class="stat-area" id="ouStat"></div>
 
     <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light rounded-pill px-4" id="showOuListBtn" style="display: none;" type="button">輸出比賽列表</button>
+        <button class="btn btn-outline-light rounded-pill px-4" id="showOuListBtn" style="display: none;" type="button">顯示比賽列表</button>
     </div>
 
-    <div class="table-container">
+    <div class="filter-box" id="ouFilterBox">
+        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱..." onkeyup="filterTable('ouTable', this.value)">
+    </div>
+
+    <div class="table-container" id="ouTableContainer">
         <div class="table-responsive">
-            <table id="ouTable" style="display:none;">
+            <table id="ouTable">
                 <thead>
                 <tr>
-                    <th>賽季</th><th>比賽</th><th>初盤盤口</th><th>初盤大</th><th>初盤細</th>
-                    <th>終盤盤口</th><th>終盤大</th><th>終盤細</th><th>結果</th>
+                    <th onclick="sortTable('ouTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 4)">初盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 5)">初盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 7)">終盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 8)">終盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -662,16 +621,25 @@
     <div class="stat-area" id="euStat"></div>
 
     <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light rounded-pill px-4" id="showEuListBtn" style="display: none;" type="button">輸出比賽列表</button>
+        <button class="btn btn-outline-light rounded-pill px-4" id="showEuListBtn" style="display: none;" type="button">顯示比賽列表</button>
     </div>
 
-    <div class="table-container">
+    <div class="filter-box" id="euFilterBox">
+        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱..." onkeyup="filterTable('euTable', this.value)">
+    </div>
+
+    <div class="table-container" id="euTableContainer">
         <div class="table-responsive">
-            <table id="euTable" style="display:none;">
+            <table id="euTable">
                 <thead>
                 <tr>
-                    <th>賽季</th><th>比賽</th><th>初盤(主/和/客)</th><th>終盤(主/和/客)</th>
-                    <th>比分</th><th>勝負</th><th>淨勝球</th>
+                    <th onclick="sortTable('euTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('euTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('euTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('euTable', 3)">初盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('euTable', 4)">終盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('euTable', 5)">勝負 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('euTable', 6)">淨勝球 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -679,6 +647,8 @@
         </div>
     </div>
 </div>
+
+<div class="toast-msg" id="toast">已複製比賽詳情！</div>
 
 <script>
     /* 1. Global Vars */
@@ -726,6 +696,71 @@
     
     function pct(n, t) {
       return t ? ((n / t * 100).toFixed(1) + '%') : '0.0%';
+    }
+
+    /* Motion: Count Up Animation */
+    function animateValue(obj, start, end, duration) {
+        if (!obj) return; 
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = Math.floor(progress * (end - start) + start);
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                obj.innerHTML = end; 
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    /* Motion: Render Stats with Animation */
+    function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, prefix, extraInfo = '') {
+        const idWin = prefix + 'Win';
+        const idDraw = prefix + 'Draw';
+        const idLose = prefix + 'Lose';
+        
+        const html = `
+        <div class="stat-cards">
+            <div class="stat-card win">
+                <span class="label">${wLabel}</span>
+                <span class="value" id="${idWin}">0</span>
+                <span class="pct">${pct(w, tot)}</span>
+            </div>
+            <div class="stat-card draw">
+                <span class="label">${dLabel}</span>
+                <span class="value" id="${idDraw}">0</span>
+                <span class="pct">${pct(d, tot)}</span>
+            </div>
+            <div class="stat-card lose">
+                <span class="label">${lLabel}</span>
+                <span class="value" id="${idLose}">0</span>
+                <span class="pct">${pct(l, tot)}</span>
+            </div>
+        </div>
+        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.9rem; color:#d1fae5;">${extraInfo}</div>` : ''}
+        <div class="piebox">
+          ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
+          <div class="pie-legend">
+            <div><span style="background:${wColor}"></span>${wLabel}</div>
+            <div><span style="background:${dColor}"></span>${dLabel}</div>
+            <div><span style="background:${lColor}"></span>${lLabel}</div>
+          </div>
+        </div>
+        `;
+        return html;
+    }
+
+    function triggerCountUp(w, d, l, prefix) {
+        const idWin = prefix + 'Win';
+        const idDraw = prefix + 'Draw';
+        const idLose = prefix + 'Lose';
+        setTimeout(() => {
+            if(document.getElementById(idWin)) animateValue(document.getElementById(idWin), 0, w, 800);
+            if(document.getElementById(idDraw)) animateValue(document.getElementById(idDraw), 0, d, 800);
+            if(document.getElementById(idLose)) animateValue(document.getElementById(idLose), 0, l, 800);
+        }, 100);
     }
 
     function drawPieChart(data) {
@@ -819,37 +854,6 @@
       fillSelect('ouCloseLine', new Set(OU.map(r => r.close_OU_line)));
     }
     
-    function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, extraInfo = '') {
-        return `
-        <div class="stat-cards">
-            <div class="stat-card win">
-                <span class="label">${wLabel}</span>
-                <span class="value">${w}</span>
-                <span class="pct">${pct(w, tot)}</span>
-            </div>
-            <div class="stat-card draw">
-                <span class="label">${dLabel}</span>
-                <span class="value">${d}</span>
-                <span class="pct">${pct(d, tot)}</span>
-            </div>
-            <div class="stat-card lose">
-                <span class="label">${lLabel}</span>
-                <span class="value">${l}</span>
-                <span class="pct">${pct(l, tot)}</span>
-            </div>
-        </div>
-        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.9rem; color:#d1fae5;">${extraInfo}</div>` : ''}
-        <div class="piebox">
-          ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
-          <div class="pie-legend">
-            <div><span style="background:${wColor}"></span>${wLabel}</div>
-            <div><span style="background:${dColor}"></span>${dLabel}</div>
-            <div><span style="background:${lColor}"></span>${lLabel}</div>
-          </div>
-        </div>
-        `;
-    }
-
     function doAhSearch() {
       const [hMin, hMax] = range('ahHomeExact', 'ahHomeErr'),
             [aMin, aMax] = range('ahAwayExact', 'ahAwayErr'),
@@ -877,11 +881,19 @@
 
       const tot = lastAhResult.length;
       document.getElementById('ahStat').innerHTML = generateStatsHTML(
-          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, `總場數：${tot}`
+          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, 'ah'
       );
+      triggerCountUp(w, d, l, 'ah');
       
       document.getElementById('ahTable').style.display = 'none';
+      document.getElementById('ahTableContainer').style.display = 'none';
+      document.getElementById('ahFilterBox').style.display = 'none';
       document.getElementById('showAhListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
+
+      // Auto Scroll to Stats Area
+      setTimeout(() => {
+        document.getElementById('ahStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
 
     function doOuSearch() {
@@ -912,11 +924,18 @@
 
       const tot = lastOuResult.length;
       document.getElementById('ouStat').innerHTML = generateStatsHTML(
-          over, push, under, '#e53b2d', '#27a146', '#2166d1', '大球', '走盤', '小球', tot, `總場數：${tot}`
+          over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', tot, 'ou'
       );
+      triggerCountUp(over, push, under, 'ou');
       
       document.getElementById('ouTable').style.display = 'none';
+      document.getElementById('ouTableContainer').style.display = 'none';
+      document.getElementById('ouFilterBox').style.display = 'none';
       document.getElementById('showOuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
+
+      setTimeout(() => {
+        document.getElementById('ouStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
 
     function doEuSearch() {
@@ -954,12 +973,170 @@
       const tot = lastEuResult.length;
       const extra = `總場數：${tot} <br> <small style="color:#d1fae5">主勝淨勝球 ➜ 1球:${d1} | 2球:${d2} | 3+球:${d3}</small>`;
       document.getElementById('euStat').innerHTML = generateStatsHTML(
-          w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', tot, extra
+          w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', tot, 'eu', extra
       );
+      triggerCountUp(w, d, l, 'eu');
         
       document.getElementById('euTable').style.display = 'none';
+      document.getElementById('euTableContainer').style.display = 'none';
+      document.getElementById('euFilterBox').style.display = 'none';
       document.getElementById('showEuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
+
+      setTimeout(() => {
+        document.getElementById('euStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
+
+    /* === Enhanced Table Functions === */
+    function copyToClipboard(text) {
+        if (!text) return;
+        const el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Filter Logic
+    function filterTable(tableId, query) {
+        const table = document.getElementById(tableId);
+        const trs = table.querySelectorAll('tbody tr');
+        query = query.toLowerCase();
+        
+        trs.forEach(tr => {
+            const text = tr.innerText.toLowerCase();
+            tr.style.display = text.includes(query) ? '' : 'none';
+        });
+    }
+
+    // Sorting Logic
+    function sortTable(tableId, colIndex) {
+        const table = document.getElementById(tableId);
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const isAsc = table.getAttribute('data-order') === 'asc';
+        
+        rows.sort((a, b) => {
+            const aText = a.children[colIndex].innerText.trim();
+            const bText = b.children[colIndex].innerText.trim();
+            
+            // Try numeric sort
+            const aNum = parseFloat(aText.replace(/[^0-9.-]+/g,""));
+            const bNum = parseFloat(bText.replace(/[^0-9.-]+/g,""));
+            
+            if (!isNaN(aNum) && !isNaN(bNum)) {
+                return isAsc ? aNum - bNum : bNum - aNum;
+            }
+            return isAsc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+        });
+        
+        table.setAttribute('data-order', isAsc ? 'desc' : 'asc');
+        tbody.innerHTML = '';
+        rows.forEach(tr => tbody.appendChild(tr));
+    }
+
+    /* ===== Turbo Render Implementation ===== */
+    function confirmAndRender(resultArray, tableId, renderFn) {
+      if (resultArray.length > 20000) {
+        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
+          return;
+        }
+      }
+      const table = document.getElementById(tableId);
+      const container = document.getElementById(tableId + 'Container');
+      const filterBox = document.getElementById(tableId.replace('Table', 'FilterBox')); // e.g. ahFilterBox
+      const tbody = table.querySelector('tbody');
+      
+      // Clear current content
+      tbody.innerHTML = '';
+      
+      // Use efficient string concatenation
+      const rowsHtml = resultArray.map(r => renderFn(r)).join('');
+      tbody.innerHTML = rowsHtml;
+      
+      // Setup event delegation for copy functionality
+      const newTbody = tbody.cloneNode(true);
+      tbody.parentNode.replaceChild(newTbody, tbody);
+      
+      newTbody.addEventListener('click', function(e) {
+          const tr = e.target.closest('tr');
+          if (tr) {
+              const info = Array.from(tr.children).map(td => td.innerText).join(' | ');
+              copyToClipboard(info);
+          }
+      });
+
+      // Show table
+      table.style.display = 'table';
+      container.style.display = 'block';
+      if(filterBox) filterBox.style.display = 'block';
+      
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.getElementById('showAhListBtn').addEventListener('click', () => {
+      confirmAndRender(lastAhResult, 'ahTable', r => {
+        const [hs, as] = r.ft_score.split('-').map(Number);
+        const diff = hs + r.AH_close_handicap - as;
+        const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
+        // Corrected columns mapping
+        return `<tr>
+          <td>${r.season}</td>
+          <td>${r.home_team} vs ${r.away_team}</td>
+          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+          <td>${r.AH_open_handicap}</td>
+          <td class="text-odds">${r.AH_open_home_odds}</td>
+          <td class="text-odds">${r.AH_open_away_odds}</td>
+          <td>${r.AH_close_handicap}</td>
+          <td class="text-odds">${r.AH_close_home_odds}</td>
+          <td class="text-odds">${r.AH_close_away_odds}</td>
+          <td>${out}</td>
+        </tr>`;
+      });
+    });
+
+    document.getElementById('showOuListBtn').addEventListener('click', () => {
+      confirmAndRender(lastOuResult, 'ouTable', r => {
+        const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
+        const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
+        // Corrected columns mapping
+        return `<tr>
+          <td>${r.season}</td>
+          <td>${r.home_team} vs ${r.away_team}</td>
+          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+          <td>${r.OU_line}</td>
+          <td class="text-odds">${r.OU_open_over_odds}</td>
+          <td class="text-odds">${r.OU_open_under_odds}</td>
+          <td>${r.close_OU_line}</td>
+          <td class="text-odds">${r.OU_close_over_odds}</td>
+          <td class="text-odds">${r.OU_close_under_odds}</td>
+          <td>${out}</td>
+        </tr>`;
+      });
+    });
+
+    document.getElementById('showEuListBtn').addEventListener('click', () => {
+      confirmAndRender(lastEuResult, 'euTable', r => {
+        const [hs, as] = r.ft_score.split('-').map(Number);
+        const diff = hs - as;
+        const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
+        // Corrected columns mapping - EU has 7 columns now
+        return `<tr>
+          <td>${r.season}</td>
+          <td>${r.home_team} vs ${r.away_team}</td>
+          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+          <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
+          <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
+          <td>${out}</td>
+          <td>${diff > 0 ? '+'+diff : diff}</td>
+        </tr>`;
+      });
+    });
 
     /* 重設按鈕 */
     document.getElementById('resetAhBtn').addEventListener('click', () => {
@@ -967,6 +1144,8 @@
       document.getElementById('ahStat').innerHTML = '';
       document.getElementById('showAhListBtn').style.display = 'none';
       document.getElementById('ahTable').style.display = 'none';
+      document.getElementById('ahTableContainer').style.display = 'none';
+      document.getElementById('ahFilterBox').style.display = 'none';
       lastAhResult = [];
     });
     document.getElementById('resetOuBtn').addEventListener('click', () => {
@@ -974,6 +1153,8 @@
       document.getElementById('ouStat').innerHTML = '';
       document.getElementById('showOuListBtn').style.display = 'none';
       document.getElementById('ouTable').style.display = 'none';
+      document.getElementById('ouTableContainer').style.display = 'none';
+      document.getElementById('ouFilterBox').style.display = 'none';
       lastOuResult = [];
     });
     document.getElementById('resetEuBtn').addEventListener('click', () => {
@@ -981,6 +1162,8 @@
       document.getElementById('euStat').innerHTML = '';
       document.getElementById('showEuListBtn').style.display = 'none';
       document.getElementById('euTable').style.display = 'none';
+      document.getElementById('euTableContainer').style.display = 'none';
+      document.getElementById('euFilterBox').style.display = 'none';
       lastEuResult = [];
     });
 
