@@ -2,420 +2,358 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"/>
-<title>足球歷史賠率大數據</title>
+<title>足球歷史賠率篩選 (Pro)</title>
 <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,400;0,600;0,700;1,700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!-- 引入字體 -->
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
     :root {
-        --primary-brand: #3b82f6;
-        --turf-green: #22c55e;
-        --turf-green-dark: #15803d;
-        --night-blue: #0f172a;
-        --night-blue-light: #1e293b;
-        --text-light: #f1f5f9;
-        --glass-bg: rgba(255, 255, 255, 0.92);
-        --glass-border: rgba(255, 255, 255, 0.4);
-        --shadow-strong: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        /* 基礎色調 */
+        --bg-dark: #064e3b; /* 森綠色 */
+        --glass-bg: rgba(6, 78, 59, 0.35); /* 更通透 */
+        --glass-border: rgba(255, 255, 255, 0.2);
+        
+        /* 品牌色 */
+        --brand-green: #10b981;
+        --brand-green-light: #34d399;
+        --brand-shadow: #065f46;
+        
+        --text-main: #ffffff;
+        --text-sub: #d1fae5;
     }
 
     body {
         margin: 0;
-        /* 足球背景：深藍色 + 六角形球網紋理 */
-        background-color: var(--night-blue);
-        background-image: 
-            radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.2) 0%, transparent 20%),
-            radial-gradient(circle at 90% 80%, rgba(34, 197, 94, 0.15) 0%, transparent 20%),
-            url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill-opacity='0.03' fill='%23ffffff' fill-rule='evenodd'/%3E%3C/svg%3E");
         font-family: 'Noto Sans TC', sans-serif;
-        color: #334155;
-        padding-bottom: 60px;
+        color: var(--text-main);
+        background-color: var(--bg-dark);
         min-height: 100vh;
-        position: relative;
+        padding-bottom: 80px;
         overflow-x: hidden;
     }
 
-    /* 裝飾：戰術板圈圈 (背景裝飾) */
-    .pitch-decoration {
-        position: absolute;
-        border: 2px solid rgba(255,255,255,0.05);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 0;
-    }
-    .pitch-circle-1 {
-        width: 300px; height: 300px;
-        top: -100px; left: -100px;
-    }
-    .pitch-circle-2 {
-        width: 500px; height: 500px;
-        bottom: -150px; right: -150px;
-        border-color: rgba(34, 197, 94, 0.05);
+    /* === 背景層 (Background Layers) === */
+    .bg-layer {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        background-color: #064e3b;
+        /* 1. 聚光燈效果 2. 真實草地圖 */
+        background-image: 
+            radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.8) 85%),
+            url("https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
     }
 
-    /* ---------- Header: Scoreboard Style ---------- */
+    /* 網紋紋理 (後備) */
+    .bg-texture {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    /* ---------- Header ---------- */
     .header {
         position: relative;
-        background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.8) 100%);
-        color: #fff;
         text-align: center;
-        padding: 40px 20px 70px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        z-index: 2;
-        overflow: hidden;
-    }
-
-    /* Header 入面嘅草地光影 */
-    .header::after {
-        content: '';
-        position: absolute;
-        bottom: 0; left: 0; right: 0; height: 4px;
-        background: linear-gradient(90deg, #22c55e, #3b82f6, #22c55e);
-        box-shadow: 0 0 15px #22c55e;
-    }
-
-    .header h1 {
-        font-family: 'Exo 2', sans-serif; /* 比較有運動感嘅字體 */
-        margin: 0;
-        font-size: 2.2rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        background: -webkit-linear-gradient(#fff, #cbd5e1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-    }
-    
-    .header .icon-ball {
-        font-size: 1.8rem;
-        color: var(--turf-green);
-        animation: bounce 2s infinite;
-        display: inline-block;
-        margin-right: 10px;
-        vertical-align: middle;
-    }
-
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
-    }
-
-    .header .desc {
-        margin-top: 10px;
-        font-size: 0.95rem;
-        color: #94a3b8;
-        font-weight: 300;
-    }
-    
-    .timestamp {
-        font-size: 0.75rem;
-        color: #64748b;
-        margin-top: 5px;
-        font-family: monospace;
-    }
-
-    /* ---------- Tabs: Jersey Style ---------- */
-    .nav-container {
-        margin-top: -35px;
-        padding: 0 15px;
-        position: relative;
+        padding: 45px 20px 55px;
         z-index: 10;
     }
 
-    .custom-tabs {
-        background: var(--night-blue-light);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 16px;
-        padding: 6px;
+    .header h1 {
+        font-family: 'Noto Sans TC', sans-serif;
+        font-weight: 900;
+        font-size: clamp(2rem, 6vw, 3rem);
+        margin: 0;
+        color: #fff;
+        text-shadow: 
+            0 2px 0 #065f46,
+            0 4px 0 #064e3b,
+            0 6px 12px rgba(0,0,0,0.6);
         display: flex;
-        box-shadow: var(--shadow-strong);
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    
+    .icon-ball {
+        font-size: 2.2rem;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        color: var(--brand-green-light);
+        animation: floatBall 3s ease-in-out infinite;
+    }
+    @keyframes floatBall { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+    .header .desc {
+        margin-top: 12px;
+        font-size: 1rem;
+        color: #e0f2f1;
+        background: rgba(0,0,0,0.3);
+        padding: 6px 18px;
+        border-radius: 50px;
+        border: 1px solid rgba(255,255,255,0.15);
+        backdrop-filter: blur(4px);
+        display: inline-block;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    
+    .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8; }
+
+    /* ---------- Tabs ---------- */
+    .nav-container {
+        margin-top: -30px; padding: 0 10px; position: relative; z-index: 20;
+    }
+
+    .custom-tabs {
+        background: rgba(6, 78, 59, 0.8);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 50px;
+        padding: 5px;
+        display: flex; gap: 5px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+        backdrop-filter: blur(10px);
         max-width: 600px;
         margin: 0 auto;
+        overflow-x: auto;
     }
 
     .custom-tabs button {
-        flex: 1;
-        border: none;
-        background: transparent;
-        padding: 12px 0;
-        border-radius: 12px;
-        font-weight: 600;
-        color: #94a3b8;
-        transition: all 0.3s ease;
-        font-size: 0.95rem;
-        position: relative;
-        overflow: hidden;
+        flex: 1; border: none; background: transparent;
+        color: rgba(255,255,255,0.7);
+        padding: 10px 20px; font-weight: 700; font-size: 0.95rem;
+        border-radius: 40px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        white-space: nowrap; position: relative;
     }
 
     .custom-tabs button.active {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: #fff;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    /* ---------- Main Content: Glassmorphism ---------- */
+    /* ---------- Main Card ---------- */
     .tabcontent {
-        max-width: 800px;
-        margin: 24px auto;
-        padding: 0 15px;
-        position: relative;
-        z-index: 5;
-        animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        max-width: 760px; margin: 35px auto; padding: 0 15px; animation: fadeUp 0.6s ease-out;
     }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Form Card 變成白色半透明，突出背景 */
     .form-card {
         background: var(--glass-bg);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
         border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        padding: 24px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        margin-bottom: 24px;
+        border-top: 1px solid rgba(255,255,255,0.4);
+        border-radius: 24px; padding: 28px;
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
     }
 
     fieldset {
-        border: 1px solid #e2e8f0;
-        background: rgba(248, 250, 252, 0.5);
-        border-radius: 12px;
-        padding: 16px;
-        margin: 0 0 20px 0;
-        position: relative;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px; padding: 20px 24px; margin-bottom: 24px;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
     }
-    
+
     legend {
-        float: none;
-        width: auto;
-        padding: 0 10px;
-        margin-left: -5px;
-        margin-bottom: 10px;
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: var(--night-blue);
-        background: transparent;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        color: var(--brand-green-light);
+        font-weight: 700; font-size: 1.15rem; text-transform: uppercase;
+        letter-spacing: 1px; display: flex; align-items: center; gap: 8px;
+        text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
     }
-    
-    /* Input Styling */
-    .input-row { margin-bottom: 12px; }
+
+    /* ---------- Inputs ---------- */
     .input-label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #475569;
-        margin-bottom: 4px;
-        display: block;
-        text-transform: uppercase;
+        font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 8px; display: block;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
 
     .custom-input-group {
         display: flex;
-        align-items: stretch;
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
-        overflow: hidden;
-        background: #fff;
-        transition: 0.2s;
+        background: rgba(0, 20, 10, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
+        transition: 0.3s; overflow: hidden;
     }
+
     .custom-input-group:focus-within {
-        border-color: var(--primary-brand);
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        border-color: var(--brand-green);
+        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
     }
 
     .main-input {
-        flex: 1; border: none; padding: 10px; font-size: 1rem; font-weight: 500; min-width: 0;
+        flex: 1; background: transparent; border: none; color: #fff; padding: 14px; font-size: 1.1rem; font-family: monospace; min-width: 60px;
     }
     .main-input:focus { outline: none; }
+    .main-input::placeholder { color: rgba(255,255,255,0.3); }
     
     .divider-text {
-        background: #f1f5f9; color: #94a3b8; padding: 0 10px; display: flex; align-items: center; font-size: 0.9rem; font-weight: bold;
+        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 12px; display: flex; align-items: center; font-weight: bold; border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1);
     }
     
     .err-input {
-        width: 60px; border: none; text-align: center; background: #f8fafc; font-size: 0.9rem; color: #64748b; border-left: 1px solid #e2e8f0;
+        width: 60px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; text-align: center; font-size: 0.95rem;
     }
-    .err-input:focus { outline: none; background: #fff; }
+    .err-input:focus { outline: none; color: #fff; background: rgba(255,255,255,0.1); }
 
-    .step-btns { display: flex; flex-direction: column; border-left: 1px solid #e2e8f0; }
+    .step-btns { display: flex; flex-direction: column; width: 40px; border-left: 1px solid rgba(255,255,255,0.1); }
     .step-btn {
-        flex: 1; border: none; background: #f1f5f9; color: #64748b; padding: 0 8px; cursor: pointer; transition: 0.2s;
+        flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
     }
-    .step-btn:hover { background: #e2e8f0; color: var(--primary-brand); }
-    .step-btn:first-child { border-bottom: 1px solid #e2e8f0; }
+    .step-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
 
     select.form-select-custom {
-        width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 10px; background-color: #fff; font-size: 1rem;
+        width: 100%; padding: 14px; background-color: rgba(2, 44, 34, 0.95); color: #fff; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
     }
 
-    /* Buttons: Turf Green for Action */
-    .btn-action {
-        padding: 12px 36px;
-        border-radius: 50px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        transition: all 0.2s;
-        border: none;
+    /* ---------- Buttons (3D Pill) ---------- */
+    .btn-3d {
+        position: relative; border: none; outline: none; color: white; 
+        font-weight: 700; font-size: 1.1rem; 
+        padding: 16px 36px; border-radius: 50px; cursor: pointer; 
+        transition: transform 0.1s, box-shadow 0.1s; 
+        display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+        text-transform: uppercase; letter-spacing: 1px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
-    .btn-primary-turf {
-        background: linear-gradient(135deg, var(--turf-green) 0%, var(--turf-green-dark) 100%);
-        color: #fff;
-        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
-    }
-    .btn-primary-turf:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5); color: #fff; }
-    .btn-primary-turf:active { transform: translateY(0); }
 
-    .btn-reset {
-        background: #fff; color: #64748b; border: 1px solid #cbd5e1;
+    .btn-green {
+        background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+        box-shadow: 0 6px 0 #047857, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
     }
-    .btn-reset:hover { background: #f1f5f9; color: #334155; }
+    .btn-green:active { transform: translateY(6px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
 
-    /* ---------- Stats Dashboard ---------- */
+    .btn-grey {
+        background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
+        box-shadow: 0 6px 0 #1f2937, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
+    }
+    .btn-grey:active { transform: translateY(6px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
+
+    .btn-ai-3d {
+        background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
+        box-shadow: 0 6px 0 #6b21a8, 0 0 25px rgba(147, 51, 234, 0.4), inset 0 2px 0 rgba(255,255,255,0.4);
+        margin-top: 25px;
+        animation: pulseGlow 2.5s infinite ease-in-out;
+    }
+    @keyframes pulseGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+    .btn-ai-3d:active { transform: translateY(6px); box-shadow: 0 0 0 #6b21a8; animation: none; }
+
+    /* ---------- Stats ---------- */
     .stat-area { margin-top: 30px; }
-    .stat-cards {
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;
-    }
+    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+    
     .stat-card {
-        background: #fff; padding: 16px 8px; border-radius: 16px; text-align: center;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;
+        background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 16px; padding: 15px 5px; text-align: center;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2); backdrop-filter: blur(5px);
         position: relative; overflow: hidden;
     }
-    /* Add colored bar at bottom */
-    .stat-card::after {
-        content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
-    }
-    .stat-card.win::after { background: #ef4444; }
-    .stat-card.draw::after { background: #22c55e; }
-    .stat-card.lose::after { background: #3b82f6; }
+    .stat-card.win { border-bottom: 4px solid #ef4444; }
+    .stat-card.draw { border-bottom: 4px solid #22c55e; }
+    .stat-card.lose { border-bottom: 4px solid #3b82f6; }
 
-    .stat-card .label { font-size: 0.8rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
-    .stat-card .value { font-size: 1.6rem; font-weight: 800; display: block; margin: 4px 0; color: #0f172a; }
-    .stat-card .pct { font-size: 0.8rem; color: #94a3b8; font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; display: inline-block;}
+    .stat-card .label { font-size: 0.8rem; color: #a7f3d0; font-weight: 700; letter-spacing: 1px; }
+    .stat-card .value { font-size: 1.6rem; font-weight: 900; margin: 5px 0; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .stat-card .pct { font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 10px; color: #fff; }
 
     .piebox {
-        background: #fff; border-radius: 16px; padding: 24px;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        border: 1px solid #e2e8f0;
+        background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;
+        display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(255,255,255,0.1);
     }
-    .pie-legend { display: flex; gap: 15px; margin-top: 20px; font-size: 0.9rem; font-weight: 500; }
-    .pie-legend div { display: flex; align-items: center; gap: 8px; }
-    .pie-legend span { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255,255,255,1), 0 0 0 3px #e2e8f0; }
+    .pie-legend { display: flex; gap: 15px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
+    .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-    /* ---------- Table ---------- */
+    .ai-result-box {
+        margin-top: 25px; padding: 25px;
+        background: rgba(15, 23, 42, 0.95); border: 1px solid #a855f7;
+        box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
+        border-radius: 16px; color: #f3f4f6; line-height: 1.7; display: none; text-align: left;
+    }
+    .ai-result-box h3 { color: #d8b4fe; margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; font-size: 1.2rem; }
+    .ai-result-box strong { color: #fff; }
+
     .table-container {
-        background: #fff; border-radius: 16px; overflow: hidden;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin-top: 24px;
-        border: 1px solid #e2e8f0;
+        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; margin-top: 30px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.5);
     }
     .table-responsive { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.9rem; white-space: nowrap; }
-    th {
-        background: #f8fafc; padding: 14px 16px; font-weight: 700; text-align: center;
-        color: #475569; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;
-        border-bottom: 2px solid #e2e8f0;
-    }
-    td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; text-align: center; color: #334155; }
-    tr:last-child td { border-bottom: none; }
-    tr:nth-child(even) { background: #fcfcfc; }
-    
-    /* Result Badges */
-    .badge-result { padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; }
-    .bg-win { background: #fee2e2; color: #ef4444; }
-    .bg-draw { background: #dcfce7; color: #16a34a; }
-    .bg-lose { background: #dbeafe; color: #2563eb; }
+    th { background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 16px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    tr:hover { background: rgba(255,255,255,0.1); }
+
+    .badge-res { padding: 5px 12px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+    .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
 
     /* ---------- Loading ---------- */
     #loadingOverlay {
-        position: fixed; inset: 0;
-        background: rgba(15, 23, 42, 0.9); /* Dark overlay */
-        backdrop-filter: blur(5px);
-        z-index: 9999;
+        position: fixed; inset: 0; background: #064e3b; z-index: 9999;
         display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
     }
-    .loader-football {
-        width: 48px; height: 48px;
-        border: 5px solid #fff;
-        border-bottom-color: var(--turf-green);
-        border-radius: 50%;
-        display: inline-block;
-        box-sizing: border-box;
-        animation: rotation 1s linear infinite;
+    .spinner-ball {
+        width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #34d399; border-radius: 50%; animation: spin 1s linear infinite;
+        box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
     }
-    @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .loading-text { color: #fff; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ---------- Mobile Tweaks ---------- */
-    @media (min-width: 768px) {
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (min-width: 992px) {
+        .tabcontent { max-width: 900px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         .full-width { grid-column: span 2; }
-        .piebox { flex-direction: row; gap: 40px; }
+        .piebox { flex-direction: row; gap: 50px; }
         .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
-        .header h1 { font-size: 3rem; }
+        .header { padding-bottom: 120px; }
+        .nav-container { margin-top: -60px; }
+        .main-input { padding: 16px; } 
     }
 </style>
 </head>
 <body>
 
-<!-- Background Decorations -->
-<div class="pitch-decoration pitch-circle-1"></div>
-<div class="pitch-decoration pitch-circle-2"></div>
+<div class="bg-texture"></div>
+<div class="bg-layer"></div>
 
-<!-- Loading Overlay -->
 <div aria-live="polite" id="loadingOverlay" role="alert">
-    <span class="loader-football"></span>
-    <span class="loading-text">載入比賽數據...</span>
+    <div class="spinner-ball"></div>
+    <div class="loading-text" style="color:#d1fae5; font-weight:bold; letter-spacing:1px;">資料載入中...</div>
 </div>
 
-<!-- Header -->
 <div class="header">
-    <h1><i class="bi bi-vinyl-fill icon-ball"></i> 足球歷史賠率</h1>
+    <h1><i class="bi bi-heptagon-fill icon-ball"></i> 足球歷史賠率篩選</h1>
     <div class="desc">大數據分析：初盤、終盤賠率組合 (2013-2025)</div>
-    <div class="timestamp" id="ts">Database Updated: 2025/08/01</div>
+    <div class="timestamp" id="ts">版本時間：2025/08/01 上午 00:00:00 (GMT+8)</div>
 </div>
 
-<!-- Tabs -->
 <div class="nav-container">
     <div class="custom-tabs">
-        <button class="active" id="tab1" onclick="showTab(0)">
-            <i class="bi bi-trophy me-1"></i> 亞洲盤
-        </button>
-        <button id="tab2" onclick="showTab(1)">
-            <i class="bi bi-circle-half me-1"></i> 大小球
-        </button>
-        <button id="tab3" onclick="showTab(2)">
-            <i class="bi bi-globe-europe-africa me-1"></i> 歐洲盤
-        </button>
+        <button class="active" id="tab1" onclick="showTab(0)">亞洲盤查詢</button>
+        <button id="tab2" onclick="showTab(1)">大小球查詢</button>
+        <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
     </div>
 </div>
 
-<!-- Tab Content 1: 亞洲盤 -->
 <div class="tabcontent" id="tc1">
     <div class="form-card">
         <form id="ahForm">
             <fieldset>
-                <legend><i class="bi bi-stopwatch"></i> 初盤 (Open)</legend>
+                <legend><i class="bi bi-crosshair"></i> 初盤</legend>
                 <div class="form-grid">
                     <div class="input-row full-width">
-                        <label class="input-label">盤口 (Handicap)</label>
+                        <label class="input-label">盤口</label>
                         <select id="ahInitHand" class="form-select-custom"></select>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">主隊賠率 (Home)</label>
+                        <label class="input-label">主隊賠率</label>
                         <div class="custom-input-group">
-                            <input id="ahHomeExact" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="ahHomeExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="ahHomeErr" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -425,9 +363,9 @@
                         </div>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">客隊賠率 (Away)</label>
+                        <label class="input-label">客隊賠率</label>
                         <div class="custom-input-group">
-                            <input id="ahAwayExact" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="ahAwayExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="ahAwayErr" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -440,16 +378,16 @@
             </fieldset>
 
             <fieldset>
-                <legend><i class="bi bi-flag-fill"></i> 終盤 (Close)</legend>
+                <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
                 <div class="form-grid">
                     <div class="input-row full-width">
-                        <label class="input-label">盤口 (Handicap)</label>
+                        <label class="input-label">盤口</label>
                         <select id="ahCloseHand" class="form-select-custom"></select>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">主隊賠率 (Home)</label>
+                        <label class="input-label">主隊賠率</label>
                         <div class="custom-input-group">
-                            <input id="ahCloseHomeExact" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="ahCloseHomeExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="ahCloseHomeErr" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -459,9 +397,9 @@
                         </div>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">客隊賠率 (Away)</label>
+                        <label class="input-label">客隊賠率</label>
                         <div class="custom-input-group">
-                            <input id="ahCloseAwayExact" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="ahCloseAwayExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="ahCloseAwayErr" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -473,9 +411,9 @@
                 </div>
             </fieldset>
 
-            <div class="d-flex justify-content-center gap-3 mt-4">
-                <button class="btn btn-primary-turf btn-action" onclick="doAhSearch()" type="button"><i class="bi bi-search me-1"></i> 搜尋比賽</button>
-                <button class="btn btn-reset btn-action" id="resetAhBtn" type="button"><i class="bi bi-arrow-counterclockwise me-1"></i> 重設</button>
+            <div class="d-flex flex-column gap-3 mt-4">
+                <button class="btn-3d btn-green" onclick="doAhSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
+                <button class="btn-3d btn-grey" id="resetAhBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
             </div>
         </form>
     </div>
@@ -484,7 +422,7 @@
     <div class="stat-area" id="ahStat"></div>
 
     <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light text-dark bg-white" id="showAhListBtn" style="display: none; border-radius: 30px;" type="button">顯示比賽列表</button>
+        <button class="btn btn-outline-light rounded-pill px-4" id="showAhListBtn" style="display: none;" type="button">輸出比賽列表</button>
     </div>
 
     <div class="table-container">
@@ -492,10 +430,9 @@
             <table id="ahTable" style="display:none;">
                 <thead>
                 <tr>
-                    <th>賽季</th><th>比賽 (比分)</th>
-                    <th>初盤<br><small>盤/主/客</small></th>
-                    <th>終盤<br><small>盤/主/客</small></th>
-                    <th>結果</th>
+                    <th>賽季</th><th>比賽</th>
+                    <th>初盤盤口</th><th>初盤主賠</th><th>初盤客賠</th>
+                    <th>終盤盤口</th><th>終盤主賠</th><th>終盤客賠</th><th>盤口勝負</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -504,21 +441,20 @@
     </div>
 </div>
 
-<!-- Tab Content 2: 大小球 -->
 <div class="tabcontent" id="tc2" style="display:none">
     <div class="form-card">
         <form id="ouForm">
             <fieldset>
-                <legend><i class="bi bi-stopwatch"></i> 初盤 (Open)</legend>
+                <legend><i class="bi bi-stopwatch"></i> 初盤</legend>
                 <div class="form-grid">
                     <div class="input-row full-width">
-                        <label class="input-label">盤口 (Line)</label>
+                        <label class="input-label">盤口</label>
                         <select id="ouInitLine" class="form-select-custom"></select>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">大球賠率 (Over)</label>
+                        <label class="input-label">大球賠率</label>
                         <div class="custom-input-group">
-                            <input id="ouBigExact" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="ouBigExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="ouBigErr" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -528,9 +464,9 @@
                         </div>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">細球賠率 (Under)</label>
+                        <label class="input-label">細球賠率</label>
                         <div class="custom-input-group">
-                            <input id="ouSmallExact" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="ouSmallExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="ouSmallErr" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -543,16 +479,16 @@
             </fieldset>
 
             <fieldset>
-                <legend><i class="bi bi-flag-fill"></i> 終盤 (Close)</legend>
+                <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
                 <div class="form-grid">
                     <div class="input-row full-width">
-                        <label class="input-label">盤口 (Line)</label>
+                        <label class="input-label">盤口</label>
                         <select id="ouCloseLine" class="form-select-custom"></select>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">大球賠率 (Over)</label>
+                        <label class="input-label">大球賠率</label>
                         <div class="custom-input-group">
-                            <input id="ouBigExactC" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="ouBigExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="ouBigErrC" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -562,9 +498,9 @@
                         </div>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">細球賠率 (Under)</label>
+                        <label class="input-label">細球賠率</label>
                         <div class="custom-input-group">
-                            <input id="ouSmallExactC" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="ouSmallExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="ouSmallErrC" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -576,9 +512,9 @@
                 </div>
             </fieldset>
 
-            <div class="d-flex justify-content-center gap-3 mt-4">
-                <button class="btn btn-primary-turf btn-action" onclick="doOuSearch()" type="button"><i class="bi bi-search me-1"></i> 搜尋比賽</button>
-                <button class="btn btn-reset btn-action" id="resetOuBtn" type="button"><i class="bi bi-arrow-counterclockwise me-1"></i> 重設</button>
+            <div class="d-flex flex-column gap-3 mt-4">
+                <button class="btn-3d btn-green" onclick="doOuSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
+                <button class="btn-3d btn-grey" id="resetOuBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
             </div>
         </form>
     </div>
@@ -586,7 +522,7 @@
     <div class="stat-area" id="ouStat"></div>
 
     <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light text-dark bg-white" id="showOuListBtn" style="display: none; border-radius: 30px;" type="button">顯示比賽列表</button>
+        <button class="btn btn-outline-light rounded-pill px-4" id="showOuListBtn" style="display: none;" type="button">輸出比賽列表</button>
     </div>
 
     <div class="table-container">
@@ -594,10 +530,8 @@
             <table id="ouTable" style="display:none;">
                 <thead>
                 <tr>
-                    <th>賽季</th><th>比賽 (比分)</th>
-                    <th>初盤<br><small>盤/大/細</small></th>
-                    <th>終盤<br><small>盤/大/細</small></th>
-                    <th>結果</th>
+                    <th>賽季</th><th>比賽</th><th>初盤盤口</th><th>初盤大</th><th>初盤細</th>
+                    <th>終盤盤口</th><th>終盤大</th><th>終盤細</th><th>結果</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -606,17 +540,16 @@
     </div>
 </div>
 
-<!-- Tab Content 3: 歐洲盤 -->
 <div class="tabcontent" id="tc3" style="display:none">
     <div class="form-card">
         <form id="euForm">
             <fieldset>
-                <legend><i class="bi bi-stopwatch"></i> 初盤 (Open)</legend>
+                <legend><i class="bi bi-globe-europe-africa"></i> 初盤</legend>
                 <div class="form-grid">
                     <div class="input-row">
-                        <label class="input-label">主勝賠率</label>
+                        <label class="input-label">主勝</label>
                         <div class="custom-input-group">
-                            <input id="euHomeExact" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="euHomeExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="euHomeErr" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -626,9 +559,9 @@
                         </div>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">和局賠率</label>
+                        <label class="input-label">和局</label>
                         <div class="custom-input-group">
-                            <input id="euDrawExact" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="euDrawExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="euDrawErr" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -638,9 +571,9 @@
                         </div>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">客勝賠率</label>
+                        <label class="input-label">客勝</label>
                         <div class="custom-input-group">
-                            <input id="euAwayExact" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="euAwayExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="euAwayErr" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -653,12 +586,12 @@
             </fieldset>
 
             <fieldset>
-                <legend><i class="bi bi-flag-fill"></i> 終盤 (Close)</legend>
+                <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
                 <div class="form-grid">
                     <div class="input-row">
-                        <label class="input-label">主勝賠率</label>
+                        <label class="input-label">主勝</label>
                         <div class="custom-input-group">
-                            <input id="euHomeExactC" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="euHomeExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="euHomeErrC" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -668,9 +601,9 @@
                         </div>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">和局賠率</label>
+                        <label class="input-label">和局</label>
                         <div class="custom-input-group">
-                            <input id="euDrawExactC" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="euDrawExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="euDrawErrC" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -680,9 +613,9 @@
                         </div>
                     </div>
                     <div class="input-row">
-                        <label class="input-label">客勝賠率</label>
+                        <label class="input-label">客勝</label>
                         <div class="custom-input-group">
-                            <input id="euAwayExactC" class="main-input" placeholder="賠率" step="0.01" type="number"/>
+                            <input id="euAwayExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
                             <div class="divider-text">±</div>
                             <input id="euAwayErrC" class="err-input" step="0.01" type="number" value="0.05"/>
                             <div class="step-btns">
@@ -694,9 +627,9 @@
                 </div>
             </fieldset>
 
-            <div class="d-flex justify-content-center gap-3 mt-4">
-                <button class="btn btn-primary-turf btn-action" onclick="doEuSearch()" type="button"><i class="bi bi-search me-1"></i> 搜尋比賽</button>
-                <button class="btn btn-reset btn-action" id="resetEuBtn" type="button"><i class="bi bi-arrow-counterclockwise me-1"></i> 重設</button>
+            <div class="d-flex flex-column gap-3 mt-4">
+                <button class="btn-3d btn-green" onclick="doEuSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
+                <button class="btn-3d btn-grey" id="resetEuBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
             </div>
         </form>
     </div>
@@ -704,7 +637,7 @@
     <div class="stat-area" id="euStat"></div>
 
     <div class="text-center mt-4 mb-3">
-        <button class="btn btn-outline-light text-dark bg-white" id="showEuListBtn" style="display: none; border-radius: 30px;" type="button">顯示比賽列表</button>
+        <button class="btn btn-outline-light rounded-pill px-4" id="showEuListBtn" style="display: none;" type="button">輸出比賽列表</button>
     </div>
 
     <div class="table-container">
@@ -712,11 +645,8 @@
             <table id="euTable" style="display:none;">
                 <thead>
                 <tr>
-                    <th>賽季</th><th>比賽 (比分)</th>
-                    <th>初盤<br><small>主/和/客</small></th>
-                    <th>終盤<br><small>主/和/客</small></th>
-                    <th>結果</th>
-                    <th>淨勝球</th>
+                    <th>賽季</th><th>比賽</th><th>初盤(主/和/客)</th><th>終盤(主/和/客)</th>
+                    <th>比分</th><th>勝負</th><th>淨勝球</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -725,11 +655,11 @@
     </div>
 </div>
 
-<!-- Main Script Logic (保持原樣，確保邏輯不變) -->
 <script>
-    /* 1. 全局變數 */
+    /* 1. Global Vars */
     let AH = null, OU = null, EU = null;
     let lastAhResult = [], lastOuResult = [], lastEuResult = [];
+    const apiKey = ""; 
 
     const DB = {
       asian:     { base: 'asian_handicap', subdir: '' },
@@ -737,7 +667,7 @@
       european:  { base: 'european_odds',  subdir: '' }
     };
 
-    /* 2. 核心功能 */
+    /* 2. Core */
     const overlay = document.getElementById('loadingOverlay');
     const __showLoading = () => { if(overlay) overlay.style.display = 'flex'; };
     const __hideLoading = () => { if(overlay) overlay.style.display = 'none'; };
@@ -750,7 +680,7 @@
             panel.style.display = "block";
             panel.style.animation = 'none';
             panel.offsetHeight; 
-            panel.style.animation = 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+            panel.style.animation = 'fadeUp 0.6s ease-out';
         } else {
             panel.style.display = "none";
         }
@@ -799,7 +729,7 @@
         const y2 = cy + r * Math.sin(endAngle);
         const largeArcFlag = sliceAngle > Math.PI ? 1 : 0;
         currentAngle = endAngle;
-        return `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z" fill="${slice.color}" stroke="#fff" stroke-width="2"></path>`;
+        return `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z" fill="${slice.color}" stroke="rgba(255,255,255,0.2)" stroke-width="2"></path>`;
       }).join('');
 
       return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">${paths}</svg>`;
@@ -819,7 +749,6 @@
       return null;
     }
 
-    /* 3. 資料載入 */
     async function loadWithTrailingNumbers(base, { subdir = '', maxParts = 10 } = {}) {
       const prefix = subdir ? (subdir.replace(/\/$/, '') + '/') : '';
       const urls = [`${prefix}${base}.json`];
@@ -848,11 +777,10 @@
       return EU;
     }
 
-    /* 4. 搜尋與顯示 */
     function fillSelect(id, set) {
       const arr = Array.from(set).filter(v => v != null).sort((a, b) => a - b);
       document.getElementById(id).innerHTML =
-        '<option value="">全部</option>' +
+        '<option value="">--</option>' +
         arr.map(v => `<option value="${v}">${v}</option>`).join('');
     }
 
@@ -886,7 +814,7 @@
                 <span class="pct">${pct(l, tot)}</span>
             </div>
         </div>
-        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.9rem; color:#64748b;">${extraInfo}</div>` : ''}
+        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.9rem; color:#d1fae5;">${extraInfo}</div>` : ''}
         <div class="piebox">
           ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
           <div class="pie-legend">
@@ -894,7 +822,92 @@
             <div><span style="background:${dColor}"></span>${dLabel}</div>
             <div><span style="background:${lColor}"></span>${lLabel}</div>
           </div>
-        </div>`;
+        </div>
+        
+        <div class="mt-3">
+            <button class="btn-3d btn-ai-3d" onclick="triggerAIAnalysis('${wLabel}','${dLabel}','${lLabel}', ${w}, ${d}, ${l}, ${tot})">
+                <i class="bi bi-stars"></i> ✨ Gemini AI 智能趨勢分析
+            </button>
+            <div id="aiResultArea" class="ai-result-box"></div>
+        </div>
+        `;
+    }
+
+    async function triggerAIAnalysis(wLabel, dLabel, lLabel, w, d, l, tot) {
+        const resBox = document.getElementById('aiResultArea');
+        resBox.style.display = 'block';
+        resBox.innerHTML = '<div style="text-align:center; color:#d8b4fe;"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 正在聯絡 AI 分析師...</div>';
+
+        let tab = 'Asian Handicap';
+        let context = '';
+        if(document.getElementById('tab2').classList.contains('active')) tab = 'Over/Under';
+        if(document.getElementById('tab3').classList.contains('active')) tab = 'European 1x2';
+
+        if(tab === 'Asian Handicap') {
+            context = `
+            模式：亞洲盤
+            初盤盤口：${document.getElementById('ahInitHand').value || '不限'}
+            初盤賠率 (主/客)：${document.getElementById('ahHomeExact').value || 'N/A'} / ${document.getElementById('ahAwayExact').value || 'N/A'}
+            終盤盤口：${document.getElementById('ahCloseHand').value || '不限'}
+            終盤賠率 (主/客)：${document.getElementById('ahCloseHomeExact').value || 'N/A'} / ${document.getElementById('ahCloseAwayExact').value || 'N/A'}
+            `;
+        } else if (tab === 'Over/Under') {
+            context = `
+            模式：大小球
+            初盤盤口：${document.getElementById('ouInitLine').value || '不限'}
+            初盤賠率 (大/細)：${document.getElementById('ouBigExact').value || 'N/A'} / ${document.getElementById('ouSmallExact').value || 'N/A'}
+            終盤盤口：${document.getElementById('ouCloseLine').value || '不限'}
+            `;
+        } else {
+            context = `
+            模式：歐洲盤
+            初盤賠率 (主/和/客)：${document.getElementById('euHomeExact').value || 'N/A'} / ${document.getElementById('euDrawExact').value || 'N/A'} / ${document.getElementById('euAwayExact').value || 'N/A'}
+            `;
+        }
+
+        const prompt = `
+        我正在分析足球歷史賠率數據。請根據以下篩選條件和統計結果，提供專業的趨勢分析。
+        
+        【篩選條件】
+        ${context}
+
+        【歷史統計結果 (共 ${tot} 場)】
+        - ${wLabel}: ${w} 場 (${pct(w, tot)})
+        - ${dLabel}: ${d} 場 (${pct(d, tot)})
+        - ${lLabel}: ${l} 場 (${pct(l, tot)})
+
+        【任務】
+        1. 分析這個賠率組合是否具有顯著的傾向性（例如主場優勢明顯、誘盤等）。
+        2. 如果樣本數少於 30 場，請強調數據不足的風險。
+        3. 請用繁體中文回答，語氣像專業足球評論員，簡潔有力。
+        4. 使用 Markdown 格式。
+        `;
+
+        try {
+            const text = await getGeminiAnalysis(prompt);
+            resBox.innerHTML = marked.parse(text);
+        } catch (err) {
+            resBox.innerHTML = `<span style="color:#f87171">分析失敗：請稍後再試。(${err.message})</span>`;
+        }
+    }
+
+    async function getGeminiAnalysis(prompt) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            systemInstruction: { parts: [{ text: "你是專業的足球賠率分析師。請用繁體中文提供簡短、專業的分析。重點關注勝率是否顯著，以及賠率變化的潛在含義。" }] }
+        };
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error("API Connection Failed");
+
+        const data = await response.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || "無法生成分析，請檢查輸入。";
     }
 
     function doAhSearch() {
@@ -924,7 +937,7 @@
 
       const tot = lastAhResult.length;
       document.getElementById('ahStat').innerHTML = generateStatsHTML(
-          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, `總場數：${tot}`
+          w, d, l, '#e53b2d', '#27a146', '#2166d1', '贏盤', '和盤', '輸盤', tot, `總場數：${tot}`
       );
       
       document.getElementById('ahTable').style.display = 'none';
@@ -959,7 +972,7 @@
 
       const tot = lastOuResult.length;
       document.getElementById('ouStat').innerHTML = generateStatsHTML(
-          over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', tot, `總場數：${tot}`
+          over, push, under, '#e53b2d', '#27a146', '#2166d1', '大球', '走盤', '小球', tot, `總場數：${tot}`
       );
       
       document.getElementById('ouTable').style.display = 'none';
@@ -999,16 +1012,15 @@
       });
 
       const tot = lastEuResult.length;
-      const extra = `總場數：${tot} <br> <small class="text-muted">主勝淨勝球 ➜ 1球:${d1} | 2球:${d2} | 3+球:${d3}</small>`;
+      const extra = `總場數：${tot} <br> <small style="color:#d1fae5">主勝淨勝球 ➜ 1球:${d1} | 2球:${d2} | 3+球:${d3}</small>`;
       document.getElementById('euStat').innerHTML = generateStatsHTML(
-          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '主勝', '和局', '客勝', tot, extra
+          w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', tot, extra
       );
         
       document.getElementById('euTable').style.display = 'none';
       document.getElementById('showEuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
     }
 
-    /* 5. 渲染表格 */
     function confirmAndRender(resultArray, tableId, renderFn) {
       if (resultArray.length > 20000) {
         if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
@@ -1020,7 +1032,6 @@
       tbody.innerHTML = '';
       resultArray.forEach(r => tbody.insertAdjacentHTML('beforeend', renderFn(r)));
       table.style.display = 'table';
-      // Smooth scroll to table
       table.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -1028,12 +1039,12 @@
       confirmAndRender(lastAhResult, 'ahTable', r => {
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs + r.AH_close_handicap - as;
-        const out = diff > 0 ? '<span class="badge-result bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-result bg-lose">輸盤</span>' : '<span class="badge-result bg-draw">和盤</span>';
+        const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
         return `<tr>
           <td>${r.season}</td>
-          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br>(${r.ft_score})</td>
-          <td>${r.AH_open_handicap}<br><small class="text-secondary">${r.AH_open_home_odds}/${r.AH_open_away_odds}</small></td>
-          <td>${r.AH_close_handicap}<br><small class="text-secondary">${r.AH_close_home_odds}/${r.AH_close_away_odds}</small></td>
+          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br><span style="color:#fff">(${r.ft_score})</span></td>
+          <td>${r.AH_open_handicap}<br><small style="color:#d1fae5">${r.AH_open_home_odds}/${r.AH_open_away_odds}</small></td>
+          <td>${r.AH_close_handicap}<br><small style="color:#d1fae5">${r.AH_close_home_odds}/${r.AH_close_away_odds}</small></td>
           <td>${out}</td>
         </tr>`;
       });
@@ -1042,12 +1053,12 @@
     document.getElementById('showOuListBtn').addEventListener('click', () => {
       confirmAndRender(lastOuResult, 'ouTable', r => {
         const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
-        const out = sum > r.close_OU_line ? '<span class="badge-result bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-result bg-lose">小球</span>' : '<span class="badge-result bg-draw">走盤</span>';
+        const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
         return `<tr>
           <td>${r.season}</td>
-          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br>(${r.ft_score})</td>
-          <td>${r.OU_line}<br><small class="text-secondary">${r.OU_open_over_odds}/${r.OU_open_under_odds}</small></td>
-          <td>${r.close_OU_line}<br><small class="text-secondary">${r.OU_close_over_odds}/${r.OU_close_under_odds}</small></td>
+          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br><span style="color:#fff">(${r.ft_score})</span></td>
+          <td>${r.OU_line}<br><small style="color:#d1fae5">${r.OU_open_over_odds}/${r.OU_open_under_odds}</small></td>
+          <td>${r.close_OU_line}<br><small style="color:#d1fae5">${r.OU_close_over_odds}/${r.OU_close_under_odds}</small></td>
           <td>${out}</td>
         </tr>`;
       });
@@ -1057,12 +1068,12 @@
       confirmAndRender(lastEuResult, 'euTable', r => {
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs - as;
-        const out = diff > 0 ? '<span class="badge-result bg-win">主勝</span>' : diff < 0 ? '<span class="badge-result bg-lose">客勝</span>' : '<span class="badge-result bg-draw">和局</span>';
+        const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
         return `<tr>
           <td>${r.season}</td>
-          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br>(${r.ft_score})</td>
-          <td><small class="text-secondary">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
-          <td><small class="text-secondary">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
+          <td><b>${r.home_team}</b><br>vs<br><b>${r.away_team}</b><br><span style="color:#fff">(${r.ft_score})</span></td>
+          <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
+          <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
           <td>${out}</td>
           <td>${diff > 0 ? '+'+diff : diff}</td>
         </tr>`;
@@ -1104,7 +1115,10 @@
         initAll();
       } catch (e) {
         console.error('資料載入失敗', e);
-        alert('資料載入失敗，請稍後再試。');
+        /* 更詳細的錯誤提示 */
+        document.querySelector('.spinner-ball').style.display = 'none';
+        document.querySelector('#loadingOverlay .loading-text').innerHTML = 
+            `<span style="color:#ef4444">⚠️ 數據載入失敗<br><small style="font-size:0.8rem; opacity:0.8">請確保 .json 檔案在同一目錄<br>(${e.message})</small></span>`;
       } finally {
         __hideLoading();
       }
@@ -1112,4 +1126,3 @@
 </script>
 </body>
 </html>
-
