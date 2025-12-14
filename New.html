@@ -242,7 +242,7 @@
     
     .badge-res { padding: 4px 8px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
-    .text-odds { color: #86efac; font-weight: bold; } /* 賠率高亮顏色 */
+    .text-odds { color: #86efac; font-weight: bold; }
 
     /* Toast Notification */
     .toast-msg {
@@ -271,7 +271,7 @@
         .header { padding-bottom: 120px; }
         .nav-container { margin-top: -60px; }
         .main-input { padding: 16px; }
-        table { font-size: 0.95rem; } /* 電腦版字體大啲 */
+        table { font-size: 0.95rem; }
     }
 </style>
 </head>
@@ -396,13 +396,13 @@
                 <tr>
                     <th onclick="sortTable('ahTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
                     <th onclick="sortTable('ahTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                    <th>比分</th> <!-- 新增比分列 -->
-                    <th>初盤<br>盤口</th>
-                    <th>初盤<br>主賠</th>
-                    <th>初盤<br>客賠</th>
-                    <th>終盤<br>盤口</th>
-                    <th>終盤<br>主賠</th>
-                    <th>終盤<br>客賠</th>
+                    <th onclick="sortTable('ahTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 4)">初盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 5)">初盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 7)">終盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ahTable', 8)">終盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
                     <th onclick="sortTable('ahTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
@@ -508,13 +508,13 @@
                 <tr>
                     <th onclick="sortTable('ouTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
                     <th onclick="sortTable('ouTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                    <th>比分</th>
-                    <th>初盤<br>盤口</th>
-                    <th>初盤<br>大</th>
-                    <th>初盤<br>細</th>
-                    <th>終盤<br>盤口</th>
-                    <th>終盤<br>大</th>
-                    <th>終盤<br>細</th>
+                    <th onclick="sortTable('ouTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 4)">初盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 5)">初盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 7)">終盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('ouTable', 8)">終盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
                     <th onclick="sortTable('ouTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
@@ -635,10 +635,11 @@
                 <tr>
                     <th onclick="sortTable('euTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
                     <th onclick="sortTable('euTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                    <th>初盤(主/和/客)</th><th>終盤(主/和/客)</th>
-                    <th>比分</th>
+                    <th onclick="sortTable('euTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('euTable', 3)">初盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
+                    <th onclick="sortTable('euTable', 4)">終盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
                     <th onclick="sortTable('euTable', 5)">勝負 <i class="bi bi-arrow-down-up"></i></th>
-                    <th>淨勝球</th>
+                    <th onclick="sortTable('euTable', 6)">淨勝球 <i class="bi bi-arrow-down-up"></i></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -699,6 +700,7 @@
 
     /* Motion: Count Up Animation */
     function animateValue(obj, start, end, duration) {
+        if (!obj) return; // Safety check
         let startTimestamp = null;
         const step = (timestamp) => {
             if (!startTimestamp) startTimestamp = timestamp;
@@ -714,22 +716,27 @@
     }
 
     /* Motion: Render Stats with Animation */
-    function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, extraInfo = '') {
+    function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, prefix, extraInfo = '') {
+        // Unique IDs for each tab to prevent conflict
+        const idWin = prefix + 'Win';
+        const idDraw = prefix + 'Draw';
+        const idLose = prefix + 'Lose';
+        
         const html = `
         <div class="stat-cards">
             <div class="stat-card win">
                 <span class="label">${wLabel}</span>
-                <span class="value" id="valWin">0</span>
+                <span class="value" id="${idWin}">0</span>
                 <span class="pct">${pct(w, tot)}</span>
             </div>
             <div class="stat-card draw">
                 <span class="label">${dLabel}</span>
-                <span class="value" id="valDraw">0</span>
+                <span class="value" id="${idDraw}">0</span>
                 <span class="pct">${pct(d, tot)}</span>
             </div>
             <div class="stat-card lose">
                 <span class="label">${lLabel}</span>
-                <span class="value" id="valLose">0</span>
+                <span class="value" id="${idLose}">0</span>
                 <span class="pct">${pct(l, tot)}</span>
             </div>
         </div>
@@ -746,11 +753,14 @@
         return html;
     }
 
-    function triggerCountUp(w, d, l) {
+    function triggerCountUp(w, d, l, prefix) {
+        const idWin = prefix + 'Win';
+        const idDraw = prefix + 'Draw';
+        const idLose = prefix + 'Lose';
         setTimeout(() => {
-            if(document.getElementById("valWin")) animateValue(document.getElementById("valWin"), 0, w, 800);
-            if(document.getElementById("valDraw")) animateValue(document.getElementById("valDraw"), 0, d, 800);
-            if(document.getElementById("valLose")) animateValue(document.getElementById("valLose"), 0, l, 800);
+            if(document.getElementById(idWin)) animateValue(document.getElementById(idWin), 0, w, 800);
+            if(document.getElementById(idDraw)) animateValue(document.getElementById(idDraw), 0, d, 800);
+            if(document.getElementById(idLose)) animateValue(document.getElementById(idLose), 0, l, 800);
         }, 100);
     }
 
@@ -872,9 +882,9 @@
 
       const tot = lastAhResult.length;
       document.getElementById('ahStat').innerHTML = generateStatsHTML(
-          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, `總場數：${tot}`
+          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, 'ah'
       );
-      triggerCountUp(w, d, l);
+      triggerCountUp(w, d, l, 'ah');
       
       document.getElementById('ahTable').style.display = 'none';
       document.getElementById('ahTableContainer').style.display = 'none';
@@ -910,9 +920,9 @@
 
       const tot = lastOuResult.length;
       document.getElementById('ouStat').innerHTML = generateStatsHTML(
-          over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', tot, `總場數：${tot}`
+          over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', tot, 'ou'
       );
-      triggerCountUp(over, push, under);
+      triggerCountUp(over, push, under, 'ou');
       
       document.getElementById('ouTable').style.display = 'none';
       document.getElementById('ouTableContainer').style.display = 'none';
@@ -955,9 +965,9 @@
       const tot = lastEuResult.length;
       const extra = `總場數：${tot} <br> <small style="color:#d1fae5">主勝淨勝球 ➜ 1球:${d1} | 2球:${d2} | 3+球:${d3}</small>`;
       document.getElementById('euStat').innerHTML = generateStatsHTML(
-          w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', tot, extra
+          w, d, l, '#e53b2d', '#27a146', '#2166d1', '主勝', '和局', '客勝', tot, 'eu', extra
       );
-      triggerCountUp(w, d, l);
+      triggerCountUp(w, d, l, 'eu');
         
       document.getElementById('euTable').style.display = 'none';
       document.getElementById('euTableContainer').style.display = 'none';
@@ -1062,7 +1072,7 @@
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs + r.AH_close_handicap - as;
         const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
-        // 對齊表頭的 10 個欄位
+        // Corrected columns mapping
         return `<tr>
           <td>${r.season}</td>
           <td>${r.home_team} vs ${r.away_team}</td>
@@ -1082,7 +1092,7 @@
       confirmAndRender(lastOuResult, 'ouTable', r => {
         const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
         const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
-        // 對齊表頭的 10 個欄位
+        // Corrected columns mapping
         return `<tr>
           <td>${r.season}</td>
           <td>${r.home_team} vs ${r.away_team}</td>
@@ -1103,13 +1113,13 @@
         const [hs, as] = r.ft_score.split('-').map(Number);
         const diff = hs - as;
         const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
-        // 歐盤維持 7 欄
+        // Corrected columns mapping - EU has 7 columns now
         return `<tr>
           <td>${r.season}</td>
           <td>${r.home_team} vs ${r.away_team}</td>
+          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
           <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
           <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
-          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
           <td>${out}</td>
           <td>${diff > 0 ? '+'+diff : diff}</td>
         </tr>`;
