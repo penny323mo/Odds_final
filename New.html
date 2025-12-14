@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8"/>
 <title>足球歷史賠率篩選</title>
-<!-- PWA 設定 -->
 <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" name="viewport"/>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,6 +14,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
+    /* =========================================
+       1. 基礎設定 (Base)
+       ========================================= */
     :root {
         --bg-dark: #064e3b; 
         --glass-bg: rgba(6, 78, 59, 0.45);
@@ -31,7 +33,7 @@
         color: var(--text-main);
         background-color: var(--bg-dark);
         min-height: 100vh;
-        padding-bottom: 100px;
+        padding-bottom: 100px; /* 預留底部空間 */
         overflow-x: hidden;
         width: 100vw;
         box-sizing: border-box;
@@ -39,7 +41,9 @@
 
     *, *::before, *::after { box-sizing: border-box; }
 
-    /* === 背景層 === */
+    /* =========================================
+       2. 背景特效 (Background)
+       ========================================= */
     .bg-layer {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-color: #064e3b;
@@ -56,7 +60,9 @@
         background-size: 40px 40px; opacity: 0.3; pointer-events: none;
     }
 
-    /* ---------- Header ---------- */
+    /* =========================================
+       3. 頂部導航 (Header & Tabs)
+       ========================================= */
     .header { position: relative; text-align: center; padding: 40px 20px 50px; z-index: 10; width: 100%; }
     .header h1 {
         font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
@@ -77,7 +83,6 @@
     }
     .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8; }
 
-    /* ---------- Tabs ---------- */
     .nav-container { margin-top: -30px; padding: 0 15px; position: relative; z-index: 20; width: 100%; }
     .custom-tabs {
         background: rgba(6, 78, 59, 0.8); border: 1px solid rgba(255,255,255,0.15);
@@ -93,9 +98,12 @@
     }
     .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
-    /* ---------- Main Content ---------- */
+    /* =========================================
+       4. 主容器與卡片 (Main Container)
+       ========================================= */
     .tabcontent {
-        width: 94%; max-width: 760px; margin: 35px auto; padding: 0; animation: fadeUp 0.6s ease-out;
+        width: 94%; max-width: 760px; margin: 35px auto; padding: 0; 
+        animation: fadeUp 0.6s ease-out;
     }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -117,7 +125,9 @@
         text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
     }
 
-    /* ---------- Inputs ---------- */
+    /* =========================================
+       5. 輸入框 (Inputs) - iPad Fit
+       ========================================= */
     .input-row { margin-bottom: 12px; }
     .input-label {
         font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 6px; display: block;
@@ -155,7 +165,7 @@
     }
     .step-btn {
         flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); 
-        cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;
     }
     .step-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
     .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -165,7 +175,9 @@
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
     }
 
-    /* ---------- Buttons ---------- */
+    /* =========================================
+       6. 3D 按鈕 (3D Pill Buttons)
+       ========================================= */
     .btn-3d {
         position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 1.1rem; 
         padding: 16px 20px; border-radius: 50px; cursor: pointer; 
@@ -184,7 +196,9 @@
     }
     .btn-grey:active { transform: translateY(6px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
 
-    /* ---------- Stats & Table ---------- */
+    /* =========================================
+       7. 統計結果與圓形圖 (Stats & Pie)
+       ========================================= */
     .stat-area { margin-top: 30px; }
     .stat-cards { 
         display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; 
@@ -207,48 +221,65 @@
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         border: 1px solid rgba(255,255,255,0.1); width: 100%;
     }
-    .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
-    .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
     
-    /* Pie Chart Animation Classes */
-    .pie-path { opacity: 0; transform: scale(0.8); transform-origin: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .pie-path.show { opacity: 1; transform: scale(1); }
+    /* 扇形動畫 (Fan Out Animation) */
+    .pie-chart-circle {
+        width: 100%; height: 100%; border-radius: 50%;
+        /* Conic gradient is inline style */
+        /* Clip path starts at 0% (hidden) */
+        clip-path: polygon(50% 50%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+        animation: fanOut 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
 
-    /* Filter Input */
+    @keyframes fanOut {
+        0% { clip-path: polygon(50% 50%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%); }
+        25% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%, 100% 50%, 100% 50%); }
+        50% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 50% 100%); }
+        75% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%); }
+        100% { clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%); }
+    }
+
+    .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
+    .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); vertical-align: middle; }
+
+    /* =========================================
+       8. 列表與篩選 (List & Filter)
+       ========================================= */
     .filter-box {
         display: none; margin-top: 20px; margin-bottom: 10px; width: 100%;
+        background: rgba(0,0,0,0.3); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
     }
     .filter-input {
         width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.3);
         background: rgba(0,0,0,0.3); color: #fff; font-size: 1rem; outline: none;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px); margin-top: 10px;
     }
     .filter-input::placeholder { color: rgba(255,255,255,0.5); }
-    .filter-input:focus { border-color: var(--brand-green-light); background: rgba(0,0,0,0.5); }
+    .filter-label { font-size: 0.9rem; color: #a7f3d0; font-weight: bold; display: block; margin-bottom: 5px; }
 
     .table-container {
-        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 16px; overflow: hidden; margin-top: 10px;
+        background: rgba(6, 78, 59, 0.9); border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 16px; overflow: hidden; margin-top: 15px;
         box-shadow: 0 15px 40px rgba(0,0,0,0.5); display: none;
     }
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     
     table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
     th { 
-        background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 12px 8px; font-weight: 700; 
-        border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; user-select: none;
-        text-align: center;
+        background: rgba(2, 44, 34, 0.95); color: #a7f3d0; padding: 14px 8px; font-weight: 700; 
+        border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; user-select: none; text-align: center;
     }
     th:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
-    tr { transition: background 0.2s; cursor: pointer; }
-    tr:hover { background: rgba(255,255,255,0.15) !important; }
+    td { padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    tr:hover { background: rgba(255,255,255,0.15); }
     
     .badge-res { padding: 4px 8px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
     .text-odds { color: #86efac; font-weight: bold; }
 
-    /* Toast Notification */
+    /* =========================================
+       9. 提示與 Loading (Toast & Loader)
+       ========================================= */
     .toast-msg {
         position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
         background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 30px;
@@ -266,10 +297,14 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* =========================================
+       10. 響應式佈局 (Responsive) - iPad Landscape
+       ========================================= */
     @media (min-width: 992px) {
         .tabcontent { max-width: 900px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .full-width { grid-column: span 2; }
+        /* 修正圓形圖置中 */
         .piebox { flex-direction: row; gap: 50px; justify-content: center; }
         .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
         .header { padding-bottom: 120px; }
@@ -291,19 +326,18 @@
 
 <div class="header">
     <h1><i class="bi bi-heptagon-fill icon-ball"></i> 足球歷史賠率篩選</h1>
-    <div class="desc">大數據分析：初盤、終盤賠率組合 (2013-2025)</div>
-    <div class="timestamp" id="ts">版本時間：2025/08/01 上午 00:00:00 (GMT+8)</div>
+    <div class="desc">大數據分析 (2013-2025)</div>
 </div>
 
 <div class="nav-container">
     <div class="custom-tabs">
-        <button class="active" id="tab1" onclick="showTab(0)">亞洲盤查詢</button>
-        <button id="tab2" onclick="showTab(1)">大小球查詢</button>
-        <button id="tab3" onclick="showTab(2)">歐洲盤查詢</button>
+        <button class="active" id="tab1" onclick="showTab(0)">亞洲盤</button>
+        <button id="tab2" onclick="showTab(1)">大小球</button>
+        <button id="tab3" onclick="showTab(2)">歐洲盤</button>
     </div>
 </div>
 
-<!-- Tab Content 1: 亞洲盤 -->
+<!-- ======================= Tab 1: 亞洲盤 ======================= -->
 <div class="tabcontent" id="tc1">
     <div class="form-card">
         <form id="ahForm">
@@ -377,7 +411,7 @@
 
             <div class="d-flex flex-column gap-3 mt-4">
                 <button class="btn-3d btn-green" onclick="doAhSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
-                <button class="btn-3d btn-grey" id="resetAhBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
+                <button class="btn-3d btn-grey" id="resetAhBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 全局重設</button>
             </div>
         </form>
     </div>
@@ -388,9 +422,10 @@
         <button class="btn btn-outline-light rounded-pill px-4" id="showAhListBtn" style="display: none;" type="button">顯示比賽列表</button>
     </div>
 
-    <!-- 篩選器 -->
+    <!-- 年份篩選器 -->
     <div class="filter-box" id="ahFilterBox">
-        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱 (例如: 曼聯)..." onkeyup="filterTable('ahTable', this.value)">
+        <label class="filter-label">📅 賽季篩選</label>
+        <select id="ahSeasonFilter" class="form-select-custom" onchange="applySeasonFilter('ah')"></select>
     </div>
 
     <div class="table-container" id="ahTableContainer">
@@ -416,7 +451,7 @@
     </div>
 </div>
 
-<!-- Tab Content 2: 大小球 -->
+<!-- ======================= Tab 2: 大小球 ======================= -->
 <div class="tabcontent" id="tc2" style="display:none">
     <div class="form-card">
         <form id="ouForm">
@@ -490,7 +525,7 @@
 
             <div class="d-flex flex-column gap-3 mt-4">
                 <button class="btn-3d btn-green" onclick="doOuSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
-                <button class="btn-3d btn-grey" id="resetOuBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
+                <button class="btn-3d btn-grey" id="resetOuBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 全局重設</button>
             </div>
         </form>
     </div>
@@ -501,8 +536,10 @@
         <button class="btn btn-outline-light rounded-pill px-4" id="showOuListBtn" style="display: none;" type="button">顯示比賽列表</button>
     </div>
 
+    <!-- 年份篩選器 -->
     <div class="filter-box" id="ouFilterBox">
-        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱..." onkeyup="filterTable('ouTable', this.value)">
+        <label class="filter-label">📅 賽季篩選</label>
+        <select id="ouSeasonFilter" class="form-select-custom" onchange="applySeasonFilter('ou')"></select>
     </div>
 
     <div class="table-container" id="ouTableContainer">
@@ -528,6 +565,7 @@
     </div>
 </div>
 
+<!-- ======================= Tab 3: 歐洲盤 ======================= -->
 <div class="tabcontent" id="tc3" style="display:none">
     <div class="form-card">
         <form id="euForm">
@@ -617,7 +655,7 @@
 
             <div class="d-flex flex-column gap-3 mt-4">
                 <button class="btn-3d btn-green" onclick="doEuSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
-                <button class="btn-3d btn-grey" id="resetEuBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
+                <button class="btn-3d btn-grey" id="resetEuBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 全局重設</button>
             </div>
         </form>
     </div>
@@ -628,8 +666,10 @@
         <button class="btn btn-outline-light rounded-pill px-4" id="showEuListBtn" style="display: none;" type="button">顯示比賽列表</button>
     </div>
 
+    <!-- 年份篩選器 -->
     <div class="filter-box" id="euFilterBox">
-        <input type="text" class="filter-input" placeholder="🔍 搜尋隊伍名稱..." onkeyup="filterTable('euTable', this.value)">
+        <label class="filter-label">📅 賽季篩選</label>
+        <select id="euSeasonFilter" class="form-select-custom" onchange="applySeasonFilter('eu')"></select>
     </div>
 
     <div class="table-container" id="euTableContainer">
@@ -756,8 +796,6 @@
         const idWin = prefix + 'Win';
         const idDraw = prefix + 'Draw';
         const idLose = prefix + 'Lose';
-        
-        // Start counting immediately
         setTimeout(() => {
             if(document.getElementById(idWin)) animateValue(document.getElementById(idWin), 0, w, 800);
             if(document.getElementById(idDraw)) animateValue(document.getElementById(idDraw), 0, d, 800);
@@ -765,13 +803,12 @@
         }, 100);
     }
 
-    // Function to draw pie AFTER delay
     function renderPieWithDelay(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, prefix) {
         const idPie = prefix + 'Pie';
         const pieContainer = document.getElementById(idPie);
         if(!pieContainer) return;
         
-        // Wait 1200ms (more than count up duration)
+        // Wait 1200ms
         setTimeout(() => {
             pieContainer.innerHTML = `
               ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
@@ -782,42 +819,39 @@
               </div>
             `;
             // Trigger animation class for path
-            const paths = pieContainer.querySelectorAll('.pie-path');
+            const paths = pieContainer.querySelectorAll('.pie-chart-circle');
             setTimeout(() => {
                 paths.forEach(p => p.classList.add('show'));
             }, 50);
-        }, 1200);
+        }, 800);
     }
 
     function drawPieChart(data) {
       const total = data.reduce((s, x) => s + x.val, 0);
-      const sz = 210; // Increased size by 50% (140 * 1.5)
+      const sz = 240; // Size
       if (!total) return `<svg width="${sz}" height="${sz}"></svg>`;
 
       const r = sz / 2 - 10, cx = sz / 2, cy = sz / 2;
       const slices = data.filter(d => d.val > 0);
 
       if (slices.length === 1) {
-        return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">
-            <circle class="pie-path" cx="${cx}" cy="${cy}" r="${r}" fill="${slices[0].color}"></circle>
-        </svg>`;
+        return `<div style="width:${sz}px; height:${sz}px; border-radius:50%; background:${slices[0].color};" class="pie-chart-circle"></div>`;
       }
       
-      let currentAngle = -Math.PI / 2;
-      const paths = slices.map(slice => {
-        const sliceAngle = (slice.val / total) * 2 * Math.PI;
-        const startAngle = currentAngle;
-        const endAngle = currentAngle + sliceAngle;
-        const x1 = cx + r * Math.cos(startAngle);
-        const y1 = cy + r * Math.sin(startAngle);
-        const x2 = cx + r * Math.cos(endAngle);
-        const y2 = cy + r * Math.sin(endAngle);
-        const largeArcFlag = sliceAngle > Math.PI ? 1 : 0;
-        currentAngle = endAngle;
-        return `<path class="pie-path" d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z" fill="${slice.color}"></path>`;
-      }).join('');
-
-      return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">${paths}</svg>`;
+      let gradientParts = [];
+      let currentAngle = 0;
+      
+      data.forEach(slice => {
+          if(slice.val > 0) {
+              const angle = (slice.val / total) * 360;
+              gradientParts.push(`${slice.color} ${currentAngle}deg ${currentAngle + angle}deg`);
+              currentAngle += angle;
+          }
+      });
+      
+      const gradient = `conic-gradient(${gradientParts.join(', ')})`;
+      
+      return `<div class="pie-chart-circle" style="width:${sz}px; height:${sz}px; background:${gradient};"></div>`;
     }
     
     function getEU(r, which) {
@@ -936,7 +970,7 @@
       document.getElementById('ahFilterBox').style.display = 'none';
       document.getElementById('showAhListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
 
-      // Auto Scroll to Stats Area
+      populateSeasons('ah', lastAhResult);
       setTimeout(() => {
         document.getElementById('ahStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
@@ -980,6 +1014,7 @@
       document.getElementById('ouFilterBox').style.display = 'none';
       document.getElementById('showOuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
 
+      populateSeasons('ou', lastOuResult);
       setTimeout(() => {
         document.getElementById('ouStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
@@ -1030,9 +1065,26 @@
       document.getElementById('euFilterBox').style.display = 'none';
       document.getElementById('showEuListBtn').style.display = tot > 0 ? 'inline-block' : 'none';
 
+      populateSeasons('eu', lastEuResult);
       setTimeout(() => {
         document.getElementById('euStat').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
+    }
+
+    function populateSeasons(type, data) {
+        const seasons = [...new Set(data.map(d => d.season))].sort().reverse();
+        const sel = document.getElementById(type + 'SeasonFilter');
+        if(sel) {
+             sel.innerHTML = '<option value="all">全部賽季 (All Seasons)</option>' + 
+            seasons.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+    }
+    
+    function applySeasonFilter(type) {
+        const sel = document.getElementById(type + 'SeasonFilter').value;
+        const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
+        const filtered = (sel === 'all') ? sourceData : sourceData.filter(r => r.season == sel);
+        confirmAndRender(filtered, type + 'Table', null, true); // true = skip confirm for filter
     }
 
     /* === Enhanced Table Functions === */
@@ -1048,18 +1100,6 @@
         const toast = document.getElementById('toast');
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 2000);
-    }
-
-    // Filter Logic
-    function filterTable(tableId, query) {
-        const table = document.getElementById(tableId);
-        const trs = table.querySelectorAll('tbody tr');
-        query = query.toLowerCase();
-        
-        trs.forEach(tr => {
-            const text = tr.innerText.toLowerCase();
-            tr.style.display = text.includes(query) ? '' : 'none';
-        });
     }
 
     // Sorting Logic
@@ -1089,15 +1129,74 @@
     }
 
     /* ===== Turbo Render Implementation ===== */
-    function confirmAndRender(resultArray, tableId, renderFn) {
-      if (resultArray.length > 20000) {
+    function confirmAndRender(resultArray, tableId, renderFn, skipConfirm) {
+      if (!skipConfirm && resultArray.length > 5000) {
         if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
           return;
         }
       }
+      
+      // Determine type based on tableId
+      const type = tableId.replace('Table', '');
+      
+      // Define render function based on type if not provided
+      if(!renderFn) {
+          if(type === 'ah') {
+              renderFn = r => {
+                const [hs, as] = r.ft_score.split('-').map(Number);
+                const diff = hs + r.AH_close_handicap - as;
+                const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
+                return `<tr>
+                  <td>${r.season}</td>
+                  <td>${r.home_team} vs ${r.away_team}</td>
+                  <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+                  <td>${r.AH_open_handicap}</td>
+                  <td class="text-odds">${r.AH_open_home_odds}</td>
+                  <td class="text-odds">${r.AH_open_away_odds}</td>
+                  <td>${r.AH_close_handicap}</td>
+                  <td class="text-odds">${r.AH_close_home_odds}</td>
+                  <td class="text-odds">${r.AH_close_away_odds}</td>
+                  <td>${out}</td>
+                </tr>`;
+              };
+          } else if (type === 'ou') {
+              renderFn = r => {
+                const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
+                const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
+                return `<tr>
+                  <td>${r.season}</td>
+                  <td>${r.home_team} vs ${r.away_team}</td>
+                  <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+                  <td>${r.OU_line}</td>
+                  <td class="text-odds">${r.OU_open_over_odds}</td>
+                  <td class="text-odds">${r.OU_open_under_odds}</td>
+                  <td>${r.close_OU_line}</td>
+                  <td class="text-odds">${r.OU_close_over_odds}</td>
+                  <td class="text-odds">${r.OU_close_under_odds}</td>
+                  <td>${out}</td>
+                </tr>`;
+              };
+          } else {
+              renderFn = r => {
+                const [hs, as] = r.ft_score.split('-').map(Number);
+                const diff = hs - as;
+                const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
+                return `<tr>
+                  <td>${r.season}</td>
+                  <td>${r.home_team} vs ${r.away_team}</td>
+                  <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
+                  <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
+                  <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+                  <td>${out}</td>
+                  <td>${diff > 0 ? '+'+diff : diff}</td>
+                </tr>`;
+              };
+          }
+      }
+
       const table = document.getElementById(tableId);
       const container = document.getElementById(tableId + 'Container');
-      const filterBox = document.getElementById(tableId.replace('Table', 'FilterBox')); // e.g. ahFilterBox
+      const filterBox = document.getElementById(type + 'FilterBox');
       const tbody = table.querySelector('tbody');
       
       // Clear current content
@@ -1127,64 +1226,24 @@
       container.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    document.getElementById('showAhListBtn').addEventListener('click', () => {
-      confirmAndRender(lastAhResult, 'ahTable', r => {
-        const [hs, as] = r.ft_score.split('-').map(Number);
-        const diff = hs + r.AH_close_handicap - as;
-        const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
-        // Corrected columns mapping
-        return `<tr>
-          <td>${r.season}</td>
-          <td>${r.home_team} vs ${r.away_team}</td>
-          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
-          <td>${r.AH_open_handicap}</td>
-          <td class="text-odds">${r.AH_open_home_odds}</td>
-          <td class="text-odds">${r.AH_open_away_odds}</td>
-          <td>${r.AH_close_handicap}</td>
-          <td class="text-odds">${r.AH_close_home_odds}</td>
-          <td class="text-odds">${r.AH_close_away_odds}</td>
-          <td>${out}</td>
-        </tr>`;
-      });
-    });
+    function toggleList(type) {
+        const tableContainer = document.getElementById(type + 'TableContainer');
+        const filterBox = document.getElementById(type + 'FilterBox');
+        
+        if (tableContainer.style.display === 'none') {
+            // Render first time
+            const data = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
+            populateSeasons(type, data); // Ensure seasons populated
+            confirmAndRender(data, type + 'Table', null, true);
+        } else {
+            tableContainer.style.display = 'none';
+            filterBox.style.display = 'none';
+        }
+    }
 
-    document.getElementById('showOuListBtn').addEventListener('click', () => {
-      confirmAndRender(lastOuResult, 'ouTable', r => {
-        const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
-        const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
-        // Corrected columns mapping
-        return `<tr>
-          <td>${r.season}</td>
-          <td>${r.home_team} vs ${r.away_team}</td>
-          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
-          <td>${r.OU_line}</td>
-          <td class="text-odds">${r.OU_open_over_odds}</td>
-          <td class="text-odds">${r.OU_open_under_odds}</td>
-          <td>${r.close_OU_line}</td>
-          <td class="text-odds">${r.OU_close_over_odds}</td>
-          <td class="text-odds">${r.OU_close_under_odds}</td>
-          <td>${out}</td>
-        </tr>`;
-      });
-    });
-
-    document.getElementById('showEuListBtn').addEventListener('click', () => {
-      confirmAndRender(lastEuResult, 'euTable', r => {
-        const [hs, as] = r.ft_score.split('-').map(Number);
-        const diff = hs - as;
-        const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
-        // Corrected columns mapping - EU has 7 columns now
-        return `<tr>
-          <td>${r.season}</td>
-          <td>${r.home_team} vs ${r.away_team}</td>
-          <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
-          <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
-          <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
-          <td>${out}</td>
-          <td>${diff > 0 ? '+'+diff : diff}</td>
-        </tr>`;
-      });
-    });
+    document.getElementById('showAhListBtn').addEventListener('click', () => toggleList('ah'));
+    document.getElementById('showOuListBtn').addEventListener('click', () => toggleList('ou'));
+    document.getElementById('showEuListBtn').addEventListener('click', () => toggleList('eu'));
 
     /* 重設按鈕 - Global Reset */
     ['resetAhBtn', 'resetOuBtn', 'resetEuBtn'].forEach(id => {
@@ -1203,7 +1262,6 @@
         initAll();
       } catch (e) {
         console.error('資料載入失敗', e);
-        /* 更詳細的錯誤提示 */
         document.querySelector('.spinner-ball').style.display = 'none';
         document.querySelector('#loadingOverlay .loading-text').innerHTML = 
             `<span style="color:#ef4444">⚠️ 數據載入失敗<br><small style="font-size:0.8rem; opacity:0.8">請確保 .json 檔案在同一目錄<br>(${e.message})</small></span>`;
