@@ -3,42 +3,49 @@
 <head>
 <meta charset="utf-8"/>
 <title>足球歷史賠率篩選</title>
-<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"/>
-<!-- 引入粗體風格字體 -->
+<!-- PWA 設定 -->
+<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" name="viewport"/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#064e3b">
+
+<!-- 引入字體 -->
 <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
     :root {
-        /* 基礎色調：森綠色系 */
         --bg-dark: #064e3b; 
-        --glass-bg: rgba(6, 78, 59, 0.35);
+        --glass-bg: rgba(6, 78, 59, 0.45);
         --glass-border: rgba(255, 255, 255, 0.2);
-        
-        /* 品牌色 */
         --brand-green: #10b981;
         --brand-green-light: #34d399;
-        
         --text-main: #ffffff;
         --text-sub: #d1fae5;
     }
 
+    /* 全局設定：防止橫向溢出 */
     body {
         margin: 0;
         font-family: 'Noto Sans TC', sans-serif;
         color: var(--text-main);
         background-color: var(--bg-dark);
         min-height: 100vh;
-        padding-bottom: 80px;
-        overflow-x: hidden;
+        padding-bottom: 100px; /* 預留底部空間 */
+        overflow-x: hidden; /* 禁止橫向捲動 */
+        width: 100vw;
+        box-sizing: border-box;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box; /* 確保 Padding 唔會撐大元素 */
     }
 
     /* === 背景層 === */
     .bg-layer {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-color: #064e3b;
-        /* 真實草地圖 + 聚光燈效果 */
         background-image: 
             radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.8) 85%),
             url("https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop");
@@ -47,7 +54,6 @@
         background-attachment: fixed;
     }
 
-    /* 後備網紋 (以防圖片載入失敗時仍有質感) */
     .bg-texture {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
@@ -57,30 +63,27 @@
         pointer-events: none;
     }
 
-    /* ---------- Header: 浮雕字體 ---------- */
+    /* ---------- Header ---------- */
     .header {
         position: relative;
         text-align: center;
-        padding: 45px 20px 55px;
+        padding: 40px 20px 50px;
         z-index: 10;
+        width: 100%;
     }
 
     .header h1 {
         font-family: 'Noto Sans TC', sans-serif;
         font-weight: 900;
-        font-size: clamp(2rem, 6vw, 3rem);
+        font-size: clamp(1.8rem, 5vw, 2.8rem); /* 字體隨螢幕縮放 */
         margin: 0;
         color: #fff;
-        /* 立體文字陰影 */
-        text-shadow: 
-            0 2px 0 #065f46,
-            0 4px 0 #064e3b,
-            0 6px 12px rgba(0,0,0,0.6);
+        text-shadow: 0 2px 0 #065f46, 0 4px 0 #064e3b, 0 6px 12px rgba(0,0,0,0.6);
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 12px;
-        flex-wrap: wrap;
+        flex-wrap: wrap; /* 容許換行，防止爆格 */
     }
     
     .icon-ball {
@@ -101,13 +104,13 @@
         border: 1px solid rgba(255,255,255,0.15);
         backdrop-filter: blur(4px);
         display: inline-block;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        max-width: 90%; /* 防止文字太長 */
     }
     
     .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 8px; opacity: 0.8; }
 
-    /* ---------- Tabs: 懸浮膠囊 ---------- */
-    .nav-container { margin-top: -30px; padding: 0 10px; position: relative; z-index: 20; }
+    /* ---------- Tabs ---------- */
+    .nav-container { margin-top: -30px; padding: 0 15px; position: relative; z-index: 20; width: 100%; }
 
     .custom-tabs {
         background: rgba(6, 78, 59, 0.8);
@@ -116,24 +119,33 @@
         display: flex; gap: 5px;
         box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
         backdrop-filter: blur(10px);
-        max-width: 600px; margin: 0 auto; overflow-x: auto;
+        /* 限制最大寬度，並確保在中間 */
+        max-width: 600px; margin: 0 auto; 
+        overflow-x: auto; /* 容許橫向捲動 */
+        scrollbar-width: none; /* Firefox 隱藏捲軸 */
     }
+    .custom-tabs::-webkit-scrollbar { display: none; /* Chrome 隱藏捲軸 */ }
 
     .custom-tabs button {
         flex: 1; border: none; background: transparent;
         color: rgba(255,255,255,0.7);
-        padding: 10px 20px; font-weight: 700; font-size: 0.95rem;
-        border-radius: 40px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        white-space: nowrap; position: relative;
+        padding: 10px 15px; font-weight: 700; font-size: 0.95rem;
+        border-radius: 40px; transition: all 0.3s;
+        white-space: nowrap; 
     }
 
     .custom-tabs button.active {
         background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    /* ---------- Main Card: 透視玻璃 ---------- */
+    /* ---------- Main Content: iPad Fix ---------- */
     .tabcontent {
-        max-width: 760px; margin: 35px auto; padding: 0 15px; animation: fadeUp 0.6s ease-out;
+        /* 重要：使用百分比寬度，並設上限 */
+        width: 94%; 
+        max-width: 760px; /* iPad 直度通常是 768px，留少少邊 */
+        margin: 35px auto; 
+        padding: 0;
+        animation: fadeUp 0.6s ease-out;
     }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -141,38 +153,46 @@
         background: var(--glass-bg);
         border: 1px solid var(--glass-border);
         border-top: 1px solid rgba(255,255,255,0.4);
-        border-radius: 24px; padding: 28px;
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        border-radius: 20px; 
+        padding: 20px; /* 稍微減少 padding 以爭取空間 */
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
+        width: 100%; /* 確保卡片不超過容器 */
     }
 
     fieldset {
         border: 1px solid rgba(255,255,255,0.1);
         background: rgba(0, 0, 0, 0.2);
-        border-radius: 16px; padding: 20px 24px; margin-bottom: 24px;
+        border-radius: 16px; padding: 15px; margin-bottom: 20px;
         box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        width: 100%;
     }
 
     legend {
         color: var(--brand-green-light);
-        font-weight: 700; font-size: 1.15rem; text-transform: uppercase;
+        font-weight: 700; font-size: 1.1rem; text-transform: uppercase;
         letter-spacing: 1px; display: flex; align-items: center; gap: 8px;
         text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
     }
 
-    /* ---------- Inputs (Deep Recessed) ---------- */
+    /* ---------- Inputs: 彈性伸縮 ---------- */
+    .input-row { margin-bottom: 12px; }
+
     .input-label {
-        font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 8px; display: block;
+        font-size: 0.85rem; color: #fff; font-weight: 600; margin-bottom: 6px; display: block;
         text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
 
     .custom-input-group {
         display: flex;
+        align-items: stretch; /* 確保高度一致 */
         background: rgba(0, 20, 10, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 12px;
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
-        transition: 0.3s; overflow: hidden;
+        transition: 0.3s; 
+        overflow: hidden;
+        width: 100%; /* 佔滿整行 */
     }
 
     .custom-input-group:focus-within {
@@ -181,21 +201,37 @@
     }
 
     .main-input {
-        flex: 1; background: transparent; border: none; color: #fff; padding: 14px; font-size: 1.1rem; font-family: monospace; min-width: 60px;
+        flex: 1 1 auto; /* 允許伸縮 */
+        background: transparent; border: none; color: #fff; 
+        padding: 12px 10px; font-size: 1.1rem; font-family: monospace; 
+        min-width: 0; /* 關鍵：容許縮細至 0，防止撐爆 */
     }
     .main-input:focus { outline: none; }
     .main-input::placeholder { color: rgba(255,255,255,0.3); }
     
     .divider-text {
-        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 12px; display: flex; align-items: center; font-weight: bold; border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1);
+        color: var(--brand-green-light); 
+        background: rgba(255,255,255,0.03); 
+        padding: 0 10px; 
+        display: flex; align-items: center; font-weight: bold; 
+        border-left: 1px solid rgba(255,255,255,0.1); 
+        border-right: 1px solid rgba(255,255,255,0.1);
+        flex-shrink: 0; /* 禁止壓縮 */
     }
     
     .err-input {
-        width: 60px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; text-align: center; font-size: 0.95rem;
+        width: 55px; /* 稍微調窄 */
+        background: rgba(255,255,255,0.03); 
+        border: none; color: #d1fae5; text-align: center; font-size: 0.95rem;
+        flex-shrink: 0; /* 禁止壓縮 */
     }
     .err-input:focus { outline: none; color: #fff; background: rgba(255,255,255,0.1); }
 
-    .step-btns { display: flex; flex-direction: column; width: 40px; border-left: 1px solid rgba(255,255,255,0.1); }
+    .step-btns { 
+        display: flex; flex-direction: column; width: 36px; /* 稍微調窄 */
+        border-left: 1px solid rgba(255,255,255,0.1); 
+        flex-shrink: 0; /* 禁止壓縮 */
+    }
     .step-btn {
         flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
     }
@@ -203,32 +239,29 @@
     .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
 
     select.form-select-custom {
-        width: 100%; padding: 14px; background-color: rgba(2, 44, 34, 0.95); color: #fff; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+        width: 100%; padding: 12px; 
+        background-color: rgba(2, 44, 34, 0.95); color: #fff; 
+        border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
     }
 
-    /* ---------- Buttons (3D Pill Shape) ---------- */
+    /* ---------- Buttons ---------- */
     .btn-3d {
         position: relative; border: none; outline: none; color: white; 
         font-weight: 700; font-size: 1.1rem; 
-        padding: 16px 36px; border-radius: 50px; cursor: pointer; 
+        padding: 16px 20px; border-radius: 50px; cursor: pointer; 
         transition: transform 0.1s, box-shadow 0.1s; 
         display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
         text-transform: uppercase; letter-spacing: 1px;
         text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
 
-    /* 綠色搜尋掣 */
     .btn-green {
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
-        box-shadow: 
-            0 6px 0 #047857, 
-            0 12px 20px rgba(0,0,0,0.3), 
-            inset 0 2px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 6px 0 #047857, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
     }
     .btn-green:active { transform: translateY(6px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
 
-    /* 灰色重設掣 */
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
         box-shadow: 0 6px 0 #1f2937, 0 12px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
@@ -237,11 +270,16 @@
 
     /* ---------- Stats & Table ---------- */
     .stat-area { margin-top: 30px; }
-    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+    .stat-cards { 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); /* 強制 3 欄 */
+        gap: 8px; /* 減少間距以防爆格 */
+        margin-bottom: 24px; 
+    }
     
     .stat-card {
         background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 16px; padding: 15px 5px; text-align: center;
+        border-radius: 12px; padding: 12px 4px; text-align: center;
         box-shadow: 0 8px 20px rgba(0,0,0,0.2); backdrop-filter: blur(5px);
         position: relative; overflow: hidden;
     }
@@ -249,28 +287,29 @@
     .stat-card.draw { border-bottom: 4px solid #22c55e; }
     .stat-card.lose { border-bottom: 4px solid #3b82f6; }
 
-    .stat-card .label { font-size: 0.8rem; color: #a7f3d0; font-weight: 700; letter-spacing: 1px; }
-    .stat-card .value { font-size: 1.6rem; font-weight: 900; margin: 5px 0; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .stat-card .pct { font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 10px; color: #fff; }
+    .stat-card .label { font-size: 0.75rem; color: #a7f3d0; font-weight: 700; }
+    .stat-card .value { font-size: 1.4rem; font-weight: 900; margin: 4px 0; color: #fff; }
+    .stat-card .pct { font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px; color: #fff; }
 
     .piebox {
         background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;
         display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(255,255,255,0.1);
+        width: 100%;
     }
-    .pie-legend { display: flex; gap: 15px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
+    .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
     .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
     .table-container {
         background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; margin-top: 30px;
         box-shadow: 0 15px 40px rgba(0,0,0,0.5);
     }
-    .table-responsive { overflow-x: auto; }
+    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table { width: 100%; border-collapse: collapse; font-size: 0.9rem; white-space: nowrap; }
-    th { background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 16px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    th { background: rgba(2, 44, 34, 0.8); color: #a7f3d0; padding: 14px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
     tr:hover { background: rgba(255,255,255,0.1); }
 
-    .badge-res { padding: 5px 12px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+    .badge-res { padding: 5px 10px; border-radius: 20px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     .bg-win { background: #ef4444; } .bg-draw { background: #22c55e; } .bg-lose { background: #3b82f6; }
 
     /* ---------- Loading ---------- */
@@ -284,9 +323,10 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ---------- iPad Pro / Desktop Layout ---------- */
     @media (min-width: 992px) {
         .tabcontent { max-width: 900px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .full-width { grid-column: span 2; }
         .piebox { flex-direction: row; gap: 50px; }
         .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
@@ -306,14 +346,12 @@
     <div class="loading-text" style="color:#d1fae5; font-weight:bold; letter-spacing:1px;">資料載入中...</div>
 </div>
 
-<!-- Header -->
 <div class="header">
     <h1><i class="bi bi-heptagon-fill icon-ball"></i> 足球歷史賠率篩選</h1>
     <div class="desc">大數據分析：初盤、終盤賠率組合 (2013-2025)</div>
     <div class="timestamp" id="ts">版本時間：2025/08/01 上午 00:00:00 (GMT+8)</div>
 </div>
 
-<!-- Tabs -->
 <div class="nav-container">
     <div class="custom-tabs">
         <button class="active" id="tab1" onclick="showTab(0)">亞洲盤查詢</button>
@@ -836,7 +874,7 @@
 
       const tot = lastAhResult.length;
       document.getElementById('ahStat').innerHTML = generateStatsHTML(
-          w, d, l, '#e53b2d', '#27a146', '#2166d1', '贏盤', '和盤', '輸盤', tot, `總場數：${tot}`
+          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, `總場數：${tot}`
       );
       
       document.getElementById('ahTable').style.display = 'none';
