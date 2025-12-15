@@ -20,7 +20,7 @@
        ========================================= */
     :root {
         --bg-dark: #064e3b; 
-        --glass-bg: rgba(6, 78, 59, 0.75); /* 加深少少背景令字更清 */
+        --glass-bg: rgba(6, 78, 59, 0.75);
         --glass-border: rgba(255, 255, 255, 0.2);
         --brand-green: #10b981;
         --brand-green-light: #34d399;
@@ -34,7 +34,7 @@
         color: var(--text-main);
         background-color: var(--bg-dark);
         min-height: 100vh;
-        padding-bottom: 80px; /* 收窄底部 */
+        padding-bottom: 80px;
         overflow-x: hidden;
         width: 100vw;
         box-sizing: border-box;
@@ -64,58 +64,60 @@
     }
 
     /* =========================================
-       3. 頂部導航 (Header) - 緊湊版 (Compact)
+       3. 頂部導航 (Header) - 至尊版
        ========================================= */
-    .header { position: relative; text-align: center; padding: 20px 10px 10px; z-index: 10; width: 100%; }
+    .header { position: relative; text-align: center; padding: 25px 10px 15px; z-index: 10; width: 100%; }
     
     .header h1 {
         font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
-        font-size: clamp(1.6rem, 5vw, 3rem); /* 手機上縮細字體 */
+        font-size: clamp(1.6rem, 5vw, 3rem);
         margin: 0; color: #fff;
-        display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: nowrap;
+        display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: nowrap;
         animation: glowBreathing 4s ease-in-out infinite alternate;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        text-shadow: 0 2px 15px rgba(0,0,0,0.6);
+        letter-spacing: 1px;
     }
 
     @keyframes glowBreathing {
         0% { text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 10px rgba(16, 185, 129, 0.2); }
-        100% { text-shadow: 0 0 20px rgba(255,255,255,0.7), 0 0 35px rgba(52, 211, 153, 0.7); }
+        100% { text-shadow: 0 0 25px rgba(255,255,255,0.6), 0 0 40px rgba(52, 211, 153, 0.5); }
     }
 
-    /* 真．足球 Logo - 轉動 */
+    /* 至尊足球 Logo Style */
     .football-logo {
-        width: clamp(35px, 8vw, 60px); /* 手機上縮細 */
-        height: clamp(35px, 8vw, 60px);
-        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
-        animation: slowSpin 8s linear infinite; /* 加快少少轉速 */
+        width: clamp(40px, 9vw, 65px);
+        height: clamp(40px, 9vw, 65px);
+        /* 加強陰影令佢立體啲 */
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+        animation: slowSpin 15s linear infinite;
     }
     
     @keyframes slowSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     .header .desc {
-        margin-top: 5px; font-size: 0.8rem; color: #e0f2f1;
-        background: rgba(0,0,0,0.3); padding: 3px 12px; border-radius: 50px;
+        margin-top: 8px; font-size: 0.85rem; color: #e0f2f1;
+        background: rgba(0,0,0,0.3); padding: 4px 15px; border-radius: 50px;
         border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px);
         display: inline-block;
+        font-weight: 500;
     }
-    .timestamp { font-size: 0.7rem; color: #6ee7b7; margin-top: 3px; opacity: 0.8; display:none; /* 手機隱藏時間慳位 */ }
 
-    .nav-container { margin-top: 5px; padding: 0 10px; position: relative; z-index: 20; width: 100%; margin-bottom: 10px; }
+    .nav-container { margin-top: 10px; padding: 0 10px; position: relative; z-index: 20; width: 100%; margin-bottom: 15px; }
     .custom-tabs {
         background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 50px; padding: 3px; display: flex; gap: 3px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3); backdrop-filter: blur(10px);
+        border-radius: 50px; padding: 4px; display: flex; gap: 5px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px);
         max-width: 600px; margin: 0 auto;
     }
     .custom-tabs button {
         flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.6);
-        padding: 8px 0; font-weight: 700; font-size: 0.9rem; border-radius: 40px;
+        padding: 10px 0; font-weight: 700; font-size: 0.9rem; border-radius: 40px;
         transition: all 0.2s; white-space: nowrap; 
     }
     .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
     /* =========================================
-       4. 主容器與卡片 (iPhone 慳位排版)
+       4. 主容器與卡片 (iPhone Compact Fix)
        ========================================= */
     .tabcontent {
         width: 98%; max-width: 900px; margin: 0 auto; padding: 0; 
@@ -125,38 +127,37 @@
 
     .unified-card {
         background: var(--glass-bg); border: 1px solid var(--glass-border);
-        border-radius: 20px; padding: 12px; /* 減少內距 */
+        border-radius: 20px; padding: 15px;
         backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
     }
 
-    /* iPad 佈局：左右分欄 */
-    .form-flex-container { display: flex; flex-direction: column; gap: 8px; /* 減少間距 */ }
+    .form-flex-container { display: flex; flex-direction: column; gap: 10px; }
 
     fieldset {
         border: 1px solid rgba(255,255,255,0.1); background: rgba(0, 0, 0, 0.25);
-        border-radius: 10px; padding: 10px 10px 5px 10px; /* 極致收窄 Padding */
+        border-radius: 12px; padding: 12px 12px 8px 12px;
         margin: 0; flex: 1;
     }
     legend {
-        color: var(--brand-green-light); font-weight: 700; font-size: 0.9rem;
-        text-transform: uppercase; display: flex; align-items: center; gap: 5px;
-        margin-bottom: 5px; /* 收窄標題間距 */
+        color: var(--brand-green-light); font-weight: 700; font-size: 0.95rem;
+        text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+        margin-bottom: 8px;
     }
 
     /* =========================================
        5. 輸入框 (Compact Mode)
        ========================================= */
-    .input-row { margin-bottom: 6px; /* 極致收窄行距 */ }
+    .input-row { margin-bottom: 8px; }
     
     .input-label {
-        font-size: 0.75rem; color: #a7f3d0; font-weight: 600; margin-bottom: 2px; display: block;
+        font-size: 0.8rem; color: #a7f3d0; font-weight: 600; margin-bottom: 3px; display: block;
     }
     
     .custom-input-group {
         display: flex; align-items: stretch; background: rgba(0, 20, 10, 0.5);
         border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px;
-        width: 100%; height: 36px; /* 縮矮 Input 高度 (原本 42px) */
+        width: 100%; height: 38px;
     }
     .custom-input-group:focus-within {
         border-color: var(--brand-green);
@@ -164,7 +165,7 @@
     }
     .main-input {
         flex: 1 1 auto; background: transparent; border: none; color: #fff; 
-        padding: 0 8px; font-size: 0.95rem; font-family: monospace; min-width: 0;
+        padding: 0 10px; font-size: 1rem; font-family: monospace; min-width: 0;
     }
     .main-input:focus { outline: none; }
     
@@ -174,145 +175,146 @@
         border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1);
     }
     .err-input {
-        width: 40px; background: rgba(255,255,255,0.05); border: none; color: #d1fae5; 
-        text-align: center; font-size: 0.85rem;
+        width: 45px; background: rgba(255,255,255,0.05); border: none; color: #d1fae5; 
+        text-align: center; font-size: 0.9rem;
     }
-    .step-btns { width: 24px; border-left: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
+    .step-btns { width: 26px; border-left: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
     .step-btn {
         flex: 1; background: rgba(255,255,255,0.05); border: none; color: var(--brand-green-light); 
-        padding: 0; font-size: 0.6rem;
+        padding: 0; font-size: 0.65rem;
     }
     .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
     
     select.form-select-custom {
-        width: 100%; padding: 0 8px; height: 36px; /* 縮矮 */
+        width: 100%; padding: 0 10px; height: 38px;
         background-color: rgba(2, 44, 34, 0.9); color: #fff; 
         border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
         font-size: 0.95rem;
     }
 
-    /* iPad 橫排容器 */
+    /* iPad 橫排容器 (Default block for mobile, flex for desktop) */
     .odds-row-desktop { display: block; }
 
     /* =========================================
-       6. 3D 按鈕 (更扁平慳位)
+       6. 3D 按鈕
        ========================================= */
-    .action-row { display: flex; gap: 8px; margin-top: 10px; }
+    .action-row { display: flex; gap: 10px; margin-top: 15px; }
     .btn-3d {
-        position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 0.95rem; 
-        padding: 10px; border-radius: 30px; cursor: pointer; flex: 1; /* 縮細 Padding */
+        position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 1rem; 
+        padding: 12px; border-radius: 30px; cursor: pointer; flex: 1;
         transition: transform 0.1s; 
-        display: flex; align-items: center; justify-content: center; gap: 5px;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
         text-transform: uppercase; letter-spacing: 0.5px;
     }
     .btn-green {
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
-        box-shadow: 0 3px 0 #047857;
+        box-shadow: 0 4px 0 #047857;
     }
-    .btn-green:active { transform: translateY(3px); box-shadow: none; }
+    .btn-green:active { transform: translateY(4px); box-shadow: none; }
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
-        box-shadow: 0 3px 0 #1f2937;
+        box-shadow: 0 4px 0 #1f2937;
     }
-    .btn-grey:active { transform: translateY(3px); box-shadow: none; }
+    .btn-grey:active { transform: translateY(4px); box-shadow: none; }
 
     /* =========================================
        7. 結果與圖表
        ========================================= */
     .results-section {
-        margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2);
+        margin-top: 20px; padding-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2);
         display: none;
     }
-    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
+    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
     .stat-card {
-        background: rgba(255,255,255,0.08); border-radius: 8px; padding: 8px 2px; text-align: center;
+        background: rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 4px; text-align: center;
     }
-    .stat-card.win { border-bottom: 2px solid #ef4444; } .stat-card.draw { border-bottom: 2px solid #22c55e; } .stat-card.lose { border-bottom: 2px solid #3b82f6; }
-    .stat-card .value { font-size: 1.2rem; font-weight: 900; color: #fff; margin: 2px 0; }
+    .stat-card.win { border-bottom: 3px solid #ef4444; } .stat-card.draw { border-bottom: 3px solid #22c55e; } .stat-card.lose { border-bottom: 3px solid #3b82f6; }
+    .stat-card .value { font-size: 1.4rem; font-weight: 900; color: #fff; margin: 4px 0; }
     
     .piebox {
-        background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px;
+        background: rgba(255,255,255,0.05); border-radius: 16px; padding: 20px;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        width: 100%; min-height: 220px;
+        width: 100%; min-height: 250px;
     }
-    .pie-legend { display: flex; gap: 10px; margin-top: 15px; font-size: 0.85rem; color: #fff; flex-wrap: wrap; justify-content: center; }
+    .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
 
     /* =========================================
-       8. 列表與複選篩選 (確認鍵優化)
+       8. 列表與複選篩選 (修復確認鍵)
        ========================================= */
-    .list-section { margin-top: 20px; display: none; }
-    .list-controls { margin-bottom: 10px; position: relative; }
+    .list-section { margin-top: 25px; display: none; }
+    .list-controls { margin-bottom: 12px; position: relative; }
     
     .multi-select-btn {
-        width: 100%; padding: 10px; border-radius: 8px;
+        width: 100%; padding: 12px; border-radius: 10px;
         background: rgba(0,0,0,0.4); color: #fff; 
         border: 1px solid rgba(255,255,255,0.3);
         text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
     }
     
     .multi-select-dropdown {
         display: none; position: absolute; top: 100%; left: 0; width: 100%;
-        background: #022c22; border: 1px solid rgba(255,255,255,0.2);
+        background: #022c22; border: 1px solid rgba(255,255,255,0.3);
         border-radius: 12px; margin-top: 5px; max-height: 350px; overflow-y: auto;
-        z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        z-index: 100; box-shadow: 0 15px 50px rgba(0,0,0,0.9);
     }
     .multi-select-dropdown.show { display: block; }
     
-    /* 篩選按鈕區 (Top) */
+    /* 頂部全選/清空 */
     .multi-actions-top {
-        padding: 8px; display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);
-        background: rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 2;
+        padding: 10px; display: flex; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        background: rgba(0,0,0,0.4); position: sticky; top: 0; z-index: 2;
     }
-    /* 確認按鈕區 (Bottom) - 新增 */
+    /* 底部確認鍵 */
     .multi-actions-bottom {
-        padding: 8px; border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 10px; border-top: 1px solid rgba(255,255,255,0.1);
         background: #064e3b; position: sticky; bottom: 0; z-index: 2;
     }
     
     .btn-sm-action {
-        flex: 1; padding: 6px; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold;
+        flex: 1; padding: 8px; font-size: 0.9rem; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;
     }
     .btn-confirm {
-        width: 100%; padding: 10px; background: #10b981; color: #fff; font-size: 1rem; border-radius: 8px; border: none; font-weight: bold;
+        width: 100%; padding: 12px; background: #10b981; color: #fff; font-size: 1rem; border-radius: 8px; border: none; font-weight: bold;
+        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
     }
-    .btn-confirm:active { background: #059669; }
+    .btn-confirm:active { background: #059669; transform: translateY(2px); }
 
     .multi-select-option {
-        padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
-        cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.95rem;
+        padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
+        cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.95rem;
     }
-    .multi-select-option input { transform: scale(1.2); accent-color: var(--brand-green); }
+    .multi-select-option input { transform: scale(1.3); accent-color: var(--brand-green); }
     
-    .table-container { background: rgba(0, 0, 0, 0.2); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; white-space: nowrap; }
-    th { background: rgba(2, 44, 34, 0.95); padding: 10px 6px; color: #a7f3d0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-    td { padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    .table-container { background: rgba(0, 0, 0, 0.2); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-top: 15px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
+    th { background: rgba(2, 44, 34, 0.95); padding: 12px 8px; color: #a7f3d0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+    td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
     
-    .badge-res { padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .badge-res { padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
     .bg-win { background: #ef4444; color: #fff; } .bg-draw { background: #22c55e; color: #fff; } .bg-lose { background: #3b82f6; color: #fff; }
 
     #loadingOverlay { position: fixed; inset: 0; background: #064e3b; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
-    .spinner-ball { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #34d399; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .spinner-ball { width: 45px; height: 45px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #34d399; border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* =========================================
        9. iPad/Desktop 寬屏適配
        ========================================= */
     @media (min-width: 768px) {
-        .tabcontent { max-width: 900px; }
+        .tabcontent { max-width: 960px; }
         .form-flex-container { display: flex; flex-direction: row; gap: 20px; }
         .odds-row-desktop { display: flex; flex-direction: row; gap: 15px; }
         .odds-row-desktop > .input-row { flex: 1; }
         
-        .header h1 { font-size: 2.8rem; }
+        .header h1 { font-size: 3rem; }
         .header { padding-bottom: 40px; }
         .nav-container { margin-top: -20px; }
         .unified-card { padding: 25px; }
-        .custom-input-group, select.form-select-custom { height: 42px; }
-        .input-label { font-size: 0.85rem; margin-bottom: 5px; }
+        .custom-input-group, select.form-select-custom { height: 44px; }
+        .input-label { font-size: 0.9rem; margin-bottom: 6px; }
         .input-row { margin-bottom: 15px; }
-        .btn-3d { padding: 12px; font-size: 1rem; }
+        .btn-3d { padding: 14px; font-size: 1.1rem; }
         table { font-size: 0.9rem; }
     }
 </style>
@@ -329,16 +331,27 @@
 
 <div class="header">
     <h1>
-        <!-- 真．足球 Logo SVG -->
-        <svg class="football-logo" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-             <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2" fill="none"/>
-             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9l3-4h4l3 4-2.5 5h-5L7 11z" fill="white"/>
-             <circle cx="12" cy="12" r="2" fill="#064e3b"/>
+        <!-- 真．至尊足球 Logo (歐聯星紋幾何風格) -->
+        <svg class="football-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#a7f3d0;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <!-- 外圈光暈 -->
+            <circle cx="50" cy="50" r="46" stroke="url(#grad1)" stroke-width="2" fill="rgba(255,255,255,0.05)"/>
+            <!-- 核心幾何 (Hexagon/Pentagon abstract) -->
+            <path d="M50 5 L75 25 L65 55 L35 55 L25 25 Z" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M50 5 L50 30 M75 25 L88 45 M65 55 L75 80 M35 55 L25 80 M25 25 L12 45" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M50 30 L68 42 L62 62 L38 62 L32 42 Z" fill="white" fill-opacity="0.9"/>
+            <circle cx="50" cy="50" r="4" fill="#064e3b"/>
         </svg>
         足球歷史賠率篩選
     </h1>
     <div class="desc">大數據分析 (2013-2025)</div>
-    <div class="timestamp" id="ts">版本時間：2025/08/01 上午 00:00:00 (GMT+8)</div>
+    <!-- 時間戳已保留但隱藏 -->
+    <div class="timestamp" id="ts" style="display:none">2025/08/01</div>
 </div>
 
 <div class="nav-container">
@@ -432,7 +445,7 @@
         <div id="ahResultSection" class="results-section">
             <div id="ahStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('ah')" type="button" style="margin-top:15px; padding:10px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('ah')" type="button" style="margin-top:15px; padding:10px; border-radius:15px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
@@ -450,9 +463,9 @@
                                 <button class="btn-sm-action" style="background:#b91c1c;color:#fff" onclick="selectAllSeasons('ah', false)">清空</button>
                             </div>
                             <div id="seasonOptions_ah"></div>
-                            <!-- 新增確認鍵 -->
+                            <!-- 底部確認鍵: 綁定 applySeasonFilter -->
                             <div class="multi-actions-bottom">
-                                <button class="btn-confirm" onclick="toggleSeasonDropdown('ah')">確認並套用</button>
+                                <button class="btn-confirm" onclick="applySeasonFilter('ah')">確認並套用</button>
                             </div>
                         </div>
                     </div>
@@ -567,7 +580,7 @@
         <div id="ouResultSection" class="results-section">
             <div id="ouStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('ou')" type="button" style="margin-top:15px; padding:10px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('ou')" type="button" style="margin-top:15px; padding:10px; border-radius:15px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
@@ -585,7 +598,7 @@
                             </div>
                             <div id="seasonOptions_ou"></div>
                             <div class="multi-actions-bottom">
-                                <button class="btn-confirm" onclick="toggleSeasonDropdown('ou')">確認並套用</button>
+                                <button class="btn-confirm" onclick="applySeasonFilter('ou')">確認並套用</button>
                             </div>
                         </div>
                     </div>
@@ -716,7 +729,7 @@
         <div id="euResultSection" class="results-section">
             <div id="euStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('eu')" type="button" style="margin-top:15px; padding:10px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('eu')" type="button" style="margin-top:15px; padding:10px; border-radius:15px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
@@ -734,7 +747,7 @@
                             </div>
                             <div id="seasonOptions_eu"></div>
                             <div class="multi-actions-bottom">
-                                <button class="btn-confirm" onclick="toggleSeasonDropdown('eu')">確認並套用</button>
+                                <button class="btn-confirm" onclick="applySeasonFilter('eu')">確認並套用</button>
                             </div>
                         </div>
                     </div>
@@ -762,8 +775,6 @@
         </div>
     </div>
 </div>
-
-<div class="toast-msg" id="toast">已複製比賽詳情！</div>
 
 <script>
     /* 1. Global Vars */
@@ -885,7 +896,7 @@
         const pieContainer = document.getElementById(idPie);
         if(!pieContainer) return;
         
-        // Wait 800ms
+        // Wait 500ms
         setTimeout(() => {
             pieContainer.innerHTML = `
               ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
@@ -895,7 +906,6 @@
                 <div><span style="background:${lColor};width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:4px;"></span>${lLabel}</div>
               </div>
             `;
-            // Trigger animation class for path
             const paths = pieContainer.querySelectorAll('.pie-chart-circle');
             setTimeout(() => {
                 paths.forEach(p => p.classList.add('show'));
@@ -1137,7 +1147,7 @@
       populateSeasons('eu', lastEuResult);
     }
 
-    /* === Multi-Select Season Logic === */
+    /* === Multi-Select Season Logic (Apply Button Logic) === */
     function populateSeasons(type, data) {
         selectedSeasons.clear();
         
@@ -1160,6 +1170,7 @@
     }
     
     function toggleSeasonOption(div, season, type) {
+        // Only updates internal state, DOES NOT render table
         const cb = div.querySelector('input');
         if (event.target !== cb) {
            cb.checked = !cb.checked;
@@ -1169,21 +1180,16 @@
         else selectedSeasons.delete(season);
         
         updateSeasonBtnText(type);
-        const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
-        const filtered = filterDataBySeasons(sourceData);
-        confirmAndRender(filtered, type + 'Table', null, true);
     }
     
     function selectAllSeasons(type, selectAll) {
+        // Only updates internal state, DOES NOT render table
         const cbs = document.querySelectorAll(`#seasonOptions_${type} input`);
         cbs.forEach(cb => {
             cb.checked = selectAll;
             if(selectAll) selectedSeasons.add(cb.value); else selectedSeasons.delete(cb.value);
         });
         updateSeasonBtnText(type);
-        const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
-        const filtered = filterDataBySeasons(sourceData);
-        confirmAndRender(filtered, type + 'Table', null, true);
     }
     
     function updateSeasonBtnText(type) {
@@ -1194,6 +1200,16 @@
         if(size === total) btn.innerText = "選擇賽季 (已選: 全部)";
         else if(size === 0) btn.innerText = "選擇賽季 (未選)";
         else btn.innerText = `選擇賽季 (已選 ${size} 個)`;
+    }
+    
+    // NEW: The actual render trigger
+    function applySeasonFilter(type) {
+        const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
+        const filtered = filterDataBySeasons(sourceData);
+        confirmAndRender(filtered, type + 'Table', null, true);
+        
+        // Close dropdown
+        toggleSeasonDropdown(type);
     }
     
     function filterDataBySeasons(data) {
@@ -1208,9 +1224,8 @@
         if (sec.style.display === 'none') {
             sec.style.display = 'block';
             tableContainer.style.display = 'block';
-            const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
-            const filtered = filterDataBySeasons(sourceData);
-            confirmAndRender(filtered, type + 'Table', null, true);
+            // Render initial view
+            applySeasonFilter(type); 
             sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
             sec.style.display = 'none';
@@ -1226,7 +1241,7 @@
       
       const type = tableId.replace('Table', '');
       
-      // Default render functions with preserved logic
+      // Default render functions
       if(!renderFn) {
           if(type === 'ah') {
               renderFn = r => {
@@ -1289,32 +1304,10 @@
       const rowsHtml = resultArray.map(r => renderFn(r)).join('');
       tbody.innerHTML = rowsHtml;
       
-      const newTbody = tbody.cloneNode(true);
-      tbody.parentNode.replaceChild(newTbody, tbody);
-      
-      newTbody.addEventListener('click', function(e) {
-          const tr = e.target.closest('tr');
-          if (tr) {
-              const info = Array.from(tr.children).map(td => td.innerText).join(' | ');
-              copyToClipboard(info);
-          }
-      });
+      // Removed copyToClipboard event listener as requested
 
       table.style.display = 'table';
       container.style.display = 'block';
-    }
-    
-    function copyToClipboard(text) {
-        if (!text) return;
-        const el = document.createElement('textarea');
-        el.value = text;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        const toast = document.getElementById('toast');
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
     function sortTable(tableId, colIndex) {
