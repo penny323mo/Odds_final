@@ -1369,10 +1369,6 @@
       } finally {
         __hideLoading();
       }
-    } else {
-            panel.style.display = "none";
-        }
-      });
     }
 
     function stepErr(id, delta) {
@@ -1590,12 +1586,6 @@
       initOverUnderUI();
       initEuropeanUI();
     }
-      fillSelect('ahInitHand', new Set(AH.map(r => r.AH_open_handicap)));
-      fillSelect('ahCloseHand', new Set(AH.map(r => r.AH_close_handicap)));
-      fillSelect('ouInitLine', new Set(OU.map(r => r.OU_line)));
-      fillSelect('ouCloseLine', new Set(OU.map(r => r.close_OU_line)));
-    }
-    
     function resetAll() {
         ['ah', 'ou', 'eu'].forEach(type => {
             const form = document.getElementById(type + 'Form');
@@ -2002,4 +1992,3 @@
 </script>
 </body>
 </html>
-
