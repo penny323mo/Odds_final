@@ -2,332 +2,814 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"/>
-<title>足球歷史賠率篩選</title>
-<!-- PWA 設定 -->
+<title>足球歷史賠率篩選 Pro (Max Extended)</title>
+<!-- 
+    PWA 設定 
+    確保網頁在手機上加入主畫面後，能像 App 一樣全螢幕運行
+-->
 <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" name="viewport"/>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#064e3b">
 
-<!-- 引入字體 -->
+<!-- 引入 Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<!-- 引入 Bootstrap CSS (用於基礎排版) -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<!-- 引入 Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
-    /* =========================================
-       1. 基礎設定 (Base)
-       ========================================= */
+    /* ==========================================================================
+       1. 全局變量定義 (CSS Variables) - 方便日後改色
+       ========================================================================== */
     :root {
+        /* 背景色系 - 深綠色球場風格 */
         --bg-dark: #064e3b; 
-        --glass-bg: rgba(6, 78, 59, 0.55);
+        
+        /* 玻璃質感背景 - 加深透明度以提高文字可讀性 */
+        --glass-bg: rgba(6, 78, 59, 0.95);
         --glass-border: rgba(255, 255, 255, 0.2);
+        
+        /* 品牌色系 */
         --brand-green: #10b981;
         --brand-green-light: #34d399;
+        --brand-accent: #fbbf24;
+        
+        /* 文字色系 */
         --text-main: #ffffff;
         --text-sub: #d1fae5;
+        --text-muted: #a7f3d0;
+        
+        /* 結果色系 (紅/綠/藍) - 參照你的截圖定義 */
+        --res-win: #ef4444;  /* 紅色：贏盤 / 大球 / 主勝 */
+        --res-draw: #22c55e; /* 綠色：和盤 / 走盤 / 和局 */
+        --res-lose: #3b82f6; /* 藍色：輸盤 / 細球 / 客勝 */
+        
+        /* 表頭顏色定義 */
+        --th-green-text: #6ee7b7; /* 賠率欄位文字色 */
+        --th-bg: rgba(2, 44, 34, 0.98); /* 表頭背景色 */
     }
 
+    /* ==========================================================================
+       2. 基礎 HTML 設定 & 背景
+       ========================================================================== */
     body {
         margin: 0;
         font-family: 'Noto Sans TC', sans-serif;
         color: var(--text-main);
         background-color: var(--bg-dark);
         min-height: 100vh;
-        padding-bottom: 100px;
+        
+        /* 修正圖 1：增加上下 Padding，避免內容貼住螢幕邊緣 */
+        padding-top: calc(env(safe-area-inset-top) + 20px);
+        padding-bottom: calc(100px + env(safe-area-inset-bottom));
+        
         overflow-x: hidden;
         width: 100vw;
         box-sizing: border-box;
-        /* iPhone Safe Area */
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: calc(100px + env(safe-area-inset-bottom));
     }
 
-    *, *::before, *::after { box-sizing: border-box; }
+    *, *::before, *::after { 
+        box-sizing: border-box; 
+    }
 
-    /* =========================================
-       2. 背景特效 (Background)
-       ========================================= */
+    /* 背景層 1：圖片與漸變 */
     .bg-layer {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        z-index: -2;
         background-color: #064e3b;
         background-image: 
-            radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.8) 85%),
+            radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.9) 85%),
             url("https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop");
-        background-size: cover; background-position: center; background-attachment: fixed;
+        background-size: cover; 
+        background-position: center; 
+        background-attachment: fixed;
     }
 
+    /* 背景層 2：網格紋理 (增加質感) */
     .bg-texture {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-        background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-        background-size: 40px 40px; opacity: 0.3; pointer-events: none;
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        z-index: -1;
+        background-image: 
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 40px 40px; 
+        opacity: 0.3; 
+        pointer-events: none;
     }
 
-    /* =========================================
-       3. 頂部導航 (Header & Tabs)
-       ========================================= */
-    .header { position: relative; text-align: center; padding: 20px 10px 10px; z-index: 10; width: 100%; }
+    /* ==========================================================================
+       3. 頂部導航 (Header) - 緊湊版
+       ========================================================================== */
+    .header { 
+        position: relative; 
+        text-align: center; 
+        /* 縮小 Padding 以適應 iPhone 一版顯示 */
+        padding: 5px 10px 10px; 
+        z-index: 10; 
+        width: 100%; 
+    }
+    
     .header h1 {
-        font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
-        font-size: clamp(1.5rem, 5vw, 2.2rem); margin: 0; color: #fff;
-        text-shadow: 0 2px 0 #065f46, 0 4px 10px rgba(0,0,0,0.5);
-        display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
+        font-family: 'Noto Sans TC', sans-serif; 
+        font-weight: 900;
+        /* 字體大小縮細，適配手機 */
+        font-size: clamp(1.5rem, 5vw, 2.5rem); 
+        margin: 0; 
+        color: #fff;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 10px; 
+        flex-wrap: nowrap;
+        /* 呼吸燈特效 */
+        animation: glowBreathing 4s ease-in-out infinite alternate;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+        letter-spacing: 1px;
     }
-    .icon-ball {
-        font-size: 1.8rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
-        color: var(--brand-green-light); animation: floatBall 3s ease-in-out infinite;
+
+    @keyframes glowBreathing {
+        0% { text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 10px rgba(16, 185, 129, 0.2); transform: scale(1); }
+        100% { text-shadow: 0 0 25px rgba(255,255,255,0.6), 0 0 45px rgba(52, 211, 153, 0.5); transform: scale(1.02); }
     }
-    @keyframes floatBall { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    .header .desc {
-        margin-top: 5px; font-size: 0.85rem; color: #e0f2f1;
-        background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 50px;
-        border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px);
+
+    /* ⚽️ Emoji Logo 樣式 */
+    .football-emoji {
+        font-size: clamp(35px, 9vw, 50px);
+        line-height: 1;
+        filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+        /* 自轉特效 */
+        animation: slowSpin 12s linear infinite;
         display: inline-block;
     }
-    .timestamp { font-size: 0.7rem; color: #6ee7b7; margin-top: 5px; opacity: 0.8; }
+    
+    @keyframes slowSpin { 
+        from { transform: rotate(0deg); } 
+        to { transform: rotate(360deg); } 
+    }
 
-    .nav-container { margin-top: -10px; padding: 0 10px; position: relative; z-index: 20; width: 100%; margin-bottom: 15px; }
+    .header .desc {
+        margin-top: 5px; 
+        font-size: 0.8rem; 
+        color: #e0f2f1;
+        background: rgba(0,0,0,0.4); 
+        padding: 3px 15px; 
+        border-radius: 50px;
+        border: 1px solid rgba(255,255,255,0.15); 
+        backdrop-filter: blur(4px);
+        display: inline-block; 
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    /* 導航 Tabs 容器 */
+    .nav-container { 
+        margin-top: 10px; 
+        padding: 0 15px; 
+        position: relative; 
+        z-index: 20; 
+        width: 100%; 
+        margin-bottom: 12px; 
+    }
     .custom-tabs {
-        background: rgba(6, 78, 59, 0.8); border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 50px; padding: 4px; display: flex; gap: 4px;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
-        max-width: 600px; margin: 0 auto; overflow-x: auto; scrollbar-width: none;
+        background: rgba(6, 78, 59, 0.95); 
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50px; 
+        padding: 4px; 
+        display: flex; 
+        gap: 5px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.4); 
+        backdrop-filter: blur(10px);
+        max-width: 600px; 
+        margin: 0 auto; 
     }
-    .custom-tabs::-webkit-scrollbar { display: none; }
     .custom-tabs button {
-        flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.7);
-        padding: 8px 10px; font-weight: 700; font-size: 0.9rem; border-radius: 40px;
-        transition: all 0.3s; white-space: nowrap; 
+        flex: 1; 
+        border: none; 
+        background: transparent; 
+        color: rgba(255,255,255,0.65);
+        padding: 8px 0; 
+        font-weight: 700; 
+        font-size: 0.9rem; 
+        border-radius: 40px;
+        transition: all 0.3s ease; 
+        white-space: nowrap; 
     }
-    .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .custom-tabs button.active { 
+        background: #fff; 
+        color: #064e3b; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+        transform: scale(1.02);
+    }
 
-    /* =========================================
-       4. 主容器與卡片 (Fit Screen Optimization)
-       ========================================= */
+    /* ==========================================================================
+       4. 主容器與卡片 (Main Layout) - 修正圖 3 Dropdown 問題
+       ========================================================================== */
     .tabcontent {
-        width: 96%; max-width: 800px; margin: 0 auto; padding: 0; 
+        width: 98%; 
+        max-width: 900px; 
+        margin: 0 auto; 
+        padding: 0; 
         animation: fadeUp 0.5s ease-out;
     }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    .form-card {
-        background: var(--glass-bg); border: 1px solid var(--glass-border);
-        border-top: 1px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 15px;
-        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05); width: 100%;
+    @keyframes fadeUp { 
+        from { opacity: 0; transform: translateY(15px); } 
+        to { opacity: 1; transform: translateY(0); } 
     }
 
-    /* iPad 佈局關鍵：左右分欄 */
-    .form-flex-container {
-        display: flex;
-        flex-direction: column; /* 手機預設上下 */
-        gap: 15px;
+    .unified-card {
+        background: var(--glass-bg); 
+        border: 1px solid var(--glass-border);
+        border-top: 1px solid rgba(255,255,255,0.3); 
+        border-radius: 20px; 
+        padding: 15px; 
+        backdrop-filter: blur(20px); 
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 20px 60px -10px rgba(0,0,0,0.6);
+        
+        /* 圖 3 關鍵修正：
+           將 overflow 設為 visible，允許下拉選單 (Dropdown) 
+           超出卡片邊界顯示，防止被截斷。
+        */
+        overflow: visible; 
+        transition: height 0.3s ease;
+    }
+
+    /* 預設手機: 垂直排列 */
+    .form-flex-container { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 10px; /* 收窄間距 */
     }
 
     fieldset {
-        border: 1px solid rgba(255,255,255,0.1); background: rgba(0, 0, 0, 0.2);
-        border-radius: 12px; padding: 12px; margin: 0; /* Margin handled by flex gap */
-        flex: 1; /* 讓兩個 fieldset 平分寬度 */
-        box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255,255,255,0.1); 
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 12px; 
+        padding: 10px 12px 6px 12px; /* 緊湊佈局 */
+        margin: 0; 
+        flex: 1;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
     }
     legend {
-        color: var(--brand-green-light); font-weight: 700; font-size: 1rem;
-        text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;
-        margin-bottom: 8px;
+        color: var(--brand-green-light); 
+        font-weight: 700; 
+        font-size: 0.9rem;
+        text-transform: uppercase; 
+        letter-spacing: 1px; 
+        display: flex; 
+        align-items: center; 
+        gap: 5px;
+        margin-bottom: 6px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    /* =========================================
-       5. 輸入框 (Compact)
-       ========================================= */
-    .input-row { margin-bottom: 10px; }
-    .input-label {
-        font-size: 0.8rem; color: #e2e8f0; font-weight: 600; margin-bottom: 4px; display: block;
+    /* ==========================================================================
+       5. 輸入框與排版 (Form Controls) - 修正圖 1 一版顯示
+       ========================================================================== */
+    .input-row { 
+        margin-bottom: 8px; /* 行距再收細 */
     }
+    
+    .input-label {
+        font-size: 0.75rem; 
+        color: var(--text-muted); 
+        font-weight: 600; 
+        margin-bottom: 2px; 
+        display: block;
+    }
+    
     .custom-input-group {
-        display: flex; align-items: stretch; background: rgba(0, 20, 10, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); overflow: hidden; width: 100%; height: 40px; /* Compact Height */
+        display: flex; 
+        align-items: stretch; 
+        background: rgba(0, 20, 10, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.15); 
+        border-radius: 10px;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.4); 
+        overflow: hidden; 
+        width: 100%; 
+        /* 高度縮細至 38px，確保慳位 */
+        height: 38px; 
+        transition: border-color 0.2s;
     }
     .custom-input-group:focus-within {
         border-color: var(--brand-green);
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
     }
+    
     .main-input {
-        flex: 1 1 auto; background: transparent; border: none; color: #fff; 
-        padding: 0 10px; font-size: 1rem; font-family: monospace; min-width: 0;
+        flex: 1 1 auto; 
+        background: transparent; 
+        border: none; 
+        color: #fff; 
+        padding: 0 10px; 
+        font-size: 1rem; 
+        font-family: monospace; 
+        min-width: 0;
     }
     .main-input:focus { outline: none; }
-    .main-input::placeholder { color: rgba(255,255,255,0.3); }
+    .main-input::placeholder { color: rgba(255,255,255,0.2); }
     
     .divider-text {
-        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 8px; 
-        display: flex; align-items: center; font-weight: bold; font-size: 0.9rem;
-        border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+        color: var(--brand-green-light); 
+        background: rgba(255,255,255,0.03); 
+        padding: 0 6px; 
+        display: flex; 
+        align-items: center; 
+        font-weight: bold; 
+        font-size: 0.9rem;
+        border-left: 1px solid rgba(255,255,255,0.1); 
+        border-right: 1px solid rgba(255,255,255,0.1); 
+        flex-shrink: 0;
     }
+    
     .err-input {
-        width: 45px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; 
-        text-align: center; font-size: 0.9rem; flex-shrink: 0;
+        width: 45px; 
+        background: rgba(255,255,255,0.03); 
+        border: none; 
+        color: #d1fae5; 
+        text-align: center; 
+        font-size: 0.9rem; 
+        flex-shrink: 0;
     }
     .err-input:focus { outline: none; color: #fff; background: rgba(255,255,255,0.1); }
+    
     .step-btns { 
-        display: flex; flex-direction: column; width: 30px;
-        border-left: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+        display: flex; 
+        flex-direction: column; 
+        width: 28px;
+        border-left: 1px solid rgba(255,255,255,0.1); 
+        flex-shrink: 0;
     }
     .step-btn {
-        flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); 
-        cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;
-        font-size: 0.7rem;
+        flex: 1; 
+        background: rgba(255,255,255,0.03); 
+        border: none; 
+        color: var(--brand-green-light); 
+        cursor: pointer; 
+        transition: 0.2s; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        padding: 0;
+        font-size: 0.65rem;
     }
     .step-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
     .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
     
     select.form-select-custom {
-        width: 100%; padding: 0 10px; height: 40px; background-color: rgba(2, 44, 34, 0.95); color: #fff; 
-        border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+        width: 100%; 
+        padding: 0 10px; 
+        height: 38px; /* 一致高度 */
+        background-color: rgba(2, 44, 34, 0.95); 
+        color: #fff; 
+        border: 1px solid rgba(255,255,255,0.15); 
+        border-radius: 10px;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
+        font-size: 0.95rem;
+        cursor: pointer;
     }
 
-    /* =========================================
-       6. 3D 按鈕 (Action Row)
-       ========================================= */
+    /* iPad 橫排容器 (Odds Row) - 預設 block (直排) */
+    .odds-row-desktop { display: block; }
+
+    /* ==========================================================================
+       6. 3D 操作按鈕 (Buttons)
+       ========================================================================== */
     .action-row { display: flex; gap: 10px; margin-top: 15px; }
     .btn-3d {
-        position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 1rem; 
-        padding: 12px; border-radius: 50px; cursor: pointer; flex: 1;
+        position: relative; 
+        border: none; 
+        outline: none; 
+        color: white; 
+        font-weight: 700; 
+        font-size: 1rem; 
+        padding: 12px; 
+        border-radius: 50px; 
+        cursor: pointer; 
+        flex: 1;
         transition: transform 0.1s, box-shadow 0.1s; 
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-        text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 6px;
+        text-transform: uppercase; 
+        letter-spacing: 1px; 
+        text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
+    
+    /* 綠色搜尋按鈕 */
     .btn-green {
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
         box-shadow: 0 4px 0 #047857, 0 8px 15px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
     }
-    .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
+    .btn-green:active { 
+        transform: translateY(3px); 
+        box-shadow: 0 1px 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); 
+    }
+    
+    /* 灰色重設按鈕 */
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
         box-shadow: 0 4px 0 #1f2937, 0 8px 15px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
     }
-    .btn-grey:active { transform: translateY(4px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
+    .btn-grey:active { 
+        transform: translateY(3px); 
+        box-shadow: 0 1px 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); 
+    }
 
-    /* =========================================
-       7. 結果區域 (Seamless Results)
-       ========================================= */
+    /* ==========================================================================
+       7. 結果統計 (Stats & Pie) - 修正數值重疊 + 圖 2 顏色問題
+       ========================================================================== */
     .results-section {
-        margin-top: 25px; padding-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2);
-        display: none; /* Initially hidden */
+        margin-top: 20px; 
+        padding-top: 15px; 
+        border-top: 1px dashed rgba(255,255,255,0.2);
+        display: none; 
         animation: slideDown 0.5s ease-out;
     }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
     .stat-cards { 
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 8px; 
+        margin-bottom: 15px; 
     }
     .stat-card {
-        background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 12px; padding: 10px 4px; text-align: center;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2); backdrop-filter: blur(5px);
-        position: relative; overflow: hidden;
+        background: rgba(255,255,255,0.08); 
+        border-radius: 12px; 
+        padding: 10px 4px; 
+        text-align: center;
+        position: relative; 
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
-    .stat-card.win { border-bottom: 3px solid #ef4444; }
-    .stat-card.draw { border-bottom: 3px solid #22c55e; }
-    .stat-card.lose { border-bottom: 3px solid #3b82f6; }
-    .stat-card .label { font-size: 0.7rem; color: #a7f3d0; font-weight: 700; margin-bottom: 4px; }
-    .stat-card .value { font-size: 1.4rem; font-weight: 900; color: #fff; margin: 4px 0; }
-    .stat-card .pct { font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 8px; }
+    
+    /* 底部顏色條 (修正圖 2) */
+    .stat-card.win { border-bottom: 3px solid var(--res-win); } 
+    .stat-card.draw { border-bottom: 3px solid var(--res-draw); } 
+    .stat-card.lose { border-bottom: 3px solid var(--res-lose); }
+    
+    .stat-card .label { 
+        font-size: 0.75rem; 
+        color: var(--text-muted); 
+        margin-bottom: 3px; 
+        font-weight: 500;
+    }
+    
+    /* 修正：數值與百分比容器 (分開顯示，解決黏合問題) */
+    .stat-value-box {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 4px; /* 增加間距 */
+        flex-wrap: wrap;
+    }
+    
+    .stat-card .value { 
+        font-size: 1.3rem; 
+        font-weight: 900; 
+        color: #fff; 
+        line-height: 1.1;
+    }
+    .stat-card .pct { 
+        font-size: 0.8rem; 
+        color: #d1fae5; 
+        font-weight: 500; 
+        opacity: 0.9;
+    }
 
+    /* 圓餅圖容器 */
     .piebox {
-        background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        border: 1px solid rgba(255,255,255,0.1); width: 100%; min-height: 280px;
+        background: rgba(255,255,255,0.05); 
+        border-radius: 16px; 
+        padding: 15px;
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center;
+        border: 1px solid rgba(255,255,255,0.1); 
+        width: 100%; 
+        min-height: 240px;
     }
     
-    /* 扇形動畫 */
-    .pie-chart-circle {
-        width: 100%; height: 100%; border-radius: 50%;
-        /* Clip path starts hidden (0%) -> reveals to 100% */
-        clip-path: circle(0% at 50% 50%);
-        animation: openCircle 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    .pie-chart-circle { 
+        width: 100%; 
+        height: 100%; 
+        border-radius: 50%; 
+        opacity: 0;
+        transform: scale(0.9);
+        transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    @keyframes openCircle { to { clip-path: circle(75% at 50% 50%); } }
+    .pie-chart-circle.show {
+        opacity: 1;
+        transform: scale(1);
+    }
 
-    .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
-    .pie-legend span { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    /* 修正圖 2：加上顏色說明 Legend (贏/和/輸) */
+    .pie-legend { 
+        display: flex; 
+        gap: 12px; 
+        margin-top: 15px; 
+        font-size: 0.85rem; 
+        color: #fff; 
+        flex-wrap: wrap; 
+        justify-content: center; 
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+    }
 
-    /* =========================================
-       8. 列表與篩選 (List Section)
-       ========================================= */
-    .list-section { margin-top: 25px; display: none; }
-    .list-controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-    .filter-select { 
-        width: 100%; padding: 10px; border-radius: 10px; 
-        background: rgba(0,0,0,0.3); color: #fff; 
-        border: 1px solid rgba(255,255,255,0.2); font-size: 0.95rem; 
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-        background-repeat: no-repeat;
-        background-position: right .7em top 50%;
-        background-size: .65em auto;
+    /* ==========================================================================
+       8. 列表與複選篩選 (Multi-Select) - 修正圖 3 被 Cut 問題
+       ========================================================================== */
+    .list-section { margin-top: 20px; display: none; }
+    
+    /* 修正圖 3：z-index 設高，確保 Dropdown 在最上層 
+       配合 .unified-card 的 overflow: visible
+    */
+    .list-controls { 
+        margin-bottom: 12px; 
+        position: relative; 
+        z-index: 100; 
     }
     
-    .table-container {
-        background: rgba(0, 0, 0, 0.2); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+    .multi-select-btn {
+        width: 100%; 
+        padding: 10px 12px; 
+        border-radius: 10px;
+        background: rgba(0,0,0,0.4); 
+        color: #fff; 
+        border: 1px solid rgba(255,255,255,0.3);
+        text-align: left; 
+        cursor: pointer; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center;
+        font-size: 0.95rem; 
+        backdrop-filter: blur(5px);
+    }
+    .multi-select-btn:after { content: '\25BC'; font-size: 0.7rem; opacity: 0.7; }
+    
+    .multi-select-dropdown {
+        display: none; 
+        position: absolute; 
+        top: 105%; 
+        left: 0; 
+        width: 100%;
+        background: #022c22; /* 深色背景，防止透明混亂 */
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 12px; 
+        max-height: 350px; 
+        overflow-y: auto;
+        z-index: 9999; /* 關鍵：置頂 */
+        box-shadow: 0 15px 50px rgba(0,0,0,0.9);
+    }
+    .multi-select-dropdown.show { display: block; }
+    
+    /* 頂部操作欄 (全選/清空) */
+    .multi-actions-top {
+        padding: 10px; 
+        display: flex; 
+        gap: 10px; 
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        background: rgba(0,0,0,0.6); 
+        position: sticky; 
+        top: 0; 
+        z-index: 2;
+    }
+    .btn-sm-action {
+        flex: 1; 
+        padding: 6px; 
+        font-size: 0.85rem; 
+        border-radius: 8px; 
+        border: none; 
+        cursor: pointer; 
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+    
+    /* 底部確認欄 (Confirm Button) */
+    .multi-actions-bottom {
+        padding: 10px; 
+        border-top: 1px solid rgba(255,255,255,0.1);
+        background: #064e3b; 
+        position: sticky; 
+        bottom: 0; 
+        z-index: 2;
+    }
+    .btn-confirm {
+        width: 100%; 
+        padding: 10px; 
+        background: #10b981; 
+        color: #fff; 
+        font-size: 1rem; 
+        border-radius: 8px; 
+        border: none; 
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); 
+        cursor: pointer;
+    }
+    .btn-confirm:active { background: #059669; transform: translateY(2px); }
+
+    .multi-select-option {
+        padding: 12px 15px; 
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        cursor: pointer; 
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        font-size: 0.95rem;
+        transition: background 0.2s;
+    }
+    .multi-select-option:hover { background: rgba(255,255,255,0.1); }
+    .multi-select-option input[type="checkbox"] {
+        transform: scale(1.3); 
+        accent-color: var(--brand-green); 
+        cursor: pointer; 
+        margin-right: 5px;
+    }
+
+    /* === 新增功能：實時結果過濾 (Instant Result Filter) === */
+    .result-filter-bar {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        justify-content: space-between;
+    }
+    
+    .res-check-item {
+        flex: 1;
+        position: relative;
+    }
+    
+    /* 隱藏原生 checkbox */
+    .res-check-item input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    
+    /* 自定義按鈕樣式 */
+    .res-check-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 8px 4px;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.05); 
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #a7f3d0;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: bold;
+        transition: all 0.2s;
+    }
+    
+    /* 選中時的樣式 (對應 紅/綠/藍) */
+    .res-check-item input:checked + .res-check-label.lbl-win {
+        background: var(--res-win);
+        color: #fff;
+        border-color: var(--res-win);
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    }
+    .res-check-item input:checked + .res-check-label.lbl-draw {
+        background: var(--res-draw);
+        color: #fff;
+        border-color: var(--res-draw);
+        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
+    }
+    .res-check-item input:checked + .res-check-label.lbl-lose {
+        background: var(--res-lose);
+        color: #fff;
+        border-color: var(--res-lose);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    }
+
+    /* ==========================================================================
+       9. 表格樣式 (Table Colors Fix) - 修正圖 2
+       ========================================================================== */
+    .table-container { 
+        background: rgba(0, 0, 0, 0.25); 
+        border-radius: 12px; 
+        overflow: hidden; 
+        border: 1px solid rgba(255,255,255,0.1); 
+        margin-top: 15px; 
     }
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
-    th { 
-        background: rgba(2, 44, 34, 0.9); padding: 12px 8px; color: #a7f3d0; 
-        border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; text-align: center;
+    table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        font-size: 0.85rem; 
+        white-space: nowrap; 
     }
-    td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    
+    th { 
+        padding: 12px 8px; 
+        border-bottom: 1px solid rgba(255,255,255,0.15); 
+        cursor: pointer; 
+        text-align: center; 
+        font-weight: 700;
+        vertical-align: middle;
+    }
+    
+    /* 修正：表頭顏色定義 (White vs Green) */
+    th.th-green { 
+        color: var(--th-green-text); 
+        background: var(--th-bg); 
+    } 
+    th.th-white { 
+        color: #ffffff; 
+        background: var(--th-bg); 
+    }
+    
+    td { 
+        padding: 10px 8px; 
+        border-bottom: 1px solid rgba(255,255,255,0.05); 
+        text-align: center; 
+        color: #f1f5f9; 
+        vertical-align: middle;
+    }
     tr:hover { background: rgba(255,255,255,0.1); }
     
-    .badge-res { padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-    .bg-win { background: #ef4444; color: #fff; } 
-    .bg-draw { background: #22c55e; color: #fff; } 
-    .bg-lose { background: #3b82f6; color: #fff; }
-    .text-odds { color: #6ee7b7; font-weight: bold; }
-
-    /* =========================================
-       9. 提示與 Loading (Toast & Loader)
-       ========================================= */
-    .toast-msg {
-        position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-        background: rgba(0,0,0,0.85); color: #fff; padding: 10px 20px; border-radius: 30px;
-        font-size: 0.9rem; z-index: 2000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    /* 修正：結果 Badge 實色樣式 (圖 2) */
+    .badge-res { 
+        padding: 4px 10px; 
+        border-radius: 6px; 
+        font-size: 0.8rem; 
+        font-weight: bold; 
+        display: inline-block; 
+        min-width: 45px;
+        color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
-    .toast-msg.show { opacity: 1; }
+    .bg-win { background-color: var(--res-win); }
+    .bg-draw { background-color: var(--res-draw); }
+    .bg-lose { background-color: var(--res-lose); }
+    
+    .text-odds { color: #6ee7b7; font-weight: 700; font-family: monospace; }
 
-    #loadingOverlay {
-        position: fixed; inset: 0; background: #064e3b; z-index: 9999;
-        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;
+    /* Loading Overlay */
+    #loadingOverlay { 
+        position: fixed; inset: 0; background: #064e3b; z-index: 10000; 
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; 
     }
-    .spinner-ball {
-        width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #34d399; 
-        border-radius: 50%; animation: spin 0.8s linear infinite;
+    .spinner-ball { 
+        width: 45px; height: 45px; border: 4px solid rgba(255,255,255,0.2); 
+        border-top-color: #34d399; border-radius: 50%; animation: spin 0.8s linear infinite; 
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* =========================================
-       10. iPad/Desktop 響應式 (Fit Screen Key)
-       ========================================= */
+    /* ==========================================================================
+       10. iPad/Desktop 寬屏適配 (Responsive Logic)
+       ========================================================================== */
     @media (min-width: 768px) {
-        .tabcontent { max-width: 900px; }
+        .tabcontent { max-width: 960px; }
         
-        /* 關鍵：iPad 上左右分欄顯示，節省垂直空間 */
-        .form-flex-container {
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
+        /* 左右分欄 (初盤 vs 終盤) */
+        .form-flex-container { display: flex; flex-direction: row; gap: 20px; }
+        
+        /* iPad: 賠率輸入框橫向排列 */
+        .odds-row-desktop {
+            display: flex; flex-direction: row; gap: 15px;
         }
-        
+        .odds-row-desktop > .input-row {
+            flex: 1; /* 平均分配寬度 */
+        }
+
         .stat-card .value { font-size: 1.8rem; }
         .piebox { flex-direction: row; gap: 40px; justify-content: center; }
-        .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
-        
+        .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; text-align: left; }
+        .header { padding-bottom: 40px; }
+        .nav-container { margin-top: -30px; }
+        .unified-card { padding: 30px; }
+        .main-input { padding: 0 15px; }
         table { font-size: 0.95rem; }
-        .main-input { padding: 0 16px; }
     }
 </style>
 </head>
@@ -338,11 +820,15 @@
 
 <div aria-live="polite" id="loadingOverlay" role="alert">
     <div class="spinner-ball"></div>
-    <div class="loading-text" style="color:#d1fae5; font-weight:bold; letter-spacing:1px;">資料載入中...</div>
+    <div class="loading-text" style="color:#d1fae5; font-weight:bold; letter-spacing:1px; margin-top:10px;">載入中...</div>
 </div>
 
 <div class="header">
-    <h1><i class="bi bi-heptagon-fill icon-ball"></i> 足球歷史賠率篩選</h1>
+    <h1>
+        <!-- ⚽️ Emoji Logo (帶自轉) -->
+        <div class="football-emoji">⚽️</div>
+        足球歷史賠率篩選
+    </h1>
     <div class="desc">大數據分析 (2013-2025)</div>
 </div>
 
@@ -354,71 +840,77 @@
     </div>
 </div>
 
-<!-- ======================= Tab 1: 亞洲盤 ======================= -->
+<!-- ======================= Tab 1: 亞洲盤 (Asian Handicap) ======================= -->
 <div class="tabcontent" id="tc1">
-    <div class="form-card">
+    <div class="unified-card">
         <form id="ahForm" onsubmit="return false;">
-            <!-- iPad: Flex Container for Side-by-Side -->
             <div class="form-flex-container">
+                <!-- 初盤 -->
                 <fieldset>
-                    <legend><i class="bi bi-crosshair"></i> 初盤</legend>
+                    <legend><i class="bi bi-crosshair"></i> 初盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ahInitHand" class="form-select-custom"></select>
                     </div>
-                    <div class="input-row">
-                        <label class="input-label">主隊賠率</label>
-                        <div class="custom-input-group">
-                            <input id="ahHomeExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="ahHomeErr" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('ahHomeErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('ahHomeErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                    <!-- 桌面/iPad 橫排 -->
+                    <div class="odds-row-desktop">
+                        <div class="input-row">
+                            <label class="input-label">主隊賠率</label>
+                            <div class="custom-input-group">
+                                <input id="ahHomeExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="ahHomeErr" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('ahHomeErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('ahHomeErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-row">
-                        <label class="input-label">客隊賠率</label>
-                        <div class="custom-input-group">
-                            <input id="ahAwayExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="ahAwayErr" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('ahAwayErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('ahAwayErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                        <div class="input-row">
+                            <label class="input-label">客隊賠率</label>
+                            <div class="custom-input-group">
+                                <input id="ahAwayExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="ahAwayErr" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('ahAwayErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('ahAwayErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
+                <!-- 終盤 -->
                 <fieldset>
-                    <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
+                    <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ahCloseHand" class="form-select-custom"></select>
                     </div>
-                    <div class="input-row">
-                        <label class="input-label">主隊賠率</label>
-                        <div class="custom-input-group">
-                            <input id="ahCloseHomeExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="ahCloseHomeErr" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('ahCloseHomeErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('ahCloseHomeErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                    <div class="odds-row-desktop">
+                        <div class="input-row">
+                            <label class="input-label">主隊賠率</label>
+                            <div class="custom-input-group">
+                                <input id="ahCloseHomeExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="ahCloseHomeErr" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('ahCloseHomeErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('ahCloseHomeErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-row">
-                        <label class="input-label">客隊賠率</label>
-                        <div class="custom-input-group">
-                            <input id="ahCloseAwayExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="ahCloseAwayErr" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('ahCloseAwayErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('ahCloseAwayErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                        <div class="input-row">
+                            <label class="input-label">客隊賠率</label>
+                            <div class="custom-input-group">
+                                <input id="ahCloseAwayExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="ahCloseAwayErr" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('ahCloseAwayErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('ahCloseAwayErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -431,35 +923,67 @@
             </div>
         </form>
 
-        <!-- Seamless Result Section -->
         <div id="ahResultSection" class="results-section">
             <div id="ahStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('ah')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('ah')" type="button" style="margin-top:20px; padding:10px; border-radius:15px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
             <div id="ahListSection" class="list-section">
+                <!-- 1. 賽季篩選 -->
                 <div class="list-controls">
-                    <select id="ahSeasonFilter" class="filter-select" onchange="applySeasonFilter('ah')">
-                        <option value="all">📅 所有賽季 (All Seasons)</option>
-                    </select>
+                    <label class="input-label">📅 賽季篩選</label>
+                    <div class="multi-select-container" style="position:relative;">
+                        <div class="multi-select-btn" onclick="toggleSeasonDropdown('ah')" id="seasonBtn_ah">
+                            選擇賽季 (已選: 全部)
+                        </div>
+                        <div class="multi-select-dropdown" id="seasonDropdown_ah">
+                            <div class="multi-actions-top">
+                                <button class="btn-sm-action" style="background:#0f766e;color:#fff" onclick="selectAllSeasons('ah', true)">全選</button>
+                                <button class="btn-sm-action" style="background:#b91c1c;color:#fff" onclick="selectAllSeasons('ah', false)">清空</button>
+                            </div>
+                            <div id="seasonOptions_ah"></div>
+                            <div class="multi-actions-bottom">
+                                <button class="btn-confirm" onclick="confirmSeasonFilter('ah')">確認並套用</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 2. 新增：實時結果過濾 (Instant Result Filter) -->
+                    <label class="input-label" style="margin-top:12px;">⚡️ 結果過濾 (即點即變)</label>
+                    <div class="result-filter-bar">
+                        <label class="res-check-item">
+                            <input type="checkbox" checked onchange="toggleResult('ah', 'win')" id="cb_ah_win">
+                            <span class="res-check-label lbl-win"><i class="bi bi-check-circle-fill"></i> 贏盤</span>
+                        </label>
+                        <label class="res-check-item">
+                            <input type="checkbox" checked onchange="toggleResult('ah', 'draw')" id="cb_ah_draw">
+                            <span class="res-check-label lbl-draw"><i class="bi bi-dash-circle-fill"></i> 和盤</span>
+                        </label>
+                        <label class="res-check-item">
+                            <input type="checkbox" checked onchange="toggleResult('ah', 'lose')" id="cb_ah_lose">
+                            <span class="res-check-label lbl-lose"><i class="bi bi-x-circle-fill"></i> 輸盤</span>
+                        </label>
+                    </div>
                 </div>
+
                 <div class="table-container" id="ahTableContainer">
                     <div class="table-responsive">
-                        <table id="ahTable">
+                        <table id="ahTable" data-order="asc">
                             <thead>
                             <tr>
-                                <th onclick="sortTable('ahTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ahTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ahTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ahTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ahTable', 4)">初盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ahTable', 5)">初盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ahTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ahTable', 7)">終盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ahTable', 8)">終盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ahTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
+                                <!-- 修正表頭顏色 -->
+                                <th class="th-white" onclick="sortTable('ahTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('ahTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('ahTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ahTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ahTable', 4)">初盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ahTable', 5)">初盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ahTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ahTable', 7)">終盤<br>主賠 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ahTable', 8)">終盤<br>客賠 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('ahTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
                             </tr>
                             </thead>
                             <tbody></tbody>
@@ -471,70 +995,74 @@
     </div>
 </div>
 
-<!-- Tab Content 2: 大小球 -->
+<!-- ======================= Tab 2: 大小球 (Over/Under) ======================= -->
 <div class="tabcontent" id="tc2" style="display:none">
-    <div class="form-card">
+    <div class="unified-card">
         <form id="ouForm" onsubmit="return false;">
             <div class="form-flex-container">
                 <fieldset>
-                    <legend><i class="bi bi-stopwatch"></i> 初盤</legend>
+                    <legend><i class="bi bi-stopwatch"></i> 初盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ouInitLine" class="form-select-custom"></select>
                     </div>
-                    <div class="input-row">
-                        <label class="input-label">大球賠率</label>
-                        <div class="custom-input-group">
-                            <input id="ouBigExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="ouBigErr" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('ouBigErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('ouBigErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                    <div class="odds-row-desktop">
+                        <div class="input-row">
+                            <label class="input-label">大球賠率</label>
+                            <div class="custom-input-group">
+                                <input id="ouBigExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="ouBigErr" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('ouBigErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('ouBigErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-row">
-                        <label class="input-label">細球賠率</label>
-                        <div class="custom-input-group">
-                            <input id="ouSmallExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="ouSmallErr" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('ouSmallErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('ouSmallErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                        <div class="input-row">
+                            <label class="input-label">細球賠率</label>
+                            <div class="custom-input-group">
+                                <input id="ouSmallExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="ouSmallErr" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('ouSmallErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('ouSmallErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
                 <fieldset>
-                    <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
+                    <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ouCloseLine" class="form-select-custom"></select>
                     </div>
-                    <div class="input-row">
-                        <label class="input-label">大球賠率</label>
-                        <div class="custom-input-group">
-                            <input id="ouBigExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="ouBigErrC" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('ouBigErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('ouBigErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                    <div class="odds-row-desktop">
+                        <div class="input-row">
+                            <label class="input-label">大球賠率</label>
+                            <div class="custom-input-group">
+                                <input id="ouBigExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="ouBigErrC" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('ouBigErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('ouBigErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-row">
-                        <label class="input-label">細球賠率</label>
-                        <div class="custom-input-group">
-                            <input id="ouSmallExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="ouSmallErrC" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('ouSmallErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('ouSmallErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                        <div class="input-row">
+                            <label class="input-label">細球賠率</label>
+                            <div class="custom-input-group">
+                                <input id="ouSmallExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="ouSmallErrC" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('ouSmallErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('ouSmallErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -547,35 +1075,63 @@
             </div>
         </form>
         
-        <!-- Results -->
         <div id="ouResultSection" class="results-section">
             <div id="ouStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('ou')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
-                <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
-            </button>
+            <button class="btn-3d btn-grey" onclick="toggleList('ou')" type="button" style="margin-top:20px; padding:10px;"><i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表</button>
 
             <div id="ouListSection" class="list-section">
+                <!-- 賽季篩選 -->
                 <div class="list-controls">
-                    <select id="ouSeasonFilter" class="filter-select" onchange="applySeasonFilter('ou')">
-                        <option value="all">📅 所有賽季 (All Seasons)</option>
-                    </select>
+                    <label class="input-label">📅 賽季篩選</label>
+                    <div class="multi-select-container" style="position:relative;">
+                        <div class="multi-select-btn" onclick="toggleSeasonDropdown('ou')" id="seasonBtn_ou">
+                            選擇賽季 (已選: 全部)
+                        </div>
+                        <div class="multi-select-dropdown" id="seasonDropdown_ou">
+                            <div class="multi-actions-top">
+                                <button class="btn-sm-action" style="background:#0f766e;color:#fff" onclick="selectAllSeasons('ou', true)">全選</button>
+                                <button class="btn-sm-action" style="background:#b91c1c;color:#fff" onclick="selectAllSeasons('ou', false)">清空</button>
+                            </div>
+                            <div id="seasonOptions_ou"></div>
+                            <div class="multi-actions-bottom">
+                                <button class="btn-confirm" onclick="confirmSeasonFilter('ou')">確認並套用</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 即時結果過濾 -->
+                    <label class="input-label" style="margin-top:12px;">⚡️ 結果過濾</label>
+                    <div class="result-filter-bar">
+                        <label class="res-check-item">
+                            <input type="checkbox" checked onchange="toggleResult('ou', 'win')" id="cb_ou_win">
+                            <span class="res-check-label lbl-win"><i class="bi bi-check-circle-fill"></i> 大球</span>
+                        </label>
+                        <label class="res-check-item">
+                            <input type="checkbox" checked onchange="toggleResult('ou', 'draw')" id="cb_ou_draw">
+                            <span class="res-check-label lbl-draw"><i class="bi bi-dash-circle-fill"></i> 走盤</span>
+                        </label>
+                        <label class="res-check-item">
+                            <input type="checkbox" checked onchange="toggleResult('ou', 'lose')" id="cb_ou_lose">
+                            <span class="res-check-label lbl-lose"><i class="bi bi-x-circle-fill"></i> 細球</span>
+                        </label>
+                    </div>
                 </div>
+
                 <div class="table-container" id="ouTableContainer">
                     <div class="table-responsive">
-                        <table id="ouTable">
+                        <table id="ouTable" data-order="asc">
                             <thead>
                             <tr>
-                                <th onclick="sortTable('ouTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ouTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ouTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ouTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ouTable', 4)">初盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ouTable', 5)">初盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ouTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ouTable', 7)">終盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ouTable', 8)">終盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('ouTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('ouTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('ouTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('ouTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ouTable', 3)">初盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ouTable', 4)">初盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ouTable', 5)">初盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ouTable', 6)">終盤<br>盤口 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ouTable', 7)">終盤<br>大 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('ouTable', 8)">終盤<br>細 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('ouTable', 9)">結果 <i class="bi bi-arrow-down-up"></i></th>
                             </tr>
                             </thead>
                             <tbody></tbody>
@@ -587,86 +1143,90 @@
     </div>
 </div>
 
-<!-- Tab Content 3: 歐洲盤 -->
+<!-- ======================= Tab 3: 歐洲盤 (European) ======================= -->
 <div class="tabcontent" id="tc3" style="display:none">
-    <div class="form-card">
+    <div class="unified-card">
         <form id="euForm" onsubmit="return false;">
             <div class="form-flex-container">
                 <fieldset>
-                    <legend><i class="bi bi-globe-europe-africa"></i> 初盤</legend>
-                    <div class="input-row">
-                        <label class="input-label">主勝</label>
-                        <div class="custom-input-group">
-                            <input id="euHomeExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="euHomeErr" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('euHomeErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('euHomeErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                    <legend><i class="bi bi-globe-europe-africa"></i> 初盤資料</legend>
+                    <div class="odds-row-desktop">
+                        <div class="input-row">
+                            <label class="input-label">主勝</label>
+                            <div class="custom-input-group">
+                                <input id="euHomeExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="euHomeErr" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('euHomeErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('euHomeErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-row">
-                        <label class="input-label">和局</label>
-                        <div class="custom-input-group">
-                            <input id="euDrawExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="euDrawErr" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('euDrawErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('euDrawErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                        <div class="input-row">
+                            <label class="input-label">和局</label>
+                            <div class="custom-input-group">
+                                <input id="euDrawExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="euDrawErr" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('euDrawErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('euDrawErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-row">
-                        <label class="input-label">客勝</label>
-                        <div class="custom-input-group">
-                            <input id="euAwayExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="euAwayErr" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('euAwayErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('euAwayErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                        <div class="input-row">
+                            <label class="input-label">客勝</label>
+                            <div class="custom-input-group">
+                                <input id="euAwayExact" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="euAwayErr" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('euAwayErr',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('euAwayErr',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
                 <fieldset>
-                    <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
-                    <div class="input-row">
-                        <label class="input-label">主勝</label>
-                        <div class="custom-input-group">
-                            <input id="euHomeExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="euHomeErrC" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('euHomeErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('euHomeErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                    <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
+                    <div class="odds-row-desktop">
+                        <div class="input-row">
+                            <label class="input-label">主勝</label>
+                            <div class="custom-input-group">
+                                <input id="euHomeExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="euHomeErrC" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('euHomeErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('euHomeErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-row">
-                        <label class="input-label">和局</label>
-                        <div class="custom-input-group">
-                            <input id="euDrawExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="euDrawErrC" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('euDrawErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('euDrawErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                        <div class="input-row">
+                            <label class="input-label">和局</label>
+                            <div class="custom-input-group">
+                                <input id="euDrawExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="euDrawErrC" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('euDrawErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('euDrawErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-row">
-                        <label class="input-label">客勝</label>
-                        <div class="custom-input-group">
-                            <input id="euAwayExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
-                            <div class="divider-text">±</div>
-                            <input id="euAwayErrC" class="err-input" step="0.01" type="number" value="0.05"/>
-                            <div class="step-btns">
-                                <button onclick="stepErr('euAwayErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
-                                <button onclick="stepErr('euAwayErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                        <div class="input-row">
+                            <label class="input-label">客勝</label>
+                            <div class="custom-input-group">
+                                <input id="euAwayExactC" class="main-input" placeholder="精確值" step="0.01" type="number"/>
+                                <div class="divider-text">±</div>
+                                <input id="euAwayErrC" class="err-input" step="0.01" type="number" value="0.05"/>
+                                <div class="step-btns">
+                                    <button onclick="stepErr('euAwayErrC',0.05)" type="button" class="step-btn"><i class="bi bi-caret-up-fill"></i></button>
+                                    <button onclick="stepErr('euAwayErrC',-0.05)" type="button" class="step-btn"><i class="bi bi-caret-down-fill"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -679,32 +1239,60 @@
             </div>
         </form>
         
-        <!-- Results -->
         <div id="euResultSection" class="results-section">
             <div id="euStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('eu')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
-                <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
-            </button>
+            <button class="btn-3d btn-grey" onclick="toggleList('eu')" type="button" style="margin-top:20px; padding:10px;"><i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表</button>
 
             <div id="euListSection" class="list-section">
+                <!-- 賽季篩選 -->
                 <div class="list-controls">
-                    <select id="euSeasonFilter" class="filter-select" onchange="applySeasonFilter('eu')">
-                        <option value="all">📅 所有賽季 (All Seasons)</option>
-                    </select>
+                    <label class="input-label">📅 賽季篩選</label>
+                    <div class="multi-select-container" style="position:relative;">
+                        <div class="multi-select-btn" onclick="toggleSeasonDropdown('eu')" id="seasonBtn_eu">
+                            選擇賽季 (已選: 全部)
+                        </div>
+                        <div class="multi-select-dropdown" id="seasonDropdown_eu">
+                            <div class="multi-actions-top">
+                                <button class="btn-sm-action" style="background:#0f766e;color:#fff" onclick="selectAllSeasons('eu', true)">全選</button>
+                                <button class="btn-sm-action" style="background:#b91c1c;color:#fff" onclick="selectAllSeasons('eu', false)">清空</button>
+                            </div>
+                            <div id="seasonOptions_eu"></div>
+                            <div class="multi-actions-bottom">
+                                <button class="btn-confirm" onclick="confirmSeasonFilter('eu')">確認並套用</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 即時結果過濾 -->
+                    <label class="input-label" style="margin-top:12px;">⚡️ 結果過濾</label>
+                    <div class="result-filter-bar">
+                        <label class="res-check-item">
+                            <input type="checkbox" checked onchange="toggleResult('eu', 'win')" id="cb_eu_win">
+                            <span class="res-check-label lbl-win"><i class="bi bi-check-circle-fill"></i> 主勝</span>
+                        </label>
+                        <label class="res-check-item">
+                            <input type="checkbox" checked onchange="toggleResult('eu', 'draw')" id="cb_eu_draw">
+                            <span class="res-check-label lbl-draw"><i class="bi bi-dash-circle-fill"></i> 和局</span>
+                        </label>
+                        <label class="res-check-item">
+                            <input type="checkbox" checked onchange="toggleResult('eu', 'lose')" id="cb_eu_lose">
+                            <span class="res-check-label lbl-lose"><i class="bi bi-x-circle-fill"></i> 客勝</span>
+                        </label>
+                    </div>
                 </div>
+
                 <div class="table-container" id="euTableContainer">
                     <div class="table-responsive">
-                        <table id="euTable">
+                        <table id="euTable" data-order="asc">
                             <thead>
                             <tr>
-                                <th onclick="sortTable('euTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('euTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('euTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('euTable', 3)">初盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('euTable', 4)">終盤<br>(主/和/客) <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('euTable', 5)">勝負 <i class="bi bi-arrow-down-up"></i></th>
-                                <th onclick="sortTable('euTable', 6)">淨勝球 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('euTable', 0)">賽季 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('euTable', 1)">比賽 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('euTable', 2)">比分 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('euTable', 3)">初盤<br>(1X2) <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-green" onclick="sortTable('euTable', 4)">終盤<br>(1X2) <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('euTable', 5)">勝負 <i class="bi bi-arrow-down-up"></i></th>
+                                <th class="th-white" onclick="sortTable('euTable', 6)">淨勝球 <i class="bi bi-arrow-down-up"></i></th>
                             </tr>
                             </thead>
                             <tbody></tbody>
@@ -716,12 +1304,18 @@
     </div>
 </div>
 
-<div class="toast-msg" id="toast">已複製比賽詳情！</div>
-
 <script>
     /* 1. Global Vars */
     let AH = null, OU = null, EU = null;
+    let currentTab = 'ah';
     let lastAhResult = [], lastOuResult = [], lastEuResult = [];
+    let selectedSeasons = new Set();
+    // Result Filter State (Default All Checked)
+    let selectedResults = { 
+        ah: new Set(['win','draw','lose']), 
+        ou: new Set(['win','draw','lose']), 
+        eu: new Set(['win','draw','lose']) 
+    };
 
     const DB = {
       asian:     { base: 'asian_handicap', subdir: '' },
@@ -739,10 +1333,8 @@
         document.getElementById(id).classList.toggle("active", idx === i);
         const panel = document.getElementById("tc" + (idx + 1));
         if(idx === i) {
-            panel.style.display = "block";
-            panel.style.animation = 'none';
-            panel.offsetHeight; 
-            panel.style.animation = 'fadeUp 0.6s ease-out';
+            panel.style.display = "block"; panel.style.animation = 'none'; panel.offsetHeight; panel.style.animation = 'fadeUp 0.4s ease-out';
+            if(i===0) currentTab='ah'; else if(i===1) currentTab='ou'; else currentTab='eu';
         } else {
             panel.style.display = "none";
         }
@@ -774,52 +1366,48 @@
             if (!startTimestamp) startTimestamp = timestamp;
             const progress = Math.min((timestamp - startTimestamp) / duration, 1);
             obj.innerHTML = Math.floor(progress * (end - start) + start);
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            } else {
-                obj.innerHTML = end; 
-            }
+            if (progress < 1) window.requestAnimationFrame(step); else obj.innerHTML = end; 
         };
         window.requestAnimationFrame(step);
     }
 
-    /* Motion: Render Stats with Animation */
+    /* Motion: Render Stats (Fix: Separate Value and Pct) */
     function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, prefix, extraInfo = '') {
-        const idWin = prefix + 'Win';
-        const idDraw = prefix + 'Draw';
-        const idLose = prefix + 'Lose';
-        const idPie = prefix + 'Pie';
+        const idWin = prefix + 'Win', idDraw = prefix + 'Draw', idLose = prefix + 'Lose', idPie = prefix + 'Pie';
         
-        const html = `
+        return `
         <div class="stat-cards">
             <div class="stat-card win">
                 <span class="label">${wLabel}</span>
-                <span class="value" id="${idWin}">0</span>
-                <span class="pct">${pct(w, tot)}</span>
+                <div class="stat-value-box">
+                    <span class="value" id="${idWin}">0</span>
+                    <span class="pct">(${pct(w, tot)})</span>
+                </div>
             </div>
             <div class="stat-card draw">
                 <span class="label">${dLabel}</span>
-                <span class="value" id="${idDraw}">0</span>
-                <span class="pct">${pct(d, tot)}</span>
+                <div class="stat-value-box">
+                    <span class="value" id="${idDraw}">0</span>
+                    <span class="pct">(${pct(d, tot)})</span>
+                </div>
             </div>
             <div class="stat-card lose">
                 <span class="label">${lLabel}</span>
-                <span class="value" id="${idLose}">0</span>
-                <span class="pct">${pct(l, tot)}</span>
+                <div class="stat-value-box">
+                    <span class="value" id="${idLose}">0</span>
+                    <span class="pct">(${pct(l, tot)})</span>
+                </div>
             </div>
         </div>
-        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.9rem; color:#d1fae5;">${extraInfo}</div>` : ''}
+        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.85rem; color:#d1fae5;">${extraInfo}</div>` : ''}
         <div class="piebox" id="${idPie}">
           <!-- Pie chart will be injected here after delay -->
         </div>
         `;
-        return html;
     }
 
     function triggerCountUp(w, d, l, prefix) {
-        const idWin = prefix + 'Win';
-        const idDraw = prefix + 'Draw';
-        const idLose = prefix + 'Lose';
+        const idWin = prefix + 'Win', idDraw = prefix + 'Draw', idLose = prefix + 'Lose';
         setTimeout(() => {
             if(document.getElementById(idWin)) animateValue(document.getElementById(idWin), 0, w, 800);
             if(document.getElementById(idDraw)) animateValue(document.getElementById(idDraw), 0, d, 800);
@@ -827,35 +1415,34 @@
         }, 100);
     }
 
+    /* Fix: Add Legend to Pie Chart (圖 2) */
     function renderPieWithDelay(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, prefix) {
         const idPie = prefix + 'Pie';
         const pieContainer = document.getElementById(idPie);
         if(!pieContainer) return;
         
-        // Wait 800ms
+        // Wait 500ms
         setTimeout(() => {
             pieContainer.innerHTML = `
               ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
               <div class="pie-legend">
-                <div><span style="background:${wColor}"></span>${wLabel}</div>
-                <div><span style="background:${dColor}"></span>${dLabel}</div>
-                <div><span style="background:${lColor}"></span>${lLabel}</div>
+                <div class="legend-item"><span class="legend-dot" style="background:${wColor}"></span>${wLabel}</div>
+                <div class="legend-item"><span class="legend-dot" style="background:${dColor}"></span>${dLabel}</div>
+                <div class="legend-item"><span class="legend-dot" style="background:${lColor}"></span>${lLabel}</div>
               </div>
             `;
-            // Trigger animation class for path
             const paths = pieContainer.querySelectorAll('.pie-chart-circle');
             setTimeout(() => {
                 paths.forEach(p => p.classList.add('show'));
             }, 50);
-        }, 800);
+        }, 500);
     }
 
     function drawPieChart(data) {
       const total = data.reduce((s, x) => s + x.val, 0);
-      const sz = 240; // Size
+      const sz = 240; 
       if (!total) return `<svg width="${sz}" height="${sz}"></svg>`;
 
-      const r = sz / 2 - 10, cx = sz / 2, cy = sz / 2;
       const slices = data.filter(d => d.val > 0);
 
       if (slices.length === 1) {
@@ -944,11 +1531,18 @@
             if(form) form.reset();
             const stat = document.getElementById(type + 'ResultSection');
             if(stat) stat.style.display = 'none';
+            // Reset result filters
+            selectedResults[type] = new Set(['win','draw','lose']);
+            document.getElementById(`cb_${type}_win`).checked = true;
+            document.getElementById(`cb_${type}_draw`).checked = true;
+            document.getElementById(`cb_${type}_lose`).checked = true;
         });
         lastAhResult = []; lastOuResult = []; lastEuResult = [];
+        selectedSeasons.clear(); // Clear season selection
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    /* === Search Functions === */
     function doAhSearch() {
       const [hMin, hMax] = range('ahHomeExact', 'ahHomeErr'),
             [aMin, aMax] = range('ahAwayExact', 'ahAwayErr'),
@@ -988,6 +1582,8 @@
       renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', 'ah');
       
       document.getElementById('ahListSection').style.display = 'none';
+      
+      // Init Season Filter Logic
       populateSeasons('ah', lastAhResult);
     }
 
@@ -1084,43 +1680,175 @@
       populateSeasons('eu', lastEuResult);
     }
 
+    /* === Multi-Select & Result Filter Logic === */
     function populateSeasons(type, data) {
+        selectedSeasons.clear();
+        
         const seasons = [...new Set(data.map(d => d.season))].sort().reverse();
-        const sel = document.getElementById(type + 'SeasonFilter');
-        if(sel) {
-             sel.innerHTML = '<option value="all">📅 所有賽季 (Show All)</option>' + 
-            seasons.map(s => `<option value="${s}">${s}</option>`).join('');
-        }
+        const optContainer = document.getElementById(`seasonOptions_${type}`);
+        
+        optContainer.innerHTML = seasons.map(s => `
+            <div class="multi-select-option" onclick="toggleSeasonOption(this, '${s}', '${type}')">
+                <input type="checkbox" value="${s}" checked> ${s}
+            </div>
+        `).join('');
+        
+        seasons.forEach(s => selectedSeasons.add(String(s)));
+        updateSeasonBtnText(type);
     }
     
-    function applySeasonFilter(type) {
-        const sel = document.getElementById(type + 'SeasonFilter').value;
+    function toggleSeasonDropdown(type) {
+        document.getElementById(`seasonDropdown_${type}`).classList.toggle('show');
+    }
+    
+    function toggleSeasonOption(div, season, type) {
+        const cb = div.querySelector('input');
+        if (event.target !== cb) { cb.checked = !cb.checked; }
+        updateSeasonBtnText(type); 
+    }
+    
+    function selectAllSeasons(type, selectAll) {
+        const cbs = document.querySelectorAll(`#seasonOptions_${type} input`);
+        cbs.forEach(cb => cb.checked = selectAll);
+        updateSeasonBtnText(type);
+    }
+    
+    function updateSeasonBtnText(type) {
+        const btn = document.getElementById(`seasonBtn_${type}`);
+        const cbs = document.querySelectorAll(`#seasonOptions_${type} input`);
+        const checkedCount = Array.from(cbs).filter(c => c.checked).length;
+        
+        if(checkedCount === cbs.length) btn.innerText = "選擇賽季 (已選: 全部)";
+        else if(checkedCount === 0) btn.innerText = "選擇賽季 (未選)";
+        else btn.innerText = `選擇賽季 (已選 ${checkedCount} 個)`;
+    }
+    
+    // === Confirm Logic ===
+    function confirmSeasonFilter(type) {
+        selectedSeasons.clear();
+        const cbs = document.querySelectorAll(`#seasonOptions_${type} input:checked`);
+        cbs.forEach(cb => selectedSeasons.add(cb.value)); 
+        
+        applyFilterAndRender(type);
+        toggleSeasonDropdown(type);
+    }
+    
+    // === New: Toggle Result Checkbox (Real-time) ===
+    function toggleResult(type, res) {
+        const set = selectedResults[type];
+        if(set.has(res)) set.delete(res); else set.add(res);
+        applyFilterAndRender(type);
+    }
+    
+    function applyFilterAndRender(type) {
         const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
-        const filtered = (sel === 'all') ? sourceData : sourceData.filter(r => r.season == sel);
-        confirmAndRender(filtered, type + 'Table', null, true);
-    }
-
-    function copyToClipboard(text) {
-        if (!text) return;
-        const el = document.createElement('textarea');
-        el.value = text;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        const toast = document.getElementById('toast');
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
-    }
-
-    function filterTable(tableId, query) {
-        const table = document.getElementById(tableId);
-        const trs = table.querySelectorAll('tbody tr');
-        query = query.toLowerCase();
-        trs.forEach(tr => {
-            const text = tr.innerText.toLowerCase();
-            tr.style.display = text.includes(query) ? '' : 'none';
+        
+        const filtered = sourceData.filter(r => {
+            // 1. Season Filter
+            if (!selectedSeasons.has(String(r.season))) return false;
+            
+            // 2. Result Filter
+            let res = '';
+            if (type === 'ah') {
+                const [h, a] = r.ft_score.split('-').map(Number);
+                const diff = h + r.AH_close_handicap - a;
+                res = diff > 0 ? 'win' : diff < 0 ? 'lose' : 'draw';
+            } else if (type === 'ou') {
+                const sum = r.ft_score.split('-').reduce((a,b)=>+a+(+b),0);
+                res = sum > r.close_OU_line ? 'win' : sum < r.close_OU_line ? 'lose' : 'draw'; // win=Over, lose=Under
+            } else {
+                const [h, a] = r.ft_score.split('-').map(Number);
+                res = h > a ? 'win' : h < a ? 'lose' : 'draw';
+            }
+            return selectedResults[type].has(res);
         });
+        
+        confirmAndRender(filtered, type + 'Table');
+    }
+
+    /* === Table Render === */
+    function toggleList(type) {
+        const sec = document.getElementById(`${type}ListSection`);
+        const tableContainer = document.getElementById(`${type}TableContainer`);
+        if (sec.style.display === 'none') {
+            sec.style.display = 'block';
+            tableContainer.style.display = 'block';
+            // Render using current selection (initially all)
+            applyFilterAndRender(type); 
+            sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            sec.style.display = 'none';
+        }
+    }
+
+    // Independent Render Functions (With Colors)
+    function renderAhRow(r) {
+        const [hs, as] = r.ft_score.split('-').map(Number);
+        const diff = hs + r.AH_close_handicap - as;
+        const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
+        return `<tr>
+            <td>${r.season}</td>
+            <td>${r.home_team} vs ${r.away_team}</td>
+            <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+            <td>${r.AH_open_handicap}</td>
+            <td class="text-odds">${r.AH_open_home_odds}</td>
+            <td class="text-odds">${r.AH_open_away_odds}</td>
+            <td>${r.AH_close_handicap}</td>
+            <td class="text-odds">${r.AH_close_home_odds}</td>
+            <td class="text-odds">${r.AH_close_away_odds}</td>
+            <td>${out}</td>
+        </tr>`;
+    }
+
+    function renderOuRow(r) {
+        const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
+        const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
+        return `<tr>
+            <td>${r.season}</td>
+            <td>${r.home_team} vs ${r.away_team}</td>
+            <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+            <td>${r.OU_line}</td>
+            <td class="text-odds">${r.OU_open_over_odds}</td>
+            <td class="text-odds">${r.OU_open_under_odds}</td>
+            <td>${r.close_OU_line}</td>
+            <td class="text-odds">${r.OU_close_over_odds}</td>
+            <td class="text-odds">${r.OU_close_under_odds}</td>
+            <td>${out}</td>
+        </tr>`;
+    }
+
+    function renderEuRow(r) {
+        const [hs, as] = r.ft_score.split('-').map(Number);
+        const diff = hs - as;
+        const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
+        return `<tr>
+            <td>${r.season}</td>
+            <td>${r.home_team} vs ${r.away_team}</td>
+            <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
+            <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
+            <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
+            <td>${out}</td>
+            <td>${diff > 0 ? '+'+diff : diff}</td>
+        </tr>`;
+    }
+
+    function confirmAndRender(resultArray, tableId, renderFn, skipConfirm) {
+      if (!skipConfirm && resultArray.length > 5000) {
+        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，顯示可能會導致頁面緩慢。繼續？`)) return;
+      }
+      const type = tableId.replace('Table', '');
+      const table = document.getElementById(tableId);
+      const container = document.getElementById(type + 'TableContainer');
+      const tbody = table.querySelector('tbody');
+      
+      if(resultArray.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="10" style="padding:20px; color:#d1fae5; font-weight:bold;">⚠️ 沒有符合篩選條件的比賽</td></tr>`;
+      } else {
+          const renderer = (type === 'ah') ? renderAhRow : (type === 'ou' ? renderOuRow : renderEuRow);
+          tbody.innerHTML = resultArray.map(r => renderer(r)).join('');
+      }
+      table.style.display = 'table';
+      container.style.display = 'block';
     }
 
     function sortTable(tableId, colIndex) {
@@ -1128,7 +1856,8 @@
         const tbody = table.querySelector('tbody');
         const rows = Array.from(tbody.querySelectorAll('tr'));
         const isAsc = table.getAttribute('data-order') === 'asc';
-        
+        if(rows.length > 0 && rows[0].cells.length < 2) return;
+
         rows.sort((a, b) => {
             const aText = a.children[colIndex].innerText.trim();
             const bText = b.children[colIndex].innerText.trim();
@@ -1139,73 +1868,8 @@
         });
         
         table.setAttribute('data-order', isAsc ? 'desc' : 'asc');
-        tbody.innerHTML = ''; rows.forEach(tr => tbody.appendChild(tr));
-    }
-
-    function confirmAndRender(resultArray, tableId, renderFn, skipConfirm) {
-      if (!skipConfirm && resultArray.length > 5000) {
-        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，顯示可能較慢，確定要繼續嗎？`)) return;
-      }
-      
-      const type = tableId.replace('Table', '');
-      
-      if(!renderFn) {
-          if(type === 'ah') {
-              renderFn = r => {
-                const [hs, as] = r.ft_score.split('-').map(Number);
-                const diff = hs + r.AH_close_handicap - as;
-                const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
-                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.AH_open_handicap}</td><td class="text-odds">${r.AH_open_home_odds}</td><td class="text-odds">${r.AH_open_away_odds}</td><td>${r.AH_close_handicap}</td><td class="text-odds">${r.AH_close_home_odds}</td><td class="text-odds">${r.AH_close_away_odds}</td><td>${out}</td></tr>`;
-              };
-          } else if (type === 'ou') {
-              renderFn = r => {
-                const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
-                const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
-                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.OU_line}</td><td class="text-odds">${r.OU_open_over_odds}</td><td class="text-odds">${r.OU_open_under_odds}</td><td>${r.close_OU_line}</td><td class="text-odds">${r.OU_close_over_odds}</td><td class="text-odds">${r.OU_close_under_odds}</td><td>${out}</td></tr>`;
-              };
-          } else {
-              renderFn = r => {
-                const [hs, as] = r.ft_score.split('-').map(Number);
-                const diff = hs - as;
-                const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
-                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td><td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td><td>${out}</td><td>${diff > 0 ? '+'+diff : diff}</td></tr>`;
-              };
-          }
-      }
-
-      const table = document.getElementById(tableId);
-      const container = document.getElementById(type + 'TableContainer');
-      const tbody = table.querySelector('tbody');
-      
-      tbody.innerHTML = '';
-      const rowsHtml = resultArray.map(r => renderFn(r)).join('');
-      tbody.innerHTML = rowsHtml;
-      
-      const newTbody = tbody.cloneNode(true);
-      tbody.parentNode.replaceChild(newTbody, tbody);
-      newTbody.addEventListener('click', function(e) {
-          const tr = e.target.closest('tr');
-          if (tr) {
-              const info = Array.from(tr.children).map(td => td.innerText).join(' | ');
-              copyToClipboard(info);
-          }
-      });
-
-      table.style.display = 'table';
-      container.style.display = 'block';
-      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function toggleList(type) {
-        const listSec = document.getElementById(type + 'ListSection');
-        if (listSec.style.display === 'none') {
-            listSec.style.display = 'block';
-            const data = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
-            populateSeasons(type, data);
-            confirmAndRender(data, type + 'Table', null, true);
-        } else {
-            listSec.style.display = 'none';
-        }
+        tbody.innerHTML = '';
+        rows.forEach(tr => tbody.appendChild(tr));
     }
 
     ['resetAhBtn', 'resetOuBtn', 'resetEuBtn'].forEach(id => {
@@ -1224,11 +1888,25 @@
       } catch (e) {
         console.error('資料載入失敗', e);
         document.querySelector('.spinner-ball').style.display = 'none';
-        document.querySelector('#loadingOverlay .loading-text').innerHTML = `<span style="color:#ef4444">⚠️ 數據載入失敗<br><small>請確保 .json 檔案在同一目錄</small></span>`;
+        document.querySelector('#loadingOverlay .loading-text').innerHTML = 
+            `<span style="color:#ef4444">⚠️ 數據載入失敗</span>`;
       } finally {
         __hideLoading();
       }
     })();
+    
+    // Close dropdown on outside click
+    window.onclick = function(event) {
+        if (!event.target.closest('.multi-select-container')) {
+            const dds = document.getElementsByClassName("multi-select-dropdown");
+            for (let i = 0; i < dds.length; i++) {
+                if (dds[i].classList.contains('show')) {
+                    dds[i].classList.remove('show');
+                }
+            }
+        }
+    }
 </script>
 </body>
 </html>
+
