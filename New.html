@@ -64,7 +64,7 @@
     }
 
     /* =========================================
-       3. 頂部導航 (Header) - 至尊版
+       3. 頂部導航 (Header) - 至尊 Emoji 版
        ========================================= */
     .header { position: relative; text-align: center; padding: 25px 10px 15px; z-index: 10; width: 100%; }
     
@@ -83,13 +83,13 @@
         100% { text-shadow: 0 0 25px rgba(255,255,255,0.6), 0 0 40px rgba(52, 211, 153, 0.5); }
     }
 
-    /* 至尊足球 Logo Style */
-    .football-logo {
-        width: clamp(40px, 9vw, 65px);
-        height: clamp(40px, 9vw, 65px);
-        /* 加強陰影令佢立體啲 */
+    /* 至尊 Emoji Style */
+    .football-emoji {
+        font-size: clamp(40px, 9vw, 65px);
+        line-height: 1;
         filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-        animation: slowSpin 15s linear infinite;
+        animation: slowSpin 10s linear infinite;
+        display: inline-block;
     }
     
     @keyframes slowSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -277,6 +277,7 @@
     .btn-confirm {
         width: 100%; padding: 12px; background: #10b981; color: #fff; font-size: 1rem; border-radius: 8px; border: none; font-weight: bold;
         box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        cursor: pointer;
     }
     .btn-confirm:active { background: #059669; transform: translateY(2px); }
 
@@ -284,7 +285,10 @@
         padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
         cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.95rem;
     }
-    .multi-select-option input { transform: scale(1.3); accent-color: var(--brand-green); }
+    /* 修正 checkbox 的樣式 */
+    .multi-select-option input { 
+        transform: scale(1.3); accent-color: var(--brand-green); margin-right: 5px; cursor: pointer;
+    }
     
     .table-container { background: rgba(0, 0, 0, 0.2); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-top: 15px; }
     table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
@@ -331,27 +335,11 @@
 
 <div class="header">
     <h1>
-        <!-- 真．至尊足球 Logo (歐聯星紋幾何風格) -->
-        <svg class="football-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:#a7f3d0;stop-opacity:1" />
-                </linearGradient>
-            </defs>
-            <!-- 外圈光暈 -->
-            <circle cx="50" cy="50" r="46" stroke="url(#grad1)" stroke-width="2" fill="rgba(255,255,255,0.05)"/>
-            <!-- 核心幾何 (Hexagon/Pentagon abstract) -->
-            <path d="M50 5 L75 25 L65 55 L35 55 L25 25 Z" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
-            <path d="M50 5 L50 30 M75 25 L88 45 M65 55 L75 80 M35 55 L25 80 M25 25 L12 45" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M50 30 L68 42 L62 62 L38 62 L32 42 Z" fill="white" fill-opacity="0.9"/>
-            <circle cx="50" cy="50" r="4" fill="#064e3b"/>
-        </svg>
+        <!-- 1. Emoji 足球 (帶轉動特效) -->
+        <div class="football-emoji">⚽️</div>
         足球歷史賠率篩選
     </h1>
     <div class="desc">大數據分析 (2013-2025)</div>
-    <!-- 時間戳已保留但隱藏 -->
-    <div class="timestamp" id="ts" style="display:none">2025/08/01</div>
 </div>
 
 <div class="nav-container">
@@ -463,9 +451,9 @@
                                 <button class="btn-sm-action" style="background:#b91c1c;color:#fff" onclick="selectAllSeasons('ah', false)">清空</button>
                             </div>
                             <div id="seasonOptions_ah"></div>
-                            <!-- 底部確認鍵: 綁定 applySeasonFilter -->
+                            <!-- 3. 確認並套用按鈕 -->
                             <div class="multi-actions-bottom">
-                                <button class="btn-confirm" onclick="applySeasonFilter('ah')">確認並套用</button>
+                                <button class="btn-confirm" type="button" onclick="applySeasonFilter('ah')">確認並套用</button>
                             </div>
                         </div>
                     </div>
@@ -598,7 +586,7 @@
                             </div>
                             <div id="seasonOptions_ou"></div>
                             <div class="multi-actions-bottom">
-                                <button class="btn-confirm" onclick="applySeasonFilter('ou')">確認並套用</button>
+                                <button class="btn-confirm" type="button" onclick="applySeasonFilter('ou')">確認並套用</button>
                             </div>
                         </div>
                     </div>
@@ -747,7 +735,7 @@
                             </div>
                             <div id="seasonOptions_eu"></div>
                             <div class="multi-actions-bottom">
-                                <button class="btn-confirm" onclick="applySeasonFilter('eu')">確認並套用</button>
+                                <button class="btn-confirm" type="button" onclick="applySeasonFilter('eu')">確認並套用</button>
                             </div>
                         </div>
                     </div>
@@ -781,7 +769,7 @@
     let AH = null, OU = null, EU = null;
     let currentTab = 'ah';
     let lastAhResult = [], lastOuResult = [], lastEuResult = [];
-    let selectedSeasons = new Set(); // 複選集合
+    let selectedSeasons = new Set(); 
 
     const DB = {
       asian:     { base: 'asian_handicap', subdir: '' },
@@ -800,12 +788,9 @@
         const panel = document.getElementById("tc" + (idx + 1));
         if(idx === i) {
             panel.style.display = "block";
-            // Trigger animation reflow
             panel.style.animation = 'none';
             panel.offsetHeight; 
             panel.style.animation = 'fadeUp 0.4s ease-out';
-            
-            // Set current tab context
             if(i===0) currentTab='ah'; else if(i===1) currentTab='ou'; else currentTab='eu';
         } else {
             panel.style.display = "none";
@@ -847,7 +832,7 @@
         window.requestAnimationFrame(step);
     }
 
-    /* Motion: Render Stats with Animation */
+    /* Motion: Render Stats */
     function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, prefix, extraInfo = '') {
         const idWin = prefix + 'Win';
         const idDraw = prefix + 'Draw';
@@ -873,9 +858,7 @@
             </div>
         </div>
         ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.85rem; color:#d1fae5;">${extraInfo}</div>` : ''}
-        <div class="piebox" id="${idPie}">
-          <!-- Pie chart will be injected here after delay -->
-        </div>
+        <div class="piebox" id="${idPie}"></div>
         `;
         return html;
     }
@@ -895,8 +878,6 @@
         const idPie = prefix + 'Pie';
         const pieContainer = document.getElementById(idPie);
         if(!pieContainer) return;
-        
-        // Wait 500ms
         setTimeout(() => {
             pieContainer.innerHTML = `
               ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
@@ -907,27 +888,20 @@
               </div>
             `;
             const paths = pieContainer.querySelectorAll('.pie-chart-circle');
-            setTimeout(() => {
-                paths.forEach(p => p.classList.add('show'));
-            }, 50);
+            setTimeout(() => { paths.forEach(p => p.classList.add('show')); }, 50);
         }, 500);
     }
 
     function drawPieChart(data) {
       const total = data.reduce((s, x) => s + x.val, 0);
-      const sz = 200; // Smaller Size for mobile
+      const sz = 200; 
       if (!total) return `<svg width="${sz}" height="${sz}"></svg>`;
-
-      const r = sz / 2 - 10, cx = sz / 2, cy = sz / 2;
       const slices = data.filter(d => d.val > 0);
-
       if (slices.length === 1) {
         return `<div style="width:${sz}px; height:${sz}px; border-radius:50%; background:${slices[0].color};" class="pie-chart-circle"></div>`;
       }
-      
       let gradientParts = [];
       let currentAngle = 0;
-      
       data.forEach(slice => {
           if(slice.val > 0) {
               const angle = (slice.val / total) * 360;
@@ -935,7 +909,6 @@
               currentAngle += angle;
           }
       });
-      
       const gradient = `conic-gradient(${gradientParts.join(', ')})`;
       return `<div class="pie-chart-circle" style="width:${sz}px; height:${sz}px; border-radius:50%; background:${gradient};"></div>`;
     }
@@ -958,42 +931,23 @@
       const prefix = subdir ? (subdir.replace(/\/$/, '') + '/') : '';
       const urls = [`${prefix}${base}.json`];
       for (let i = 1; i <= maxParts; i++) { urls.push(`${prefix}${base}${i}.json`); }
-
-      const results = await Promise.allSettled(
-        urls.map(u => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null))
-      );
+      const results = await Promise.allSettled(urls.map(u => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null)));
       const merged = [];
-      for (const r of results) {
-        if (r.status === 'fulfilled' && Array.isArray(r.value)) merged.push(...r.value);
-      }
+      for (const r of results) { if (r.status === 'fulfilled' && Array.isArray(r.value)) merged.push(...r.value); }
       return merged;
     }
 
-    async function getAsianData(opts = {}) {
-      if (!AH) AH = await loadWithTrailingNumbers(DB.asian.base, { subdir: DB.asian.subdir, ...opts });
-      return AH;
-    }
-    async function getOverUnderData(opts = {}) {
-      if (!OU) OU = await loadWithTrailingNumbers(DB.overUnder.base, { subdir: DB.overUnder.subdir, ...opts });
-      return OU;
-    }
-    async function getEuropeanData(opts = {}) {
-      if (!EU) EU = await loadWithTrailingNumbers(DB.european.base, { subdir: DB.european.subdir, ...opts });
-      return EU;
-    }
+    async function getAsianData(opts = {}) { if (!AH) AH = await loadWithTrailingNumbers(DB.asian.base, { subdir: DB.asian.subdir, ...opts }); return AH; }
+    async function getOverUnderData(opts = {}) { if (!OU) OU = await loadWithTrailingNumbers(DB.overUnder.base, { subdir: DB.overUnder.subdir, ...opts }); return OU; }
+    async function getEuropeanData(opts = {}) { if (!EU) EU = await loadWithTrailingNumbers(DB.european.base, { subdir: DB.european.subdir, ...opts }); return EU; }
 
     function fillSelect(id, set) {
       const arr = Array.from(set).filter(v => v != null).sort((a, b) => a - b);
-      document.getElementById(id).innerHTML =
-        '<option value="">--</option>' +
-        arr.map(v => `<option value="${v}">${v}</option>`).join('');
+      document.getElementById(id).innerHTML = '<option value="">--</option>' + arr.map(v => `<option value="${v}">${v}</option>`).join('');
     }
 
     function initAll() {
-      if (!AH || !OU || !EU) {
-        console.error("Data not loaded yet!");
-        return;
-      }
+      if (!AH || !OU || !EU) { console.error("Data not loaded yet!"); return; }
       fillSelect('ahInitHand', new Set(AH.map(r => r.AH_open_handicap)));
       fillSelect('ahCloseHand', new Set(AH.map(r => r.AH_close_handicap)));
       fillSelect('ouInitLine', new Set(OU.map(r => r.OU_line)));
@@ -1012,6 +966,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    /* === Search Functions === */
     function doAhSearch() {
       const [hMin, hMax] = range('ahHomeExact', 'ahHomeErr'),
             [aMin, aMax] = range('ahAwayExact', 'ahAwayErr'),
@@ -1029,29 +984,7 @@
         if (aMinC !== null && (r.AH_close_away_odds < aMinC || r.AH_close_away_odds > aMaxC)) return false;
         return true;
       });
-
-      let w = 0, d = 0, l = 0;
-      lastAhResult.forEach(r => {
-        const [hs, as] = r.ft_score.split('-').map(Number);
-        const diff = hs + r.AH_close_handicap - as;
-        if (diff > 0) w++; else if (diff < 0) l++; else d++;
-      });
-
-      const tot = lastAhResult.length;
-      const resSec = document.getElementById('ahResultSection');
-      
-      document.getElementById('ahStat').innerHTML = generateStatsHTML(
-          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, 'ah'
-      );
-      
-      resSec.style.display = 'block';
-      setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-      
-      triggerCountUp(w, d, l, 'ah');
-      renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', 'ah');
-      
-      document.getElementById('ahListSection').style.display = 'none';
-      populateSeasons('ah', lastAhResult);
+      processResults('ah', lastAhResult);
     }
 
     function doOuSearch() {
@@ -1071,30 +1004,7 @@
         if (sMinC !== null && (r.OU_close_under_odds < sMinC || r.OU_close_under_odds > sMaxC)) return false;
         return true;
       });
-
-      let over = 0, push = 0, under = 0;
-      lastOuResult.forEach(r => {
-        const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
-        if (sum > r.close_OU_line) over++;
-        else if (sum < r.close_OU_line) under++;
-        else push++;
-      });
-
-      const tot = lastOuResult.length;
-      const resSec = document.getElementById('ouResultSection');
-      
-      document.getElementById('ouStat').innerHTML = generateStatsHTML(
-          over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', tot, 'ou'
-      );
-      
-      resSec.style.display = 'block';
-      setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-
-      triggerCountUp(over, push, under, 'ou');
-      renderPieWithDelay(over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', 'ou');
-      
-      document.getElementById('ouListSection').style.display = 'none';
-      populateSeasons('ou', lastOuResult);
+      processResults('ou', lastOuResult);
     }
 
     function doEuSearch() {
@@ -1114,43 +1024,51 @@
         const cA = getEU(r, 'close_away'); if (aMinC !== null && (cA < aMinC || cA > aMaxC)) return false;
         return true;
       });
-
-      let w = 0, d = 0, l = 0, d1 = 0, d2 = 0, d3 = 0;
-      lastEuResult.forEach(r => {
-        const [hs, as] = r.ft_score.split('-').map(Number);
-        const diff = hs - as;
-        if (diff > 0) {
-          w++;
-          if (diff === 1) d1++; else if (diff === 2) d2++; else d3++;
-        } else if (diff < 0) {
-          l++;
-        } else {
-          d++;
-        }
-      });
-
-      const tot = lastEuResult.length;
-      const extra = `總場數：${tot} <br> <small style="color:#d1fae5">主勝淨勝球 ➜ 1球:${d1} | 2球:${d2} | 3+球:${d3}</small>`;
-      const resSec = document.getElementById('euResultSection');
-      
-      document.getElementById('euStat').innerHTML = generateStatsHTML(
-          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '主勝', '和局', '客勝', tot, 'eu', extra
-      );
-      
-      resSec.style.display = 'block';
-      setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-
-      triggerCountUp(w, d, l, 'eu');
-      renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', '主勝', '和局', '客勝', 'eu');
-        
-      document.getElementById('euListSection').style.display = 'none';
-      populateSeasons('eu', lastEuResult);
+      processResults('eu', lastEuResult);
     }
 
-    /* === Multi-Select Season Logic (Apply Button Logic) === */
-    function populateSeasons(type, data) {
-        selectedSeasons.clear();
+    function processResults(type, data) {
+        let w=0, d=0, l=0;
+        // Calculation logic reused for stats
+        if(type==='ah') {
+            data.forEach(r => {
+                const [hs, as] = r.ft_score.split('-').map(Number);
+                const diff = hs + r.AH_close_handicap - as;
+                if(diff > 0) w++; else if(diff < 0) l++; else d++;
+            });
+        } else if(type==='ou') {
+            data.forEach(r => {
+                const sum = r.ft_score.split('-').reduce((a,b)=>+a+(+b),0);
+                if(sum > r.close_OU_line) w++; else if(sum < r.close_OU_line) l++; else d++;
+            });
+        } else {
+            data.forEach(r => {
+                const [hs, as] = r.ft_score.split('-').map(Number);
+                if(hs > as) w++; else if(hs < as) l++; else d++;
+            });
+        }
+
+        const tot = data.length;
+        const resSec = document.getElementById(type+'ResultSection');
         
+        let labels = type==='ah' ? ['贏盤','和盤','輸盤'] : type==='ou' ? ['大球','走盤','小球'] : ['主勝','和局','客勝'];
+        
+        document.getElementById(type+'Stat').innerHTML = generateStatsHTML(w, d, l, '#ef4444', '#22c55e', '#3b82f6', labels[0], labels[1], labels[2], tot, type);
+        
+        resSec.style.display = 'block';
+        setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        
+        triggerCountUp(w, d, l, type);
+        renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', labels[0], labels[1], labels[2], type);
+        
+        document.getElementById(type+'ListSection').style.display = 'none';
+        populateSeasons(type, data);
+    }
+
+    /* === Multi-Select Logic (Fixed) === */
+    function populateSeasons(type, data) {
+        // Reset Logic
+        selectedSeasons.clear();
         const seasons = [...new Set(data.map(d => d.season))].sort().reverse();
         const optContainer = document.getElementById(`seasonOptions_${type}`);
         
@@ -1160,72 +1078,66 @@
             </div>
         `).join('');
         
+        // Auto-select all by default internally
         seasons.forEach(s => selectedSeasons.add(s));
         updateSeasonBtnText(type);
     }
     
     function toggleSeasonDropdown(type) {
-        const dd = document.getElementById(`seasonDropdown_${type}`);
-        dd.classList.toggle('show');
+        document.getElementById(`seasonDropdown_${type}`).classList.toggle('show');
     }
     
     function toggleSeasonOption(div, season, type) {
-        // Only updates internal state, DOES NOT render table
+        // Purely UI toggle, NO render here
         const cb = div.querySelector('input');
-        if (event.target !== cb) {
-           cb.checked = !cb.checked;
-        }
-        
-        if(cb.checked) selectedSeasons.add(season); 
-        else selectedSeasons.delete(season);
-        
-        updateSeasonBtnText(type);
+        if (event.target !== cb) { cb.checked = !cb.checked; }
+        // We don't even need to update Set here, we will read from DOM on confirm
+        updateSeasonBtnText(type); 
     }
     
     function selectAllSeasons(type, selectAll) {
-        // Only updates internal state, DOES NOT render table
         const cbs = document.querySelectorAll(`#seasonOptions_${type} input`);
-        cbs.forEach(cb => {
-            cb.checked = selectAll;
-            if(selectAll) selectedSeasons.add(cb.value); else selectedSeasons.delete(cb.value);
-        });
+        cbs.forEach(cb => cb.checked = selectAll);
         updateSeasonBtnText(type);
     }
     
     function updateSeasonBtnText(type) {
         const btn = document.getElementById(`seasonBtn_${type}`);
-        const total = document.querySelectorAll(`#seasonOptions_${type} input`).length;
-        const size = selectedSeasons.size;
+        const cbs = document.querySelectorAll(`#seasonOptions_${type} input`);
+        const total = cbs.length;
+        const checkedCount = Array.from(cbs).filter(c => c.checked).length;
         
-        if(size === total) btn.innerText = "選擇賽季 (已選: 全部)";
-        else if(size === 0) btn.innerText = "選擇賽季 (未選)";
-        else btn.innerText = `選擇賽季 (已選 ${size} 個)`;
+        if(checkedCount === total) btn.innerText = "選擇賽季 (已選: 全部)";
+        else if(checkedCount === 0) btn.innerText = "選擇賽季 (未選)";
+        else btn.innerText = `選擇賽季 (已選 ${checkedCount} 個)`;
     }
     
-    // NEW: The actual render trigger
+    // === CRITICAL FIX: Confirm Logic ===
     function applySeasonFilter(type) {
+        // 1. Re-build the Set from DOM (Guarantees sync)
+        selectedSeasons.clear();
+        const cbs = document.querySelectorAll(`#seasonOptions_${type} input:checked`);
+        cbs.forEach(cb => selectedSeasons.add(cb.value));
+        
+        // 2. Filter Data
         const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
-        const filtered = filterDataBySeasons(sourceData);
+        const filtered = sourceData.filter(r => selectedSeasons.has(r.season));
+        
+        // 3. Render
         confirmAndRender(filtered, type + 'Table', null, true);
         
-        // Close dropdown
+        // 4. Close Dropdown
         toggleSeasonDropdown(type);
     }
-    
-    function filterDataBySeasons(data) {
-        return data.filter(r => selectedSeasons.has(r.season));
-    }
 
-    /* === List & Table === */
+    /* === Table Render === */
     function toggleList(type) {
         const sec = document.getElementById(`${type}ListSection`);
         const tableContainer = document.getElementById(`${type}TableContainer`);
-        
         if (sec.style.display === 'none') {
             sec.style.display = 'block';
             tableContainer.style.display = 'block';
-            // Render initial view
-            applySeasonFilter(type); 
+            applySeasonFilter(type); // Initial render
             sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
             sec.style.display = 'none';
@@ -1234,64 +1146,32 @@
 
     function confirmAndRender(resultArray, tableId, renderFn, skipConfirm) {
       if (!skipConfirm && resultArray.length > 5000) {
-        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) {
-          return;
-        }
+        if (!confirm(`結果總共有 ${resultArray.length} 筆資料，全部顯示可能會導致頁面緩慢。確定要繼續嗎？`)) return;
       }
       
       const type = tableId.replace('Table', '');
       
-      // Default render functions
+      // Inline Renderers for completeness
       if(!renderFn) {
           if(type === 'ah') {
               renderFn = r => {
                 const [hs, as] = r.ft_score.split('-').map(Number);
                 const diff = hs + r.AH_close_handicap - as;
                 const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
-                return `<tr>
-                  <td>${r.season}</td>
-                  <td>${r.home_team} vs ${r.away_team}</td>
-                  <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
-                  <td>${r.AH_open_handicap}</td>
-                  <td class="text-odds">${r.AH_open_home_odds}</td>
-                  <td class="text-odds">${r.AH_open_away_odds}</td>
-                  <td>${r.AH_close_handicap}</td>
-                  <td class="text-odds">${r.AH_close_home_odds}</td>
-                  <td class="text-odds">${r.AH_close_away_odds}</td>
-                  <td>${out}</td>
-                </tr>`;
+                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.AH_open_handicap}</td><td style="color:#6ee7b7">${r.AH_open_home_odds}</td><td style="color:#6ee7b7">${r.AH_open_away_odds}</td><td>${r.AH_close_handicap}</td><td style="color:#6ee7b7">${r.AH_close_home_odds}</td><td style="color:#6ee7b7">${r.AH_close_away_odds}</td><td>${out}</td></tr>`;
               };
           } else if (type === 'ou') {
               renderFn = r => {
                 const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
                 const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
-                return `<tr>
-                  <td>${r.season}</td>
-                  <td>${r.home_team} vs ${r.away_team}</td>
-                  <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
-                  <td>${r.OU_line}</td>
-                  <td class="text-odds">${r.OU_open_over_odds}</td>
-                  <td class="text-odds">${r.OU_open_under_odds}</td>
-                  <td>${r.close_OU_line}</td>
-                  <td class="text-odds">${r.OU_close_over_odds}</td>
-                  <td class="text-odds">${r.OU_close_under_odds}</td>
-                  <td>${out}</td>
-                </tr>`;
+                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.OU_line}</td><td style="color:#6ee7b7">${r.OU_open_over_odds}</td><td style="color:#6ee7b7">${r.OU_open_under_odds}</td><td>${r.close_OU_line}</td><td style="color:#6ee7b7">${r.OU_close_over_odds}</td><td style="color:#6ee7b7">${r.OU_close_under_odds}</td><td>${out}</td></tr>`;
               };
           } else {
               renderFn = r => {
                 const [hs, as] = r.ft_score.split('-').map(Number);
                 const diff = hs - as;
                 const out = diff > 0 ? '<span class="badge-res bg-win">主勝</span>' : diff < 0 ? '<span class="badge-res bg-lose">客勝</span>' : '<span class="badge-res bg-draw">和局</span>';
-                return `<tr>
-                  <td>${r.season}</td>
-                  <td>${r.home_team} vs ${r.away_team}</td>
-                  <td style="font-weight:bold;color:#fff;">${r.ft_score}</td>
-                  <td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td>
-                  <td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td>
-                  <td>${out}</td>
-                  <td>${diff > 0 ? '+'+diff : diff}</td>
-                </tr>`;
+                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td><small style="color:#d1fae5">${getEU(r, 'open_home')}/${getEU(r, 'open_draw')}/${getEU(r, 'open_away')}</small></td><td><small style="color:#d1fae5">${getEU(r, 'close_home')}/${getEU(r, 'close_draw')}/${getEU(r, 'close_away')}</small></td><td>${out}</td><td>${diff > 0 ? '+'+diff : diff}</td></tr>`;
               };
           }
       }
@@ -1299,13 +1179,7 @@
       const table = document.getElementById(tableId);
       const container = document.getElementById(type + 'TableContainer');
       const tbody = table.querySelector('tbody');
-      
-      tbody.innerHTML = '';
-      const rowsHtml = resultArray.map(r => renderFn(r)).join('');
-      tbody.innerHTML = rowsHtml;
-      
-      // Removed copyToClipboard event listener as requested
-
+      tbody.innerHTML = resultArray.map(r => renderFn(r)).join('');
       table.style.display = 'table';
       container.style.display = 'block';
     }
@@ -1324,33 +1198,22 @@
             if (!isNaN(aNum) && !isNaN(bNum)) return isAsc ? aNum - bNum : bNum - aNum;
             return isAsc ? aText.localeCompare(bText) : bText.localeCompare(aText);
         });
-        
         table.setAttribute('data-order', isAsc ? 'desc' : 'asc');
         tbody.innerHTML = '';
         rows.forEach(tr => tbody.appendChild(tr));
     }
 
-    ['resetAhBtn', 'resetOuBtn', 'resetEuBtn'].forEach(id => {
-        document.getElementById(id).addEventListener('click', resetAll);
-    });
+    ['resetAhBtn', 'resetOuBtn', 'resetEuBtn'].forEach(id => document.getElementById(id).addEventListener('click', resetAll));
 
     (async function boot() {
       try {
         __showLoading();
-        await Promise.all([
-          getAsianData({ maxParts: 10 }),
-          getOverUnderData({ maxParts: 10 }),
-          getEuropeanData({ maxParts: 10 })
-        ]);
+        await Promise.all([getAsianData({ maxParts: 10 }), getOverUnderData({ maxParts: 10 }), getEuropeanData({ maxParts: 10 })]);
         initAll();
       } catch (e) {
-        console.error('資料載入失敗', e);
         document.querySelector('.spinner-ball').style.display = 'none';
-        document.querySelector('#loadingOverlay .loading-text').innerHTML = 
-            `<span style="color:#ef4444">⚠️ 數據載入失敗<br><small style="font-size:0.8rem; opacity:0.8">請確保 .json 檔案在同一目錄<br>(${e.message})</small></span>`;
-      } finally {
-        __hideLoading();
-      }
+        document.querySelector('#loadingOverlay .loading-text').innerHTML = `<span style="color:#ef4444">⚠️ 數據載入失敗</span>`;
+      } finally { __hideLoading(); }
     })();
     
     // Close dropdown on outside click
@@ -1358,9 +1221,7 @@
         if (!event.target.closest('.multi-select-container')) {
             const dds = document.getElementsByClassName("multi-select-dropdown");
             for (let i = 0; i < dds.length; i++) {
-                if (dds[i].classList.contains('show')) {
-                    dds[i].classList.remove('show');
-                }
+                if (dds[i].classList.contains('show')) dds[i].classList.remove('show');
             }
         }
     }
