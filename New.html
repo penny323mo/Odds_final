@@ -824,6 +824,116 @@
         .res-check-item { flex: 1 1 30%; }
         .custom-input-group { height: 40px; }
     }
+
+/* ==========================================================================
+   0. Premium Neon 視覺強化 (V6) - 明顯可見
+   ========================================================================== */
+.header-inner{
+  position:relative;
+  display:inline-block;
+  padding:10px 16px 12px;
+  border-radius:18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(0,0,0,0.18));
+  border:1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 18px 55px rgba(0,0,0,0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.header-inner:before{
+  content:"";
+  position:absolute; inset:-2px;
+  border-radius:20px;
+  background: radial-gradient(60% 60% at 50% 0%, rgba(52,211,153,0.55) 0%, rgba(16,185,129,0.18) 40%, transparent 75%);
+  filter: blur(12px);
+  z-index:-1;
+}
+.version-badge{
+  position:absolute;
+  top:-10px; right:-10px;
+  padding:6px 10px;
+  border-radius:999px;
+  background: rgba(0,0,0,0.55);
+  border:1px solid rgba(255,255,255,0.18);
+  color:#d1fae5;
+  font-size:12px;
+  letter-spacing:0.8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.55);
+}
+.version-badge b{ color:#34d399; }
+.custom-tabs{ position:relative; overflow:hidden; }
+.custom-tabs .tab-indicator{
+  position:absolute;
+  top:4px; bottom:4px;
+  left:4px;
+  width: calc((100% - 8px - 10px)/3); /* fallback */
+  border-radius:40px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+  transform: translateX(0);
+  transition: transform 220ms cubic-bezier(0.2,0.8,0.2,1), width 220ms cubic-bezier(0.2,0.8,0.2,1);
+  z-index:0;
+}
+.custom-tabs button{ position:relative; z-index:1; }
+.custom-tabs button.active{
+  background: transparent !important;
+  color:#064e3b !important;
+  transform: none !important;
+  box-shadow:none !important;
+}
+.custom-tabs button.active:after{
+  content:"";
+  position:absolute;
+  left:18%;
+  right:18%;
+  bottom:6px;
+  height:3px;
+  border-radius:3px;
+  background: linear-gradient(90deg, rgba(16,185,129,0.0), rgba(16,185,129,0.95), rgba(16,185,129,0.0));
+  filter: drop-shadow(0 6px 10px rgba(16,185,129,0.45));
+}
+fieldset.init-set{ border-left:4px solid rgba(59,130,246,0.95); }
+fieldset.close-set{ border-left:4px solid rgba(251,191,36,0.95); }
+fieldset.init-set legend{ color:#93c5fd; }
+fieldset.close-set legend{ color:#fde68a; }
+fieldset.init-set{ background: linear-gradient(180deg, rgba(59,130,246,0.10), rgba(0,0,0,0.22)); }
+fieldset.close-set{ background: linear-gradient(180deg, rgba(251,191,36,0.10), rgba(0,0,0,0.22)); }
+
+.btn-green{ overflow:hidden; }
+.btn-green:before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), transparent 45%);
+  opacity:0.55;
+  transform: translateX(-30%);
+}
+.btn-green:after{
+  content:"";
+  position:absolute;
+  top:-40%;
+  left:-35%;
+  width:35%;
+  height:180%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-20deg);
+  animation: shimmer 2.2s ease-in-out infinite;
+  opacity:0.35;
+}
+@keyframes shimmer{
+  0%{ transform: translateX(-120%) skewX(-20deg); }
+  55%{ transform: translateX(260%) skewX(-20deg); }
+  100%{ transform: translateX(260%) skewX(-20deg); }
+}
+
+/* 表格：更「工具感」 */
+.table-container{ box-shadow: 0 18px 50px rgba(0,0,0,0.45); }
+thead th{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+tbody tr:nth-child(even){ background: rgba(255,255,255,0.03); }
+
 </style>
 </head>
 <body>
@@ -837,16 +947,20 @@
 </div>
 
 <div class="header">
-    <h1>
+  <div class="header-inner">
+    <div class="version-badge"><b>V6</b> Premium Neon</div>
+<h1>
         <!-- ⚽️ Emoji Logo (帶自轉) -->
         <div class="football-emoji">⚽️</div>
         足球歷史賠率篩選
     </h1>
     <div class="desc">大數據分析 (2013-2025)</div>
+  </div>
 </div>
 
 <div class="nav-container">
     <div class="custom-tabs">
+        <div class="tab-indicator" id="tabIndicator"></div>
         <button class="active" id="tab1" onclick="showTab(0)">亞洲盤</button>
         <button id="tab2" onclick="showTab(1)">大小球</button>
         <button id="tab3" onclick="showTab(2)">歐洲盤</button>
@@ -859,7 +973,7 @@
         <form id="ahForm" onsubmit="return false;">
             <div class="form-flex-container">
                 <!-- 初盤 -->
-                <fieldset>
+                <fieldset class="init-set">
                     <legend><i class="bi bi-crosshair"></i> 初盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
@@ -895,7 +1009,7 @@
                 </fieldset>
 
                 <!-- 終盤 -->
-                <fieldset>
+                <fieldset class="close-set">
                     <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
@@ -1013,7 +1127,7 @@
     <div class="unified-card">
         <form id="ouForm" onsubmit="return false;">
             <div class="form-flex-container">
-                <fieldset>
+                <fieldset class="init-set">
                     <legend><i class="bi bi-stopwatch"></i> 初盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
@@ -1047,7 +1161,7 @@
                     </div>
                 </fieldset>
 
-                <fieldset>
+                <fieldset class="close-set">
                     <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
@@ -1161,7 +1275,7 @@
     <div class="unified-card">
         <form id="euForm" onsubmit="return false;">
             <div class="form-flex-container">
-                <fieldset>
+                <fieldset class="init-set">
                     <legend><i class="bi bi-globe-europe-africa"></i> 初盤資料</legend>
                     <div class="odds-row-desktop">
                         <div class="input-row">
@@ -1203,7 +1317,7 @@
                     </div>
                 </fieldset>
 
-                <fieldset>
+                <fieldset class="close-set">
                     <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
                     <div class="odds-row-desktop">
                         <div class="input-row">
@@ -1348,6 +1462,26 @@
     const __showLoading = () => { if(overlay) overlay.style.display = 'flex'; };
     const __hideLoading = () => { if(overlay) overlay.style.display = 'none'; };
     
+
+    function updateTabIndicator(i){
+      const ind = document.getElementById('tabIndicator');
+      const tabs = document.querySelector('.custom-tabs');
+      if(!ind || !tabs) return;
+      const btn = document.getElementById('tab'+(i+1));
+      if(!btn) return;
+      const tabsRect = tabs.getBoundingClientRect();
+      const bRect = btn.getBoundingClientRect();
+      const left = (bRect.left - tabsRect.left) + 4; // padding
+      ind.style.transform = `translateX(${left - 4}px)`;
+      ind.style.width = bRect.width + 'px';
+    }
+
+    window.addEventListener('resize', () => {
+      const activeIdx = document.getElementById('tab1').classList.contains('active') ? 0 :
+                        document.getElementById('tab2').classList.contains('active') ? 1 : 2;
+      updateTabIndicator(activeIdx);
+    });
+
     async function showTab(i) {
       ["tab1", "tab2", "tab3"].forEach((id, idx) => {
         document.getElementById(id).classList.toggle("active", idx === i);
@@ -1364,6 +1498,8 @@
           panel.style.display = "none";
         }
       });
+
+      updateTabIndicator(i);
 
       // Lazy load data for tab 2/3 when needed
       try {
@@ -2002,6 +2138,7 @@
             }
         }
     }
+window.addEventListener('load', ()=>{ try{ updateTabIndicator(0); }catch(e){} });
 </script>
 </body>
 </html>
