@@ -20,7 +20,7 @@
        ========================================= */
     :root {
         --bg-dark: #064e3b; 
-        --glass-bg: rgba(6, 78, 59, 0.75);
+        --glass-bg: rgba(6, 78, 59, 0.75); /* 加深少少背景令字更清 */
         --glass-border: rgba(255, 255, 255, 0.2);
         --brand-green: #10b981;
         --brand-green-light: #34d399;
@@ -34,23 +34,22 @@
         color: var(--text-main);
         background-color: var(--bg-dark);
         min-height: 100vh;
-        padding-bottom: 100px;
+        padding-bottom: 80px; /* 收窄底部 */
         overflow-x: hidden;
         width: 100vw;
         box-sizing: border-box;
         padding-top: env(safe-area-inset-top);
-        padding-bottom: calc(100px + env(safe-area-inset-bottom));
+        padding-bottom: calc(80px + env(safe-area-inset-bottom));
     }
 
     *, *::before, *::after { box-sizing: border-box; }
 
     /* =========================================
-       2. 背景特效 (Background) - 保留原版
+       2. 背景特效 (Background)
        ========================================= */
     .bg-layer {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-color: #064e3b;
-        /* 使用 Unsplash 球場圖 */
         background-image: 
             radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.85) 85%),
             url("https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop");
@@ -65,306 +64,261 @@
     }
 
     /* =========================================
-       3. 頂部導航 (Header) - 升級特效
+       3. 頂部導航 (Header) - 緊湊版 (Compact)
        ========================================= */
-    .header { position: relative; text-align: center; padding: 40px 20px 20px; z-index: 10; width: 100%; }
+    .header { position: relative; text-align: center; padding: 20px 10px 10px; z-index: 10; width: 100%; }
     
     .header h1 {
         font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
-        /* 標題加大 */
-        font-size: clamp(2rem, 7vw, 3.5rem); 
+        font-size: clamp(1.6rem, 5vw, 3rem); /* 手機上縮細字體 */
         margin: 0; color: #fff;
-        display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;
-        text-transform: uppercase;
-        /* 呼吸燈閃爍特效 */
-        animation: glowBreathing 3s ease-in-out infinite alternate;
+        display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: nowrap;
+        animation: glowBreathing 4s ease-in-out infinite alternate;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
     @keyframes glowBreathing {
         0% { text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 10px rgba(16, 185, 129, 0.2); }
-        100% { text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(52, 211, 153, 0.6); }
+        100% { text-shadow: 0 0 20px rgba(255,255,255,0.7), 0 0 35px rgba(52, 211, 153, 0.7); }
     }
 
-    /* 轉動足球 Logo */
+    /* 真．足球 Logo - 轉動 */
     .football-logo {
-        width: clamp(50px, 10vw, 70px);
-        height: clamp(50px, 10vw, 70px);
-        filter: drop-shadow(0 5px 10px rgba(0,0,0,0.4));
-        animation: slowSpin 12s linear infinite;
+        width: clamp(35px, 8vw, 60px); /* 手機上縮細 */
+        height: clamp(35px, 8vw, 60px);
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        animation: slowSpin 8s linear infinite; /* 加快少少轉速 */
     }
     
     @keyframes slowSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     .header .desc {
-        margin-top: 10px; font-size: 0.95rem; color: #e0f2f1;
-        background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 50px;
+        margin-top: 5px; font-size: 0.8rem; color: #e0f2f1;
+        background: rgba(0,0,0,0.3); padding: 3px 12px; border-radius: 50px;
         border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px);
         display: inline-block;
     }
-    .timestamp { font-size: 0.75rem; color: #6ee7b7; margin-top: 5px; opacity: 0.8; }
+    .timestamp { font-size: 0.7rem; color: #6ee7b7; margin-top: 3px; opacity: 0.8; display:none; /* 手機隱藏時間慳位 */ }
 
-    .nav-container { margin-top: 0; padding: 0 10px; position: relative; z-index: 20; width: 100%; margin-bottom: 20px; }
+    .nav-container { margin-top: 5px; padding: 0 10px; position: relative; z-index: 20; width: 100%; margin-bottom: 10px; }
     .custom-tabs {
-        background: rgba(6, 78, 59, 0.8); border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 50px; padding: 4px; display: flex; gap: 4px;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
-        max-width: 600px; margin: 0 auto; overflow-x: auto; scrollbar-width: none;
+        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50px; padding: 3px; display: flex; gap: 3px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3); backdrop-filter: blur(10px);
+        max-width: 600px; margin: 0 auto;
     }
-    .custom-tabs::-webkit-scrollbar { display: none; }
     .custom-tabs button {
-        flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.7);
-        padding: 10px 15px; font-weight: 700; font-size: 0.95rem; border-radius: 40px;
-        transition: all 0.3s; white-space: nowrap; 
+        flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.6);
+        padding: 8px 0; font-weight: 700; font-size: 0.9rem; border-radius: 40px;
+        transition: all 0.2s; white-space: nowrap; 
     }
-    .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
     /* =========================================
-       4. 主容器與卡片 (Responsive Fixes)
+       4. 主容器與卡片 (iPhone 慳位排版)
        ========================================= */
     .tabcontent {
-        width: 96%; max-width: 960px; /* 加寬一點給 iPad */
-        margin: 0 auto; padding: 0; 
-        animation: fadeUp 0.5s ease-out;
+        width: 98%; max-width: 900px; margin: 0 auto; padding: 0; 
+        animation: fadeUp 0.4s ease-out;
     }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
     .unified-card {
         background: var(--glass-bg); border: 1px solid var(--glass-border);
-        border-top: 1px solid rgba(255,255,255,0.4); border-radius: 24px; padding: 20px;
+        border-radius: 20px; padding: 12px; /* 減少內距 */
         backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-        box-shadow: 0 20px 50px -10px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
-        overflow: hidden; transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
 
-    /* iPad 佈局：大框架左右分欄 */
-    .form-flex-container { display: flex; flex-direction: column; gap: 15px; }
+    /* iPad 佈局：左右分欄 */
+    .form-flex-container { display: flex; flex-direction: column; gap: 8px; /* 減少間距 */ }
 
     fieldset {
-        border: 1px solid rgba(255,255,255,0.1); background: rgba(0, 0, 0, 0.2);
-        border-radius: 12px; padding: 15px; margin: 0; flex: 1;
-        box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255,255,255,0.1); background: rgba(0, 0, 0, 0.25);
+        border-radius: 10px; padding: 10px 10px 5px 10px; /* 極致收窄 Padding */
+        margin: 0; flex: 1;
     }
     legend {
-        color: var(--brand-green-light); font-weight: 700; font-size: 1rem;
-        text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;
-        margin-bottom: 10px;
+        color: var(--brand-green-light); font-weight: 700; font-size: 0.9rem;
+        text-transform: uppercase; display: flex; align-items: center; gap: 5px;
+        margin-bottom: 5px; /* 收窄標題間距 */
     }
 
     /* =========================================
-       5. 輸入框與排版 (iPad 適配關鍵)
+       5. 輸入框 (Compact Mode)
        ========================================= */
-    .input-row { margin-bottom: 10px; }
+    .input-row { margin-bottom: 6px; /* 極致收窄行距 */ }
     
-    /* 新增：用於 iPad 橫向排列的容器 */
-    .odds-row-desktop {
-        display: flex; flex-direction: column; gap: 0; /* 手機預設直排 */
-    }
-
     .input-label {
-        font-size: 0.8rem; color: #e2e8f0; font-weight: 600; margin-bottom: 4px; display: block;
+        font-size: 0.75rem; color: #a7f3d0; font-weight: 600; margin-bottom: 2px; display: block;
     }
+    
     .custom-input-group {
-        display: flex; align-items: stretch; background: rgba(0, 20, 10, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); overflow: hidden; width: 100%; height: 44px;
+        display: flex; align-items: stretch; background: rgba(0, 20, 10, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px;
+        width: 100%; height: 36px; /* 縮矮 Input 高度 (原本 42px) */
     }
     .custom-input-group:focus-within {
         border-color: var(--brand-green);
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.3);
     }
     .main-input {
         flex: 1 1 auto; background: transparent; border: none; color: #fff; 
-        padding: 0 10px; font-size: 1rem; font-family: monospace; min-width: 0;
+        padding: 0 8px; font-size: 0.95rem; font-family: monospace; min-width: 0;
     }
     .main-input:focus { outline: none; }
     
     .divider-text {
-        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 8px; 
-        display: flex; align-items: center; font-weight: bold; font-size: 0.9rem;
-        border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+        color: var(--brand-green-light); background: rgba(255,255,255,0.05); padding: 0 6px; 
+        display: flex; align-items: center; font-weight: bold; font-size: 0.8rem;
+        border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1);
     }
     .err-input {
-        width: 50px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; 
-        text-align: center; font-size: 0.9rem; flex-shrink: 0;
+        width: 40px; background: rgba(255,255,255,0.05); border: none; color: #d1fae5; 
+        text-align: center; font-size: 0.85rem;
     }
-    .err-input:focus { outline: none; color: #fff; background: rgba(255,255,255,0.1); }
-    .step-btns { 
-        display: flex; flex-direction: column; width: 30px;
-        border-left: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
-    }
+    .step-btns { width: 24px; border-left: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
     .step-btn {
-        flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); 
-        cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;
-        font-size: 0.7rem;
+        flex: 1; background: rgba(255,255,255,0.05); border: none; color: var(--brand-green-light); 
+        padding: 0; font-size: 0.6rem;
     }
-    .step-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
     .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
     
     select.form-select-custom {
-        width: 100%; padding: 0 10px; height: 44px; background-color: rgba(2, 44, 34, 0.95); color: #fff; 
-        border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+        width: 100%; padding: 0 8px; height: 36px; /* 縮矮 */
+        background-color: rgba(2, 44, 34, 0.9); color: #fff; 
+        border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+        font-size: 0.95rem;
     }
 
+    /* iPad 橫排容器 */
+    .odds-row-desktop { display: block; }
+
     /* =========================================
-       6. 3D 按鈕
+       6. 3D 按鈕 (更扁平慳位)
        ========================================= */
-    .action-row { display: flex; gap: 10px; margin-top: 15px; }
+    .action-row { display: flex; gap: 8px; margin-top: 10px; }
     .btn-3d {
-        position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 1rem; 
-        padding: 14px; border-radius: 50px; cursor: pointer; flex: 1;
-        transition: transform 0.1s, box-shadow 0.1s; 
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-        text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 0.95rem; 
+        padding: 10px; border-radius: 30px; cursor: pointer; flex: 1; /* 縮細 Padding */
+        transition: transform 0.1s; 
+        display: flex; align-items: center; justify-content: center; gap: 5px;
+        text-transform: uppercase; letter-spacing: 0.5px;
     }
     .btn-green {
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
-        box-shadow: 0 4px 0 #047857, 0 8px 15px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 3px 0 #047857;
     }
-    .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
+    .btn-green:active { transform: translateY(3px); box-shadow: none; }
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
-        box-shadow: 0 4px 0 #1f2937, 0 8px 15px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
+        box-shadow: 0 3px 0 #1f2937;
     }
-    .btn-grey:active { transform: translateY(4px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
+    .btn-grey:active { transform: translateY(3px); box-shadow: none; }
 
     /* =========================================
-       7. 結果區域 & 圓餅圖
+       7. 結果與圖表
        ========================================= */
     .results-section {
-        margin-top: 25px; padding-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2);
-        display: none; animation: slideDown 0.5s ease-out;
+        margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2);
+        display: none;
     }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
     .stat-card {
-        background: rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 4px; text-align: center;
-        position: relative; overflow: hidden;
+        background: rgba(255,255,255,0.08); border-radius: 8px; padding: 8px 2px; text-align: center;
     }
-    .stat-card.win { border-bottom: 3px solid #ef4444; } .stat-card.draw { border-bottom: 3px solid #22c55e; } .stat-card.lose { border-bottom: 3px solid #3b82f6; }
-    .stat-card .label { font-size: 0.7rem; color: #a7f3d0; margin-bottom: 4px; }
-    .stat-card .value { font-size: 1.4rem; font-weight: 900; color: #fff; margin: 4px 0; }
-    .stat-card .pct { font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 8px; }
-
-    .piebox {
-        background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        border: 1px solid rgba(255,255,255,0.1); width: 100%; min-height: 280px;
-    }
+    .stat-card.win { border-bottom: 2px solid #ef4444; } .stat-card.draw { border-bottom: 2px solid #22c55e; } .stat-card.lose { border-bottom: 2px solid #3b82f6; }
+    .stat-card .value { font-size: 1.2rem; font-weight: 900; color: #fff; margin: 2px 0; }
     
-    .pie-chart-circle { 
-        width: 100%; height: 100%; border-radius: 50%; 
-        clip-path: circle(0% at 50% 50%);
-        animation: openCircle 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+    .piebox {
+        background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        width: 100%; min-height: 220px;
     }
-    @keyframes openCircle { to { clip-path: circle(75% at 50% 50%); } }
-
-    .pie-legend { display: flex; gap: 12px; margin-top: 20px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
-    .pie-legend span { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .pie-legend { display: flex; gap: 10px; margin-top: 15px; font-size: 0.85rem; color: #fff; flex-wrap: wrap; justify-content: center; }
 
     /* =========================================
-       8. 列表與複選篩選 (Multi-Select)
+       8. 列表與複選篩選 (確認鍵優化)
        ========================================= */
-    .list-section { margin-top: 25px; display: none; }
-    .list-controls { margin-bottom: 15px; position: relative; }
+    .list-section { margin-top: 20px; display: none; }
+    .list-controls { margin-bottom: 10px; position: relative; }
     
     .multi-select-btn {
-        width: 100%; padding: 12px; border-radius: 12px;
+        width: 100%; padding: 10px; border-radius: 8px;
         background: rgba(0,0,0,0.4); color: #fff; 
         border: 1px solid rgba(255,255,255,0.3);
         text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-        font-size: 0.95rem; backdrop-filter: blur(5px);
+        font-size: 0.9rem;
     }
-    .multi-select-btn:after { content: '\25BC'; font-size: 0.7rem; opacity: 0.7; }
     
     .multi-select-dropdown {
         display: none; position: absolute; top: 100%; left: 0; width: 100%;
-        background: #0f3d2e; border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 12px; margin-top: 5px; max-height: 300px; overflow-y: auto;
-        z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        background: #022c22; border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 12px; margin-top: 5px; max-height: 350px; overflow-y: auto;
+        z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
     }
     .multi-select-dropdown.show { display: block; }
     
-    .multi-select-option {
-        padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
-        cursor: pointer; display: flex; align-items: center; gap: 12px;
-        transition: background 0.2s; font-size: 0.95rem;
+    /* 篩選按鈕區 (Top) */
+    .multi-actions-top {
+        padding: 8px; display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        background: rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 2;
     }
-    .multi-select-option:hover { background: rgba(255,255,255,0.1); }
-    .multi-select-option input[type="checkbox"] {
-        transform: scale(1.3); accent-color: var(--brand-green); cursor: pointer;
+    /* 確認按鈕區 (Bottom) - 新增 */
+    .multi-actions-bottom {
+        padding: 8px; border-top: 1px solid rgba(255,255,255,0.1);
+        background: #064e3b; position: sticky; bottom: 0; z-index: 2;
     }
     
-    .multi-actions {
-        padding: 10px; display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1);
-        background: rgba(0,0,0,0.3); position: sticky; bottom: 0; z-index: 101;
-    }
     .btn-sm-action {
-        flex: 1; padding: 8px; font-size: 0.9rem; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;
+        flex: 1; padding: 6px; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold;
     }
+    .btn-confirm {
+        width: 100%; padding: 10px; background: #10b981; color: #fff; font-size: 1rem; border-radius: 8px; border: none; font-weight: bold;
+    }
+    .btn-confirm:active { background: #059669; }
 
-    .table-container { background: rgba(0, 0, 0, 0.2); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
-    .table-responsive { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
-    th { background: rgba(2, 44, 34, 0.9); padding: 12px 8px; color: #a7f3d0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; text-align: center; }
-    td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
-    tr:hover { background: rgba(255,255,255,0.1); }
+    .multi-select-option {
+        padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
+        cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.95rem;
+    }
+    .multi-select-option input { transform: scale(1.2); accent-color: var(--brand-green); }
     
-    .badge-res { padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+    .table-container { background: rgba(0, 0, 0, 0.2); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; white-space: nowrap; }
+    th { background: rgba(2, 44, 34, 0.95); padding: 10px 6px; color: #a7f3d0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+    td { padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    
+    .badge-res { padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
     .bg-win { background: #ef4444; color: #fff; } .bg-draw { background: #22c55e; color: #fff; } .bg-lose { background: #3b82f6; color: #fff; }
-    .text-odds { color: #6ee7b7; font-weight: bold; }
-
-    /* Toast & Loader */
-    .toast-msg { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 0.9rem; z-index: 2000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
-    .toast-msg.show { opacity: 1; }
 
     #loadingOverlay { position: fixed; inset: 0; background: #064e3b; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
     .spinner-ball { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #34d399; border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* =========================================
-       9. iPad/Desktop Responsive 關鍵修正
+       9. iPad/Desktop 寬屏適配
        ========================================= */
     @media (min-width: 768px) {
-        .tabcontent { max-width: 960px; }
-        
-        /* 左右分欄 (初盤 vs 終盤) */
+        .tabcontent { max-width: 900px; }
         .form-flex-container { display: flex; flex-direction: row; gap: 20px; }
+        .odds-row-desktop { display: flex; flex-direction: row; gap: 15px; }
+        .odds-row-desktop > .input-row { flex: 1; }
         
-        /* 輸入框橫向排列 (主/客 或 大/細) */
-        .odds-row-desktop {
-            display: flex;
-            flex-direction: row;
-            gap: 15px;
-        }
-        .odds-row-desktop > .input-row {
-            flex: 1; /* 平均分配寬度 */
-        }
-        
-        /* 歐盤三欄 (主/和/客) */
-        .odds-row-desktop-3 {
-            display: flex;
-            flex-direction: row;
-            gap: 15px;
-        }
-        .odds-row-desktop-3 > .input-row {
-            flex: 1;
-        }
-
-        .stat-card .value { font-size: 1.8rem; }
-        .piebox { flex-direction: row; gap: 40px; justify-content: center; }
-        .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
+        .header h1 { font-size: 2.8rem; }
         .header { padding-bottom: 40px; }
         .nav-container { margin-top: -20px; }
-        .main-input { padding: 0 16px; }
-        table { font-size: 0.95rem; }
+        .unified-card { padding: 25px; }
+        .custom-input-group, select.form-select-custom { height: 42px; }
+        .input-label { font-size: 0.85rem; margin-bottom: 5px; }
+        .input-row { margin-bottom: 15px; }
+        .btn-3d { padding: 12px; font-size: 1rem; }
+        table { font-size: 0.9rem; }
     }
 </style>
 </head>
 <body>
 
-<!-- 保留原版背景結構 -->
 <div class="bg-texture"></div>
 <div class="bg-layer"></div>
 
@@ -375,9 +329,11 @@
 
 <div class="header">
     <h1>
-        <!-- 真．足球 Logo SVG (旋轉特效) -->
-        <svg class="football-logo" viewBox="0 0 512 512" fill="white" xmlns="http://www.w3.org/2000/svg">
-            <path d="M256,48C141.1,48,48,141.1,48,256s93.1,208,208,208s208-93.1,208-208S370.9,48,256,48z M256,424.7 c-28.7,0-55.8-7.2-79.7-19.8l56.8-98.4l22.9,0l56.8,98.4C289.8,419.6,273.4,424.7,256,424.7z M148.9,385.1 c-19.4-23.7-32.5-52.6-36.4-84.3l98.4-56.8l11.4,19.8L148.9,385.1z M128.5,236.2c0-8.9,1.1-17.5,3.2-25.8l110.1,29.5L128.5,236.2z M157,143.5c16.3-17.3,36.5-31.5,59.3-40.9l39.7,105.7L157,143.5z M256,87.3c27.6,0,53.6,7.6,76.1,20.8l-38.3,101.9h-75.6 L256,87.3z M355,143.5l-99,64.8l39.7-105.7C318.5,112,338.7,126.2,355,143.5z M380.3,210.4l-110.1-29.5l113.3,3.3 C383.5,192.5,382.4,201.6,380.3,210.4z M363.1,385.1l-73.4-121.4l11.4-19.8l98.4,56.8C395.6,332.5,382.5,361.4,363.1,385.1z"/>
+        <!-- 真．足球 Logo SVG -->
+        <svg class="football-logo" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+             <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2" fill="none"/>
+             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9l3-4h4l3 4-2.5 5h-5L7 11z" fill="white"/>
+             <circle cx="12" cy="12" r="2" fill="#064e3b"/>
         </svg>
         足球歷史賠率篩選
     </h1>
@@ -404,7 +360,6 @@
                         <label class="input-label">盤口</label>
                         <select id="ahInitHand" class="form-select-custom"></select>
                     </div>
-                    <!-- iPad 橫排容器 -->
                     <div class="odds-row-desktop">
                         <div class="input-row">
                             <label class="input-label">主隊賠率</label>
@@ -439,7 +394,6 @@
                         <label class="input-label">盤口</label>
                         <select id="ahCloseHand" class="form-select-custom"></select>
                     </div>
-                    <!-- iPad 橫排容器 -->
                     <div class="odds-row-desktop">
                         <div class="input-row">
                             <label class="input-label">主隊賠率</label>
@@ -471,39 +425,41 @@
 
             <div class="action-row">
                 <button class="btn-3d btn-green" onclick="doAhSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
-                <button class="btn-3d btn-grey" id="resetAhBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 全局重設</button>
+                <button class="btn-3d btn-grey" id="resetAhBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
             </div>
         </form>
 
-        <!-- Result Section -->
         <div id="ahResultSection" class="results-section">
             <div id="ahStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('ah')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('ah')" type="button" style="margin-top:15px; padding:10px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
             <div id="ahListSection" class="list-section">
-                <!-- Multi-select Filter (加入複選單) -->
+                <!-- 賽季篩選 -->
                 <div class="list-controls">
-                    <label class="input-label" style="margin-bottom:5px;">📅 賽季篩選 (可複選)</label>
+                    <label class="input-label" style="margin-bottom:5px;">📅 賽季篩選</label>
                     <div class="multi-select-container" style="position:relative;">
                         <div class="multi-select-btn" onclick="toggleSeasonDropdown('ah')" id="seasonBtn_ah">
                             選擇賽季 (已選: 全部)
                         </div>
                         <div class="multi-select-dropdown" id="seasonDropdown_ah">
-                            <div class="multi-actions">
-                                <button class="btn-sm-action" style="background:#10b981;color:#fff" onclick="selectAllSeasons('ah', true)">全選</button>
-                                <button class="btn-sm-action" style="background:#ef4444;color:#fff" onclick="selectAllSeasons('ah', false)">清空</button>
+                            <div class="multi-actions-top">
+                                <button class="btn-sm-action" style="background:#0f766e;color:#fff" onclick="selectAllSeasons('ah', true)">全選</button>
+                                <button class="btn-sm-action" style="background:#b91c1c;color:#fff" onclick="selectAllSeasons('ah', false)">清空</button>
                             </div>
                             <div id="seasonOptions_ah"></div>
+                            <!-- 新增確認鍵 -->
+                            <div class="multi-actions-bottom">
+                                <button class="btn-confirm" onclick="toggleSeasonDropdown('ah')">確認並套用</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="table-container" id="ahTableContainer">
                     <div class="table-responsive">
-                        <!-- 保留 Sort 功能 -->
                         <table id="ahTable" data-order="asc">
                             <thead>
                             <tr>
@@ -539,7 +495,6 @@
                         <label class="input-label">盤口</label>
                         <select id="ouInitLine" class="form-select-custom"></select>
                     </div>
-                    <!-- iPad 橫排容器 -->
                     <div class="odds-row-desktop">
                         <div class="input-row">
                             <label class="input-label">大球賠率</label>
@@ -574,7 +529,6 @@
                         <label class="input-label">盤口</label>
                         <select id="ouCloseLine" class="form-select-custom"></select>
                     </div>
-                    <!-- iPad 橫排容器 -->
                     <div class="odds-row-desktop">
                         <div class="input-row">
                             <label class="input-label">大球賠率</label>
@@ -610,28 +564,29 @@
             </div>
         </form>
         
-        <!-- Results -->
         <div id="ouResultSection" class="results-section">
             <div id="ouStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('ou')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('ou')" type="button" style="margin-top:15px; padding:10px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
             <div id="ouListSection" class="list-section">
-                <!-- Multi-select Filter -->
                 <div class="list-controls">
-                    <label class="input-label" style="margin-bottom:5px;">📅 賽季篩選 (可複選)</label>
+                    <label class="input-label" style="margin-bottom:5px;">📅 賽季篩選</label>
                     <div class="multi-select-container" style="position:relative;">
                         <div class="multi-select-btn" onclick="toggleSeasonDropdown('ou')" id="seasonBtn_ou">
                             選擇賽季 (已選: 全部)
                         </div>
                         <div class="multi-select-dropdown" id="seasonDropdown_ou">
-                            <div class="multi-actions">
-                                <button class="btn-sm-action" style="background:#10b981;color:#fff" onclick="selectAllSeasons('ou', true)">全選</button>
-                                <button class="btn-sm-action" style="background:#ef4444;color:#fff" onclick="selectAllSeasons('ou', false)">清空</button>
+                            <div class="multi-actions-top">
+                                <button class="btn-sm-action" style="background:#0f766e;color:#fff" onclick="selectAllSeasons('ou', true)">全選</button>
+                                <button class="btn-sm-action" style="background:#b91c1c;color:#fff" onclick="selectAllSeasons('ou', false)">清空</button>
                             </div>
                             <div id="seasonOptions_ou"></div>
+                            <div class="multi-actions-bottom">
+                                <button class="btn-confirm" onclick="toggleSeasonDropdown('ou')">確認並套用</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -669,8 +624,7 @@
             <div class="form-flex-container">
                 <fieldset>
                     <legend><i class="bi bi-globe-europe-africa"></i> 初盤</legend>
-                    <!-- iPad 三欄橫排 -->
-                    <div class="odds-row-desktop-3">
+                    <div class="odds-row-desktop">
                         <div class="input-row">
                             <label class="input-label">主勝</label>
                             <div class="custom-input-group">
@@ -712,8 +666,7 @@
 
                 <fieldset>
                     <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
-                    <!-- iPad 三欄橫排 -->
-                    <div class="odds-row-desktop-3">
+                    <div class="odds-row-desktop">
                         <div class="input-row">
                             <label class="input-label">主勝</label>
                             <div class="custom-input-group">
@@ -760,28 +713,29 @@
             </div>
         </form>
         
-        <!-- Results -->
         <div id="euResultSection" class="results-section">
             <div id="euStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('eu')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('eu')" type="button" style="margin-top:15px; padding:10px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
             <div id="euListSection" class="list-section">
-                <!-- Multi-select Filter -->
                 <div class="list-controls">
-                    <label class="input-label" style="margin-bottom:5px;">📅 賽季篩選 (可複選)</label>
+                    <label class="input-label" style="margin-bottom:5px;">📅 賽季篩選</label>
                     <div class="multi-select-container" style="position:relative;">
                         <div class="multi-select-btn" onclick="toggleSeasonDropdown('eu')" id="seasonBtn_eu">
                             選擇賽季 (已選: 全部)
                         </div>
                         <div class="multi-select-dropdown" id="seasonDropdown_eu">
-                            <div class="multi-actions">
-                                <button class="btn-sm-action" style="background:#10b981;color:#fff" onclick="selectAllSeasons('eu', true)">全選</button>
-                                <button class="btn-sm-action" style="background:#ef4444;color:#fff" onclick="selectAllSeasons('eu', false)">清空</button>
+                            <div class="multi-actions-top">
+                                <button class="btn-sm-action" style="background:#0f766e;color:#fff" onclick="selectAllSeasons('eu', true)">全選</button>
+                                <button class="btn-sm-action" style="background:#b91c1c;color:#fff" onclick="selectAllSeasons('eu', false)">清空</button>
                             </div>
                             <div id="seasonOptions_eu"></div>
+                            <div class="multi-actions-bottom">
+                                <button class="btn-confirm" onclick="toggleSeasonDropdown('eu')">確認並套用</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -838,7 +792,7 @@
             // Trigger animation reflow
             panel.style.animation = 'none';
             panel.offsetHeight; 
-            panel.style.animation = 'fadeUp 0.5s ease-out';
+            panel.style.animation = 'fadeUp 0.4s ease-out';
             
             // Set current tab context
             if(i===0) currentTab='ah'; else if(i===1) currentTab='ou'; else currentTab='eu';
@@ -907,7 +861,7 @@
                 <span class="pct">${pct(l, tot)}</span>
             </div>
         </div>
-        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.9rem; color:#d1fae5;">${extraInfo}</div>` : ''}
+        ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.85rem; color:#d1fae5;">${extraInfo}</div>` : ''}
         <div class="piebox" id="${idPie}">
           <!-- Pie chart will be injected here after delay -->
         </div>
@@ -936,9 +890,9 @@
             pieContainer.innerHTML = `
               ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
               <div class="pie-legend">
-                <div><span style="background:${wColor}"></span>${wLabel}</div>
-                <div><span style="background:${dColor}"></span>${dLabel}</div>
-                <div><span style="background:${lColor}"></span>${lLabel}</div>
+                <div><span style="background:${wColor};width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:4px;"></span>${wLabel}</div>
+                <div><span style="background:${dColor};width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:4px;"></span>${dLabel}</div>
+                <div><span style="background:${lColor};width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:4px;"></span>${lLabel}</div>
               </div>
             `;
             // Trigger animation class for path
@@ -946,12 +900,12 @@
             setTimeout(() => {
                 paths.forEach(p => p.classList.add('show'));
             }, 50);
-        }, 800);
+        }, 500);
     }
 
     function drawPieChart(data) {
       const total = data.reduce((s, x) => s + x.val, 0);
-      const sz = 240; // Size
+      const sz = 200; // Smaller Size for mobile
       if (!total) return `<svg width="${sz}" height="${sz}"></svg>`;
 
       const r = sz / 2 - 10, cx = sz / 2, cy = sz / 2;
@@ -973,8 +927,7 @@
       });
       
       const gradient = `conic-gradient(${gradientParts.join(', ')})`;
-      
-      return `<div class="pie-chart-circle" style="width:${sz}px; height:${sz}px; background:${gradient};"></div>`;
+      return `<div class="pie-chart-circle" style="width:${sz}px; height:${sz}px; border-radius:50%; background:${gradient};"></div>`;
     }
     
     function getEU(r, which) {
@@ -1045,7 +998,7 @@
             if(stat) stat.style.display = 'none';
         });
         lastAhResult = []; lastOuResult = []; lastEuResult = [];
-        selectedSeasons.clear(); // Clear season selection
+        selectedSeasons.clear(); 
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1088,8 +1041,6 @@
       renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', 'ah');
       
       document.getElementById('ahListSection').style.display = 'none';
-      
-      // Init Season Filter Logic
       populateSeasons('ah', lastAhResult);
     }
 
@@ -1186,9 +1137,8 @@
       populateSeasons('eu', lastEuResult);
     }
 
-    /* === Multi-Select Season Logic (修正邏輯) === */
+    /* === Multi-Select Season Logic === */
     function populateSeasons(type, data) {
-        // Reset selections on new search
         selectedSeasons.clear();
         
         const seasons = [...new Set(data.map(d => d.season))].sort().reverse();
@@ -1200,7 +1150,6 @@
             </div>
         `).join('');
         
-        // Default: select all
         seasons.forEach(s => selectedSeasons.add(s));
         updateSeasonBtnText(type);
     }
@@ -1211,9 +1160,7 @@
     }
     
     function toggleSeasonOption(div, season, type) {
-        // Prevent event bubbling if user clicks checkbox directly
         const cb = div.querySelector('input');
-        // If the click target wasn't the checkbox itself, toggle it
         if (event.target !== cb) {
            cb.checked = !cb.checked;
         }
@@ -1222,7 +1169,6 @@
         else selectedSeasons.delete(season);
         
         updateSeasonBtnText(type);
-        // Real-time update table
         const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
         const filtered = filterDataBySeasons(sourceData);
         confirmAndRender(filtered, type + 'Table', null, true);
@@ -1235,7 +1181,6 @@
             if(selectAll) selectedSeasons.add(cb.value); else selectedSeasons.delete(cb.value);
         });
         updateSeasonBtnText(type);
-        
         const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
         const filtered = filterDataBySeasons(sourceData);
         confirmAndRender(filtered, type + 'Table', null, true);
@@ -1263,12 +1208,9 @@
         if (sec.style.display === 'none') {
             sec.style.display = 'block';
             tableContainer.style.display = 'block';
-            
-            // First render with current filtered data
             const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
             const filtered = filterDataBySeasons(sourceData);
             confirmAndRender(filtered, type + 'Table', null, true);
-            
             sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
             sec.style.display = 'none';
@@ -1284,7 +1226,7 @@
       
       const type = tableId.replace('Table', '');
       
-      // Define render function based on type if not provided
+      // Default render functions with preserved logic
       if(!renderFn) {
           if(type === 'ah') {
               renderFn = r => {
@@ -1343,14 +1285,10 @@
       const container = document.getElementById(type + 'TableContainer');
       const tbody = table.querySelector('tbody');
       
-      // Clear current content
       tbody.innerHTML = '';
-      
-      // Use efficient string concatenation
       const rowsHtml = resultArray.map(r => renderFn(r)).join('');
       tbody.innerHTML = rowsHtml;
       
-      // Setup event delegation for copy functionality
       const newTbody = tbody.cloneNode(true);
       tbody.parentNode.replaceChild(newTbody, tbody);
       
@@ -1362,10 +1300,8 @@
           }
       });
 
-      // Show table
       table.style.display = 'table';
       container.style.display = 'block';
-      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     
     function copyToClipboard(text) {
