@@ -788,7 +788,7 @@
     /* ==========================================================================
        10. iPad/Desktop 寬屏適配 (Responsive Logic)
        ========================================================================== */
-    @media (min-width: 768px) {
+    @media (min-width: 768px) and (min-height: 600px) {
         .tabcontent { max-width: 960px; }
         
         /* 左右分欄 (初盤 vs 終盤) */
@@ -810,6 +810,19 @@
         .unified-card { padding: 30px; }
         .main-input { padding: 0 15px; }
         table { font-size: 0.95rem; }
+    }
+
+    /* ==========================================================================
+       10b. 手機橫向 (Landscape Phone) 修正：避免誤觸發 iPad/Desktop 佈局
+       ========================================================================== */
+    @media (orientation: landscape) and (max-height: 520px) {
+        .tabcontent { padding: 12px; }
+        .unified-card { padding: 14px; }
+        .form-flex-container { display: flex; flex-direction: column; gap: 12px; }
+        .odds-row-desktop { display: flex; flex-direction: column; gap: 10px; }
+        .result-filter-bar { flex-wrap: wrap; }
+        .res-check-item { flex: 1 1 30%; }
+        .custom-input-group { height: 40px; }
     }
 </style>
 </head>
