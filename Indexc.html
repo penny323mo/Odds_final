@@ -1317,6 +1317,13 @@
         eu: new Set(['win','draw','lose']) 
     };
 
+    const DATA_VER = '2025-12-15'; // change this when you update JSON data
+
+    function runIdle(fn) {
+      if (typeof requestIdleCallback === 'function') return requestIdleCallback(() => fn());
+      return setTimeout(fn, 0);
+    }
+
     const DB = {
       asian:     { base: 'asian_handicap', subdir: '' },
       overUnder: { base: 'over_under',     subdir: '' },
@@ -1328,17 +1335,40 @@
     const __showLoading = () => { if(overlay) overlay.style.display = 'flex'; };
     const __hideLoading = () => { if(overlay) overlay.style.display = 'none'; };
     
-    function showTab(i) {
+    async function showTab(i) {
       ["tab1", "tab2", "tab3"].forEach((id, idx) => {
         document.getElementById(id).classList.toggle("active", idx === i);
         const panel = document.getElementById("tc" + (idx + 1));
-        if(idx === i) {
-            panel.style.display = "block"; panel.style.animation = 'none'; panel.offsetHeight; panel.style.animation = 'fadeUp 0.4s ease-out';
-            if(i===0) currentTab='ah'; else if(i===1) currentTab='ou'; else currentTab='eu';
+        if (idx === i) {
+          panel.style.display = "block";
+          panel.style.animation = 'none';
+          panel.offsetHeight;
+          panel.style.animation = 'fadeUp 0.4s ease-out';
+          if (i === 0) currentTab = 'ah';
+          else if (i === 1) currentTab = 'ou';
+          else currentTab = 'eu';
         } else {
-            panel.style.display = "none";
+          panel.style.display = "none";
         }
       });
+
+      // Lazy load data for tab 2/3 when needed
+      try {
+        if (i === 1 && !OU) {
+          __showLoading();
+          await getOverUnderData({ maxParts: 10 });
+          initOverUnderUI();
+        }
+        if (i === 2 && !EU) {
+          __showLoading();
+          await getEuropeanData({ maxParts: 10 });
+          initEuropeanUI();
+        }
+      } catch (e) {
+        console.error('切換頁面載入失敗', e);
+      } finally {
+        __hideLoading();
+      }
     }
 
     function stepErr(id, delta) {
@@ -1479,31 +1509,51 @@
       return null;
     }
 
-    async function loadWithTrailingNumbers(base, { subdir = '', maxParts = 10 } = {}) {
-      const prefix = subdir ? (subdir.replace(/\/$/, '') + '/') : '';
-      const urls = [`${prefix}${base}.json`];
-      for (let i = 1; i <= maxParts; i++) { urls.push(`${prefix}${base}${i}.json`); }
+    async function fetchJson(url) {
+      try {
+        const u = url + (url.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(DATA_VER);
+        const r = await fetch(u, { cache: 'force-cache' });
+        if (!r.ok) return null;
+        return await r.json();
+      } catch (e) {
+        return null;
+      }
+    }
 
-      const results = await Promise.allSettled(
-        urls.map(u => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null))
-      );
+    // Smart loader:
+    // 1) try base.json first; if it has data, use it
+    // 2) otherwise, try base1.json...baseN.json sequentially; stop on first missing (404)
+    async function loadSmart(base, { subdir = '', maxParts = 10 } = {}) {
+      const prefix = subdir ? (subdir.replace(/\/$/, '') + '/') : '';
+      const baseUrl = `${prefix}${base}.json`;
+
+      const baseData = await fetchJson(baseUrl);
+      if (Array.isArray(baseData) && baseData.length) return baseData;
+
       const merged = [];
-      for (const r of results) {
-        if (r.status === 'fulfilled' && Array.isArray(r.value)) merged.push(...r.value);
+      for (let i = 1; i <= maxParts; i++) {
+        const partUrl = `${prefix}${base}${i}.json`;
+        const part = await fetchJson(partUrl);
+        if (part === null) break;
+        if (Array.isArray(part) && part.length) {
+          merged.push(...part);
+          // yield to UI occasionally to avoid jank on mobile
+          if (merged.length % 20000 === 0) await new Promise(r => setTimeout(r, 0));
+        }
       }
       return merged;
     }
 
     async function getAsianData(opts = {}) {
-      if (!AH) AH = await loadWithTrailingNumbers(DB.asian.base, { subdir: DB.asian.subdir, ...opts });
+      if (!AH) AH = await loadSmart(DB.asian.base, { subdir: DB.asian.subdir, ...opts });
       return AH;
     }
     async function getOverUnderData(opts = {}) {
-      if (!OU) OU = await loadWithTrailingNumbers(DB.overUnder.base, { subdir: DB.overUnder.subdir, ...opts });
+      if (!OU) OU = await loadSmart(DB.overUnder.base, { subdir: DB.overUnder.subdir, ...opts });
       return OU;
     }
     async function getEuropeanData(opts = {}) {
-      if (!EU) EU = await loadWithTrailingNumbers(DB.european.base, { subdir: DB.european.subdir, ...opts });
+      if (!EU) EU = await loadSmart(DB.european.base, { subdir: DB.european.subdir, ...opts });
       return EU;
     }
 
@@ -1514,17 +1564,28 @@
         arr.map(v => `<option value="${v}">${v}</option>`).join('');
     }
 
-    function initAll() {
-      if (!AH || !OU || !EU) {
-        console.error("Data not loaded yet!");
-        return;
-      }
+    function initAsianUI() {
+      if (!AH) return;
       fillSelect('ahInitHand', new Set(AH.map(r => r.AH_open_handicap)));
       fillSelect('ahCloseHand', new Set(AH.map(r => r.AH_close_handicap)));
+    }
+
+    function initOverUnderUI() {
+      if (!OU) return;
       fillSelect('ouInitLine', new Set(OU.map(r => r.OU_line)));
       fillSelect('ouCloseLine', new Set(OU.map(r => r.close_OU_line)));
     }
-    
+
+    function initEuropeanUI() {
+      // currently no dropdowns needed; keep hook for future
+      return;
+    }
+
+    function initAll() {
+      initAsianUI();
+      initOverUnderUI();
+      initEuropeanUI();
+    }
     function resetAll() {
         ['ah', 'ou', 'eu'].forEach(type => {
             const form = document.getElementById(type + 'Form');
@@ -1879,20 +1940,42 @@
     (async function boot() {
       try {
         __showLoading();
-        await Promise.all([
-          getAsianData({ maxParts: 10 }),
-          getOverUnderData({ maxParts: 10 }),
-          getEuropeanData({ maxParts: 10 })
-        ]);
-        initAll();
+
+        // 先載入第一頁（亞洲盤），盡快俾人操作
+        await getAsianData({ maxParts: 10 });
+        initAsianUI();
+        initEuropeanUI(); // no-op for now
+
       } catch (e) {
         console.error('資料載入失敗', e);
         document.querySelector('.spinner-ball').style.display = 'none';
-        document.querySelector('#loadingOverlay .loading-text').innerHTML = 
+        document.querySelector('#loadingOverlay .loading-text').innerHTML =
             `<span style="color:#ef4444">⚠️ 數據載入失敗</span>`;
       } finally {
         __hideLoading();
       }
+
+      // 背景慢慢撈埋第 2、3 頁數據（唔阻住 UI）
+      runIdle(async () => {
+        try {
+          if (!OU) {
+            await getOverUnderData({ maxParts: 10 });
+            initOverUnderUI();
+          }
+        } catch (e) { console.warn('背景載入大小球失敗', e); }
+      });
+
+      runIdle(async () => {
+        try {
+          if (!EU) {
+            await getEuropeanData({ maxParts: 10 });
+            initEuropeanUI();
+          }
+        } catch (e) { console.warn('背景載入歐洲盤失敗', e); }
+      });
+
+      // 其餘 UI 初始化（唔依賴數據都可以做）
+      try { initAll(); } catch(e) {}
     })();
     
     // Close dropdown on outside click
@@ -1909,4 +1992,3 @@
 </script>
 </body>
 </html>
-
