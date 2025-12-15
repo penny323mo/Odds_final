@@ -123,7 +123,7 @@
         font-family: 'Noto Sans TC', sans-serif; 
         font-weight: 900;
         /* 字體大小縮細，適配手機 */
-        font-size: clamp(1.5rem, 5vw, 2.5rem); 
+        font-size: clamp(1.9rem, 6.4vw, 3.2rem); 
         margin: 0; 
         color: #fff;
         display: flex; 
@@ -200,15 +200,18 @@
         padding: 8px 0; 
         font-weight: 700; 
         font-size: 0.9rem; 
-        border-radius: 40px;
+        border-radius: 999px;
+        position: relative;
+        z-index: 1;
         transition: all 0.3s ease; 
         white-space: nowrap; 
     }
     .custom-tabs button.active { 
-        background: #fff; 
-        color: #064e3b; 
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
-        transform: scale(1.02);
+        background: transparent;
+        color: #eafff7;
+        text-shadow: 0 0 14px rgba(52,211,153,0.55), 0 2px 10px rgba(0,0,0,0.55);
+        box-shadow: none;
+        transform: translateY(-1px);
     }
 
     /* ==========================================================================
@@ -824,6 +827,147 @@
         .res-check-item { flex: 1 1 30%; }
         .custom-input-group { height: 40px; }
     }
+
+/* ==========================================================================
+   0. Premium Neon 視覺強化 (V6) - 明顯可見
+   ========================================================================== */
+
+.header-inner{
+  position:relative;
+  width: min(660px, 94vw);
+  margin: 0 auto;
+  display:block;
+  text-align:center;
+  padding:16px 18px 16px;
+  border-radius:22px;
+  background: linear-gradient(180deg, rgba(6,78,59,0.62), rgba(0,0,0,0.35));
+  border:1px solid rgba(110,231,183,0.26);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.60),
+    0 0 0 1px rgba(16,185,129,0.15) inset;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow:hidden;
+}
+.header-inner:before{
+  content:"";
+  position:absolute; inset:-1px;
+  border-radius:24px;
+  background:
+    radial-gradient(900px 220px at 50% -40px, rgba(52,211,153,0.55) 0%, rgba(16,185,129,0.22) 40%, transparent 70%),
+    radial-gradient(520px 220px at 20% 120%, rgba(59,130,246,0.22) 0%, transparent 70%),
+    radial-gradient(520px 220px at 80% 120%, rgba(245,158,11,0.18) 0%, transparent 70%);
+  filter: blur(0px);
+  z-index:-1;
+}
+.header-inner:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  transform: translateX(-40%);
+  opacity:0.0;
+  pointer-events:none;
+}
+.custom-tabs{ position:relative; overflow:hidden; }
+.custom-tabs .tab-indicator{
+  position:absolute;
+  top:6px; bottom:6px;
+  left:6px;
+  width: calc((100% - 12px - 12px)/3); /* fallback */
+  border-radius:999px;
+  background: rgba(16,185,129,0.18);
+  border: 1px solid rgba(110,231,183,0.55);
+  box-shadow:
+    0 10px 26px rgba(0,0,0,0.38),
+    0 0 22px rgba(52,211,153,0.26),
+    0 0 0 1px rgba(16,185,129,0.18) inset;
+  transform: translateX(0);
+  transition: transform 240ms cubic-bezier(0.2,0.8,0.2,1), width 240ms cubic-bezier(0.2,0.8,0.2,1);
+  z-index:0;
+}
+.custom-tabs button{ position:relative; z-index:1; }
+
+.custom-tabs{
+  position:relative;
+  overflow:hidden;
+}
+.custom-tabs button{
+  position:relative;
+  z-index:2;
+}
+.custom-tabs button.active{
+  background: rgba(0,0,0,0.18) !important;
+  color:#eafff5 !important;
+  border:1px solid rgba(110,231,183,0.30) !important;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.35),
+    0 0 0 1px rgba(16,185,129,0.20) inset,
+    0 0 22px rgba(52,211,153,0.28) !important;
+  transform: translateY(-1px);
+}
+.custom-tabs button.active:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+  background: radial-gradient(120px 60px at 30% 20%, rgba(52,211,153,0.24), transparent 60%);
+  pointer-events:none;
+}
+.custom-tabs button.active:after{
+  content:"";
+  position:absolute;
+  left:18%;
+  right:18%;
+  bottom:6px;
+  height:3px;
+  border-radius:3px;
+  background: linear-gradient(90deg, rgba(16,185,129,0.0), rgba(16,185,129,0.95), rgba(16,185,129,0.0));
+  filter: drop-shadow(0 6px 10px rgba(16,185,129,0.45));
+}
+fieldset.init-set{ border-left:4px solid rgba(59,130,246,0.95); }
+fieldset.close-set{ border-left:4px solid rgba(251,191,36,0.95); }
+fieldset.init-set legend{ color:#93c5fd; }
+fieldset.close-set legend{ color:#fde68a; }
+fieldset.init-set{ background: linear-gradient(180deg, rgba(59,130,246,0.10), rgba(0,0,0,0.22)); }
+fieldset.close-set{ background: linear-gradient(180deg, rgba(251,191,36,0.10), rgba(0,0,0,0.22)); }
+
+.btn-green{ overflow:hidden; }
+.btn-green:before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), transparent 45%);
+  opacity:0.55;
+  transform: translateX(-30%);
+}
+.btn-green:after{
+  content:"";
+  position:absolute;
+  top:-40%;
+  left:-35%;
+  width:35%;
+  height:180%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-20deg);
+  animation: shimmer 2.2s ease-in-out infinite;
+  opacity:0.35;
+}
+@keyframes shimmer{
+  0%{ transform: translateX(-120%) skewX(-20deg); }
+  55%{ transform: translateX(260%) skewX(-20deg); }
+  100%{ transform: translateX(260%) skewX(-20deg); }
+}
+
+/* 表格：更「工具感」 */
+.table-container{ box-shadow: 0 18px 50px rgba(0,0,0,0.45); }
+thead th{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+tbody tr:nth-child(even){ background: rgba(255,255,255,0.03); }
+
 </style>
 </head>
 <body>
@@ -837,16 +981,19 @@
 </div>
 
 <div class="header">
-    <h1>
+  <div class="header-inner">
+<h1>
         <!-- ⚽️ Emoji Logo (帶自轉) -->
         <div class="football-emoji">⚽️</div>
         足球歷史賠率篩選
     </h1>
     <div class="desc">大數據分析 (2013-2025)</div>
+  </div>
 </div>
 
 <div class="nav-container">
     <div class="custom-tabs">
+        <div class="tab-indicator" id="tabIndicator"></div>
         <button class="active" id="tab1" onclick="showTab(0)">亞洲盤</button>
         <button id="tab2" onclick="showTab(1)">大小球</button>
         <button id="tab3" onclick="showTab(2)">歐洲盤</button>
@@ -859,7 +1006,7 @@
         <form id="ahForm" onsubmit="return false;">
             <div class="form-flex-container">
                 <!-- 初盤 -->
-                <fieldset>
+                <fieldset class="init-set">
                     <legend><i class="bi bi-crosshair"></i> 初盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
@@ -895,7 +1042,7 @@
                 </fieldset>
 
                 <!-- 終盤 -->
-                <fieldset>
+                <fieldset class="close-set">
                     <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
@@ -1013,7 +1160,7 @@
     <div class="unified-card">
         <form id="ouForm" onsubmit="return false;">
             <div class="form-flex-container">
-                <fieldset>
+                <fieldset class="init-set">
                     <legend><i class="bi bi-stopwatch"></i> 初盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
@@ -1047,7 +1194,7 @@
                     </div>
                 </fieldset>
 
-                <fieldset>
+                <fieldset class="close-set">
                     <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
@@ -1161,7 +1308,7 @@
     <div class="unified-card">
         <form id="euForm" onsubmit="return false;">
             <div class="form-flex-container">
-                <fieldset>
+                <fieldset class="init-set">
                     <legend><i class="bi bi-globe-europe-africa"></i> 初盤資料</legend>
                     <div class="odds-row-desktop">
                         <div class="input-row">
@@ -1203,7 +1350,7 @@
                     </div>
                 </fieldset>
 
-                <fieldset>
+                <fieldset class="close-set">
                     <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
                     <div class="odds-row-desktop">
                         <div class="input-row">
@@ -1348,6 +1495,30 @@
     const __showLoading = () => { if(overlay) overlay.style.display = 'flex'; };
     const __hideLoading = () => { if(overlay) overlay.style.display = 'none'; };
     
+
+    function updateTabIndicator(i){
+      const ind = document.getElementById('tabIndicator');
+      const tabs = document.querySelector('.custom-tabs');
+      if(!ind || !tabs) return;
+      const btn = document.getElementById('tab'+(i+1));
+      if(!btn) return;
+
+      const tabsRect = tabs.getBoundingClientRect();
+      const bRect = btn.getBoundingClientRect();
+      const padL = parseFloat(getComputedStyle(tabs).paddingLeft || '0') || 0;
+
+      // indicator 內縮同 tabs padding 對齊（避免左右唔對位）
+      const left = (bRect.left - tabsRect.left) - padL;
+      ind.style.transform = `translateX(${left}px)`;
+      ind.style.width = bRect.width + 'px';
+    }
+
+    window.addEventListener('resize', () => {
+      const activeIdx = document.getElementById('tab1').classList.contains('active') ? 0 :
+                        document.getElementById('tab2').classList.contains('active') ? 1 : 2;
+      updateTabIndicator(activeIdx);
+    });
+
     async function showTab(i) {
       ["tab1", "tab2", "tab3"].forEach((id, idx) => {
         document.getElementById(id).classList.toggle("active", idx === i);
@@ -1364,6 +1535,8 @@
           panel.style.display = "none";
         }
       });
+
+      updateTabIndicator(i);
 
       // Lazy load data for tab 2/3 when needed
       try {
@@ -2002,6 +2175,7 @@
             }
         }
     }
+window.addEventListener('load', ()=>{ try{ updateTabIndicator(0); }catch(e){} });
 </script>
 </body>
 </html>
