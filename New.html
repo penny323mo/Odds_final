@@ -16,11 +16,11 @@
 
 <style>
     /* =========================================
-       1. 基礎設定 (Base)
+       1. 基礎設定 (Base Settings)
        ========================================= */
     :root {
         --bg-dark: #064e3b; 
-        --glass-bg: rgba(6, 78, 59, 0.75);
+        --glass-bg: rgba(6, 78, 59, 0.85); /* 加深背景增加對比度 */
         --glass-border: rgba(255, 255, 255, 0.2);
         --brand-green: #10b981;
         --brand-green-light: #34d399;
@@ -34,24 +34,24 @@
         color: var(--text-main);
         background-color: var(--bg-dark);
         min-height: 100vh;
-        padding-bottom: 80px;
+        padding-bottom: 100px;
         overflow-x: hidden;
         width: 100vw;
         box-sizing: border-box;
         padding-top: env(safe-area-inset-top);
-        padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        padding-bottom: calc(100px + env(safe-area-inset-bottom));
     }
 
     *, *::before, *::after { box-sizing: border-box; }
 
     /* =========================================
-       2. 背景特效 (Background)
+       2. 背景特效 (Background Effects)
        ========================================= */
     .bg-layer {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         background-color: #064e3b;
         background-image: 
-            radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.85) 85%),
+            radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(2, 44, 34, 0.9) 85%),
             url("https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop");
         background-size: cover; background-position: center; background-attachment: fixed;
     }
@@ -64,220 +64,260 @@
     }
 
     /* =========================================
-       3. 頂部導航 (Header) - 至尊 Emoji 版
+       3. 頂部導航 (Header) - ⚽️ Emoji 版
        ========================================= */
-    .header { position: relative; text-align: center; padding: 25px 10px 15px; z-index: 10; width: 100%; }
+    .header { 
+        position: relative; 
+        text-align: center; 
+        padding: 30px 15px 20px; 
+        z-index: 10; 
+        width: 100%; 
+    }
     
     .header h1 {
-        font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
-        font-size: clamp(1.6rem, 5vw, 3rem);
-        margin: 0; color: #fff;
-        display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: nowrap;
+        font-family: 'Noto Sans TC', sans-serif; 
+        font-weight: 900;
+        /* 字體大小自動適應 */
+        font-size: clamp(1.8rem, 6vw, 3.2rem); 
+        margin: 0; 
+        color: #fff;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 15px; 
+        flex-wrap: nowrap;
+        /* 呼吸燈特效 */
         animation: glowBreathing 4s ease-in-out infinite alternate;
-        text-shadow: 0 2px 15px rgba(0,0,0,0.6);
-        letter-spacing: 1px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
     @keyframes glowBreathing {
-        0% { text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 10px rgba(16, 185, 129, 0.2); }
-        100% { text-shadow: 0 0 25px rgba(255,255,255,0.6), 0 0 40px rgba(52, 211, 153, 0.5); }
+        0% { text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 10px rgba(16, 185, 129, 0.2); transform: scale(1); }
+        100% { text-shadow: 0 0 20px rgba(255,255,255,0.7), 0 0 35px rgba(52, 211, 153, 0.7); transform: scale(1.02); }
     }
 
-    /* 至尊 Emoji Style */
+    /* ⚽️ Emoji Style */
     .football-emoji {
-        font-size: clamp(40px, 9vw, 65px);
+        font-size: clamp(45px, 10vw, 70px);
         line-height: 1;
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-        animation: slowSpin 10s linear infinite;
+        /* 加強陰影令佢立體啲 */
+        filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+        /* 自轉特效 */
+        animation: slowSpin 12s linear infinite;
         display: inline-block;
     }
     
     @keyframes slowSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     .header .desc {
-        margin-top: 8px; font-size: 0.85rem; color: #e0f2f1;
-        background: rgba(0,0,0,0.3); padding: 4px 15px; border-radius: 50px;
+        margin-top: 10px; font-size: 0.9rem; color: #e0f2f1;
+        background: rgba(0,0,0,0.4); padding: 5px 15px; border-radius: 50px;
         border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px);
-        display: inline-block;
-        font-weight: 500;
+        display: inline-block; font-weight: 500;
     }
+    
+    /* 隱藏但保留結構的時間戳 */
+    .timestamp { display: none; }
 
-    .nav-container { margin-top: 10px; padding: 0 10px; position: relative; z-index: 20; width: 100%; margin-bottom: 15px; }
+    .nav-container { 
+        margin-top: 10px; padding: 0 10px; position: relative; z-index: 20; width: 100%; margin-bottom: 20px; 
+    }
     .custom-tabs {
-        background: rgba(6, 78, 59, 0.85); border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 50px; padding: 4px; display: flex; gap: 5px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px);
-        max-width: 600px; margin: 0 auto;
+        background: rgba(6, 78, 59, 0.9); border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50px; padding: 5px; display: flex; gap: 5px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+        max-width: 600px; margin: 0 auto; overflow-x: auto; scrollbar-width: none;
     }
+    .custom-tabs::-webkit-scrollbar { display: none; }
     .custom-tabs button {
-        flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.6);
-        padding: 10px 0; font-weight: 700; font-size: 0.9rem; border-radius: 40px;
-        transition: all 0.2s; white-space: nowrap; 
+        flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.7);
+        padding: 10px 15px; font-weight: 700; font-size: 0.95rem; border-radius: 40px;
+        transition: all 0.3s; white-space: nowrap; 
     }
-    .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .custom-tabs button.active { background: #fff; color: #064e3b; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
     /* =========================================
-       4. 主容器與卡片 (iPhone Compact Fix)
+       4. 主容器與卡片 (Responsive Layout)
        ========================================= */
     .tabcontent {
-        width: 98%; max-width: 900px; margin: 0 auto; padding: 0; 
-        animation: fadeUp 0.4s ease-out;
+        width: 96%; max-width: 960px; margin: 0 auto; padding: 0; 
+        animation: fadeUp 0.5s ease-out;
     }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .unified-card {
         background: var(--glass-bg); border: 1px solid var(--glass-border);
-        border-radius: 20px; padding: 15px;
+        border-top: 1px solid rgba(255,255,255,0.4); border-radius: 24px; padding: 20px;
         backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        box-shadow: 0 20px 50px -10px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+        overflow: hidden; transition: all 0.3s ease;
     }
 
-    .form-flex-container { display: flex; flex-direction: column; gap: 10px; }
+    /* 預設手機: 垂直排列 */
+    .form-flex-container { display: flex; flex-direction: column; gap: 15px; }
 
     fieldset {
         border: 1px solid rgba(255,255,255,0.1); background: rgba(0, 0, 0, 0.25);
-        border-radius: 12px; padding: 12px 12px 8px 12px;
-        margin: 0; flex: 1;
+        border-radius: 12px; padding: 15px; margin: 0; flex: 1;
+        box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
     }
     legend {
-        color: var(--brand-green-light); font-weight: 700; font-size: 0.95rem;
-        text-transform: uppercase; display: flex; align-items: center; gap: 6px;
-        margin-bottom: 8px;
+        color: var(--brand-green-light); font-weight: 700; font-size: 1rem;
+        text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;
+        margin-bottom: 10px;
     }
 
     /* =========================================
-       5. 輸入框 (Compact Mode)
+       5. 輸入框與排版 (Input Styles)
        ========================================= */
-    .input-row { margin-bottom: 8px; }
+    .input-row { margin-bottom: 12px; }
     
     .input-label {
-        font-size: 0.8rem; color: #a7f3d0; font-weight: 600; margin-bottom: 3px; display: block;
+        font-size: 0.85rem; color: #e2e8f0; font-weight: 600; margin-bottom: 5px; display: block;
     }
-    
     .custom-input-group {
-        display: flex; align-items: stretch; background: rgba(0, 20, 10, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px;
-        width: 100%; height: 38px;
+        display: flex; align-items: stretch; background: rgba(0, 20, 10, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); overflow: hidden; width: 100%; height: 42px;
     }
     .custom-input-group:focus-within {
         border-color: var(--brand-green);
-        box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.3);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 0 2px rgba(16, 185, 129, 0.3);
     }
     .main-input {
         flex: 1 1 auto; background: transparent; border: none; color: #fff; 
-        padding: 0 10px; font-size: 1rem; font-family: monospace; min-width: 0;
+        padding: 0 12px; font-size: 1rem; font-family: monospace; min-width: 0;
     }
     .main-input:focus { outline: none; }
     
     .divider-text {
-        color: var(--brand-green-light); background: rgba(255,255,255,0.05); padding: 0 6px; 
-        display: flex; align-items: center; font-weight: bold; font-size: 0.8rem;
-        border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1);
+        color: var(--brand-green-light); background: rgba(255,255,255,0.03); padding: 0 8px; 
+        display: flex; align-items: center; font-weight: bold; font-size: 0.9rem;
+        border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
     }
     .err-input {
-        width: 45px; background: rgba(255,255,255,0.05); border: none; color: #d1fae5; 
-        text-align: center; font-size: 0.9rem;
+        width: 50px; background: rgba(255,255,255,0.03); border: none; color: #d1fae5; 
+        text-align: center; font-size: 0.9rem; flex-shrink: 0;
     }
-    .step-btns { width: 26px; border-left: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
+    .err-input:focus { outline: none; color: #fff; background: rgba(255,255,255,0.1); }
+    .step-btns { 
+        display: flex; flex-direction: column; width: 30px;
+        border-left: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+    }
     .step-btn {
-        flex: 1; background: rgba(255,255,255,0.05); border: none; color: var(--brand-green-light); 
-        padding: 0; font-size: 0.65rem;
+        flex: 1; background: rgba(255,255,255,0.03); border: none; color: var(--brand-green-light); 
+        cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; padding: 0;
+        font-size: 0.7rem;
     }
+    .step-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
     .step-btn:first-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
     
     select.form-select-custom {
-        width: 100%; padding: 0 10px; height: 38px;
-        background-color: rgba(2, 44, 34, 0.9); color: #fff; 
-        border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
-        font-size: 0.95rem;
+        width: 100%; padding: 0 12px; height: 42px; background-color: rgba(2, 44, 34, 0.95); color: #fff; 
+        border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
     }
 
-    /* iPad 橫排容器 (Default block for mobile, flex for desktop) */
+    /* iPad 橫排容器 (Odds Row) - 預設 block (直排) */
     .odds-row-desktop { display: block; }
 
     /* =========================================
        6. 3D 按鈕
        ========================================= */
-    .action-row { display: flex; gap: 10px; margin-top: 15px; }
+    .action-row { display: flex; gap: 12px; margin-top: 20px; }
     .btn-3d {
         position: relative; border: none; outline: none; color: white; font-weight: 700; font-size: 1rem; 
-        padding: 12px; border-radius: 30px; cursor: pointer; flex: 1;
-        transition: transform 0.1s; 
-        display: flex; align-items: center; justify-content: center; gap: 6px;
-        text-transform: uppercase; letter-spacing: 0.5px;
+        padding: 14px; border-radius: 50px; cursor: pointer; flex: 1;
+        transition: transform 0.1s, box-shadow 0.1s; 
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
     .btn-green {
         background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
-        box-shadow: 0 4px 0 #047857;
+        box-shadow: 0 4px 0 #047857, 0 8px 15px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
     }
-    .btn-green:active { transform: translateY(4px); box-shadow: none; }
+    .btn-green:active { transform: translateY(4px); box-shadow: 0 0 0 #047857, inset 0 4px 10px rgba(0,0,0,0.3); }
     .btn-grey {
         background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
-        box-shadow: 0 4px 0 #1f2937;
+        box-shadow: 0 4px 0 #1f2937, 0 8px 15px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
     }
-    .btn-grey:active { transform: translateY(4px); box-shadow: none; }
+    .btn-grey:active { transform: translateY(4px); box-shadow: 0 0 0 #1f2937, inset 0 4px 10px rgba(0,0,0,0.3); }
 
     /* =========================================
-       7. 結果與圖表
+       7. 結果區域 & 圓餅圖
        ========================================= */
     .results-section {
-        margin-top: 20px; padding-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2);
-        display: none;
+        margin-top: 30px; padding-top: 25px; border-top: 1px dashed rgba(255,255,255,0.2);
+        display: none; animation: slideDown 0.5s ease-out;
     }
-    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px; }
     .stat-card {
-        background: rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 4px; text-align: center;
+        background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px 5px; text-align: center;
+        position: relative; overflow: hidden;
     }
-    .stat-card.win { border-bottom: 3px solid #ef4444; } .stat-card.draw { border-bottom: 3px solid #22c55e; } .stat-card.lose { border-bottom: 3px solid #3b82f6; }
-    .stat-card .value { font-size: 1.4rem; font-weight: 900; color: #fff; margin: 4px 0; }
-    
+    .stat-card.win { border-bottom: 4px solid #ef4444; } .stat-card.draw { border-bottom: 4px solid #22c55e; } .stat-card.lose { border-bottom: 4px solid #3b82f6; }
+    .stat-card .label { font-size: 0.8rem; color: #a7f3d0; margin-bottom: 5px; }
+    .stat-card .value { font-size: 1.6rem; font-weight: 900; color: #fff; margin: 5px 0; }
+    .stat-card .pct { font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 3px 8px; border-radius: 8px; }
+
     .piebox {
-        background: rgba(255,255,255,0.05); border-radius: 16px; padding: 20px;
+        background: rgba(255,255,255,0.05); border-radius: 20px; padding: 25px;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        width: 100%; min-height: 250px;
+        border: 1px solid rgba(255,255,255,0.1); width: 100%; min-height: 300px;
     }
-    .pie-legend { display: flex; gap: 12px; margin-top: 15px; font-size: 0.9rem; color: #fff; flex-wrap: wrap; justify-content: center; }
+    
+    .pie-chart-circle { 
+        width: 100%; height: 100%; border-radius: 50%; 
+        clip-path: circle(0% at 50% 50%);
+        animation: openCircle 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+    }
+    @keyframes openCircle { to { clip-path: circle(75% at 50% 50%); } }
+
+    .pie-legend { display: flex; gap: 15px; margin-top: 20px; font-size: 0.95rem; color: #fff; flex-wrap: wrap; justify-content: center; }
+    .pie-legend span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px; }
 
     /* =========================================
-       8. 列表與複選篩選 (修復確認鍵)
+       8. 列表與複選篩選 (Multi-Select) - 優化版
        ========================================= */
-    .list-section { margin-top: 25px; display: none; }
-    .list-controls { margin-bottom: 12px; position: relative; }
+    .list-section { margin-top: 30px; display: none; }
+    .list-controls { margin-bottom: 15px; position: relative; }
     
     .multi-select-btn {
-        width: 100%; padding: 12px; border-radius: 10px;
+        width: 100%; padding: 12px 15px; border-radius: 12px;
         background: rgba(0,0,0,0.4); color: #fff; 
         border: 1px solid rgba(255,255,255,0.3);
         text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-        font-size: 0.95rem;
+        font-size: 0.95rem; backdrop-filter: blur(5px);
     }
+    .multi-select-btn:after { content: '\25BC'; font-size: 0.8rem; opacity: 0.7; }
     
     .multi-select-dropdown {
         display: none; position: absolute; top: 100%; left: 0; width: 100%;
         background: #022c22; border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 12px; margin-top: 5px; max-height: 350px; overflow-y: auto;
+        border-radius: 12px; margin-top: 5px; max-height: 400px; overflow-y: auto;
         z-index: 100; box-shadow: 0 15px 50px rgba(0,0,0,0.9);
     }
     .multi-select-dropdown.show { display: block; }
     
-    /* 頂部全選/清空 */
+    /* 篩選操作區 (頂部) */
     .multi-actions-top {
         padding: 10px; display: flex; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
-        background: rgba(0,0,0,0.4); position: sticky; top: 0; z-index: 2;
+        background: rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 2;
     }
-    /* 底部確認鍵 */
+    .btn-sm-action {
+        flex: 1; padding: 8px; font-size: 0.9rem; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;
+    }
+    
+    /* 確認按鈕區 (底部) */
     .multi-actions-bottom {
         padding: 10px; border-top: 1px solid rgba(255,255,255,0.1);
         background: #064e3b; position: sticky; bottom: 0; z-index: 2;
     }
-    
-    .btn-sm-action {
-        flex: 1; padding: 8px; font-size: 0.9rem; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;
-    }
     .btn-confirm {
         width: 100%; padding: 12px; background: #10b981; color: #fff; font-size: 1rem; border-radius: 8px; border: none; font-weight: bold;
-        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); cursor: pointer;
     }
     .btn-confirm:active { background: #059669; transform: translateY(2px); }
 
@@ -285,41 +325,53 @@
         padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
         cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.95rem;
     }
-    /* 修正 checkbox 的樣式 */
-    .multi-select-option input { 
-        transform: scale(1.3); accent-color: var(--brand-green); margin-right: 5px; cursor: pointer;
+    .multi-select-option:hover { background: rgba(255,255,255,0.1); }
+    /* Checkbox 大小 */
+    .multi-select-option input[type="checkbox"] {
+        transform: scale(1.4); accent-color: var(--brand-green); cursor: pointer; margin-right: 5px;
     }
-    
-    .table-container { background: rgba(0, 0, 0, 0.2); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-top: 15px; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
-    th { background: rgba(2, 44, 34, 0.95); padding: 12px 8px; color: #a7f3d0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-    td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
-    
-    .badge-res { padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-    .bg-win { background: #ef4444; color: #fff; } .bg-draw { background: #22c55e; color: #fff; } .bg-lose { background: #3b82f6; color: #fff; }
 
+    /* 表格樣式 */
+    .table-container { background: rgba(0, 0, 0, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-top: 15px; }
+    .table-responsive { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; white-space: nowrap; }
+    th { background: rgba(2, 44, 34, 0.95); padding: 12px 10px; color: #a7f3d0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; text-align: center; }
+    td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f1f5f9; }
+    tr:hover { background: rgba(255,255,255,0.1); }
+    
+    .badge-res { padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; }
+    .bg-win { background: #ef4444; color: #fff; } .bg-draw { background: #22c55e; color: #fff; } .bg-lose { background: #3b82f6; color: #fff; }
+    .text-odds { color: #6ee7b7; font-weight: bold; }
+
+    /* Loading Overlay */
     #loadingOverlay { position: fixed; inset: 0; background: #064e3b; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
-    .spinner-ball { width: 45px; height: 45px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #34d399; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .spinner-ball { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #34d399; border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* =========================================
-       9. iPad/Desktop 寬屏適配
+       9. iPad/Desktop Responsive Logic (關鍵)
        ========================================= */
     @media (min-width: 768px) {
         .tabcontent { max-width: 960px; }
+        /* 左右分欄 (初盤 vs 終盤) */
         .form-flex-container { display: flex; flex-direction: row; gap: 20px; }
-        .odds-row-desktop { display: flex; flex-direction: row; gap: 15px; }
-        .odds-row-desktop > .input-row { flex: 1; }
         
-        .header h1 { font-size: 3rem; }
+        /* iPad: 賠率輸入框橫向排列 */
+        .odds-row-desktop {
+            display: flex; flex-direction: row; gap: 15px;
+        }
+        .odds-row-desktop > .input-row {
+            flex: 1; /* 平均分配 */
+        }
+
+        .stat-card .value { font-size: 1.8rem; }
+        .piebox { flex-direction: row; gap: 40px; justify-content: center; }
+        .pie-legend { flex-direction: column; gap: 10px; margin-top: 0; }
         .header { padding-bottom: 40px; }
         .nav-container { margin-top: -20px; }
         .unified-card { padding: 25px; }
-        .custom-input-group, select.form-select-custom { height: 44px; }
-        .input-label { font-size: 0.9rem; margin-bottom: 6px; }
-        .input-row { margin-bottom: 15px; }
-        .btn-3d { padding: 14px; font-size: 1.1rem; }
-        table { font-size: 0.9rem; }
+        .main-input { padding: 0 15px; }
+        table { font-size: 0.95rem; }
     }
 </style>
 </head>
@@ -335,7 +387,7 @@
 
 <div class="header">
     <h1>
-        <!-- 1. Emoji 足球 (帶轉動特效) -->
+        <!-- ⚽️ Emoji Logo (帶自轉特效) -->
         <div class="football-emoji">⚽️</div>
         足球歷史賠率篩選
     </h1>
@@ -355,12 +407,14 @@
     <div class="unified-card">
         <form id="ahForm" onsubmit="return false;">
             <div class="form-flex-container">
+                <!-- 初盤 -->
                 <fieldset>
-                    <legend><i class="bi bi-crosshair"></i> 初盤</legend>
+                    <legend><i class="bi bi-crosshair"></i> 初盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ahInitHand" class="form-select-custom"></select>
                     </div>
+                    <!-- 桌面/iPad 橫排容器 -->
                     <div class="odds-row-desktop">
                         <div class="input-row">
                             <label class="input-label">主隊賠率</label>
@@ -389,8 +443,9 @@
                     </div>
                 </fieldset>
 
+                <!-- 終盤 -->
                 <fieldset>
-                    <legend><i class="bi bi-flag-fill"></i> 終盤</legend>
+                    <legend><i class="bi bi-flag-fill"></i> 終盤資料</legend>
                     <div class="input-row full-width">
                         <label class="input-label">盤口</label>
                         <select id="ahCloseHand" class="form-select-custom"></select>
@@ -426,19 +481,20 @@
 
             <div class="action-row">
                 <button class="btn-3d btn-green" onclick="doAhSearch()" type="button"><i class="bi bi-search"></i> 搜尋</button>
-                <button class="btn-3d btn-grey" id="resetAhBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
+                <button class="btn-3d btn-grey" id="resetAhBtn" type="button"><i class="bi bi-arrow-counterclockwise"></i> 全局重設</button>
             </div>
         </form>
 
+        <!-- Result Section -->
         <div id="ahResultSection" class="results-section">
             <div id="ahStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('ah')" type="button" style="margin-top:15px; padding:10px; border-radius:15px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('ah')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
             <div id="ahListSection" class="list-section">
-                <!-- 賽季篩選 -->
+                <!-- 賽季篩選 (含確認鍵) -->
                 <div class="list-controls">
                     <label class="input-label" style="margin-bottom:5px;">📅 賽季篩選</label>
                     <div class="multi-select-container" style="position:relative;">
@@ -451,9 +507,9 @@
                                 <button class="btn-sm-action" style="background:#b91c1c;color:#fff" onclick="selectAllSeasons('ah', false)">清空</button>
                             </div>
                             <div id="seasonOptions_ah"></div>
-                            <!-- 3. 確認並套用按鈕 -->
                             <div class="multi-actions-bottom">
-                                <button class="btn-confirm" type="button" onclick="applySeasonFilter('ah')">確認並套用</button>
+                                <!-- 必須點擊此確認鍵才會觸發篩選 -->
+                                <button class="btn-confirm" onclick="applySeasonFilter('ah')">確認並套用</button>
                             </div>
                         </div>
                     </div>
@@ -568,7 +624,7 @@
         <div id="ouResultSection" class="results-section">
             <div id="ouStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('ou')" type="button" style="margin-top:15px; padding:10px; border-radius:15px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('ou')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
@@ -586,7 +642,7 @@
                             </div>
                             <div id="seasonOptions_ou"></div>
                             <div class="multi-actions-bottom">
-                                <button class="btn-confirm" type="button" onclick="applySeasonFilter('ou')">確認並套用</button>
+                                <button class="btn-confirm" onclick="applySeasonFilter('ou')">確認並套用</button>
                             </div>
                         </div>
                     </div>
@@ -717,7 +773,7 @@
         <div id="euResultSection" class="results-section">
             <div id="euStat"></div>
             
-            <button class="btn-3d btn-grey" onclick="toggleList('eu')" type="button" style="margin-top:15px; padding:10px; border-radius:15px;">
+            <button class="btn-3d btn-grey" onclick="toggleList('eu')" type="button" style="margin-top:15px; border-radius:15px; padding:10px;">
                 <i class="bi bi-list-ul"></i> 顯示 / 隱藏 比賽列表
             </button>
 
@@ -735,7 +791,7 @@
                             </div>
                             <div id="seasonOptions_eu"></div>
                             <div class="multi-actions-bottom">
-                                <button class="btn-confirm" type="button" onclick="applySeasonFilter('eu')">確認並套用</button>
+                                <button class="btn-confirm" onclick="applySeasonFilter('eu')">確認並套用</button>
                             </div>
                         </div>
                     </div>
@@ -769,7 +825,7 @@
     let AH = null, OU = null, EU = null;
     let currentTab = 'ah';
     let lastAhResult = [], lastOuResult = [], lastEuResult = [];
-    let selectedSeasons = new Set(); 
+    let selectedSeasons = new Set(); // 複選集合
 
     const DB = {
       asian:     { base: 'asian_handicap', subdir: '' },
@@ -788,9 +844,12 @@
         const panel = document.getElementById("tc" + (idx + 1));
         if(idx === i) {
             panel.style.display = "block";
+            // Trigger animation reflow
             panel.style.animation = 'none';
             panel.offsetHeight; 
             panel.style.animation = 'fadeUp 0.4s ease-out';
+            
+            // Set current tab context
             if(i===0) currentTab='ah'; else if(i===1) currentTab='ou'; else currentTab='eu';
         } else {
             panel.style.display = "none";
@@ -832,7 +891,7 @@
         window.requestAnimationFrame(step);
     }
 
-    /* Motion: Render Stats */
+    /* Motion: Render Stats with Animation */
     function generateStatsHTML(w, d, l, wColor, dColor, lColor, wLabel, dLabel, lLabel, tot, prefix, extraInfo = '') {
         const idWin = prefix + 'Win';
         const idDraw = prefix + 'Draw';
@@ -858,7 +917,9 @@
             </div>
         </div>
         ${extraInfo ? `<div class="text-center mb-3" style="font-size:0.85rem; color:#d1fae5;">${extraInfo}</div>` : ''}
-        <div class="piebox" id="${idPie}"></div>
+        <div class="piebox" id="${idPie}">
+          <!-- Pie chart will be injected here after delay -->
+        </div>
         `;
         return html;
     }
@@ -878,17 +939,21 @@
         const idPie = prefix + 'Pie';
         const pieContainer = document.getElementById(idPie);
         if(!pieContainer) return;
+        
+        // Wait 500ms
         setTimeout(() => {
             pieContainer.innerHTML = `
               ${drawPieChart([{ label: wLabel, val: w, color: wColor }, { label: dLabel, val: d, color: dColor }, { label: lLabel, val: l, color: lColor }])}
               <div class="pie-legend">
-                <div><span style="background:${wColor};width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:4px;"></span>${wLabel}</div>
-                <div><span style="background:${dColor};width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:4px;"></span>${dLabel}</div>
-                <div><span style="background:${lColor};width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:4px;"></span>${lLabel}</div>
+                <div><span style="background:${wColor}"></span>${wLabel}</div>
+                <div><span style="background:${dColor}"></span>${dLabel}</div>
+                <div><span style="background:${lColor}"></span>${lLabel}</div>
               </div>
             `;
             const paths = pieContainer.querySelectorAll('.pie-chart-circle');
-            setTimeout(() => { paths.forEach(p => p.classList.add('show')); }, 50);
+            setTimeout(() => {
+                paths.forEach(p => p.classList.add('show'));
+            }, 50);
         }, 500);
     }
 
@@ -896,12 +961,16 @@
       const total = data.reduce((s, x) => s + x.val, 0);
       const sz = 200; 
       if (!total) return `<svg width="${sz}" height="${sz}"></svg>`;
+
       const slices = data.filter(d => d.val > 0);
+
       if (slices.length === 1) {
         return `<div style="width:${sz}px; height:${sz}px; border-radius:50%; background:${slices[0].color};" class="pie-chart-circle"></div>`;
       }
+      
       let gradientParts = [];
       let currentAngle = 0;
+      
       data.forEach(slice => {
           if(slice.val > 0) {
               const angle = (slice.val / total) * 360;
@@ -909,7 +978,9 @@
               currentAngle += angle;
           }
       });
+      
       const gradient = `conic-gradient(${gradientParts.join(', ')})`;
+      
       return `<div class="pie-chart-circle" style="width:${sz}px; height:${sz}px; border-radius:50%; background:${gradient};"></div>`;
     }
     
@@ -931,23 +1002,42 @@
       const prefix = subdir ? (subdir.replace(/\/$/, '') + '/') : '';
       const urls = [`${prefix}${base}.json`];
       for (let i = 1; i <= maxParts; i++) { urls.push(`${prefix}${base}${i}.json`); }
-      const results = await Promise.allSettled(urls.map(u => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null)));
+
+      const results = await Promise.allSettled(
+        urls.map(u => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null))
+      );
       const merged = [];
-      for (const r of results) { if (r.status === 'fulfilled' && Array.isArray(r.value)) merged.push(...r.value); }
+      for (const r of results) {
+        if (r.status === 'fulfilled' && Array.isArray(r.value)) merged.push(...r.value);
+      }
       return merged;
     }
 
-    async function getAsianData(opts = {}) { if (!AH) AH = await loadWithTrailingNumbers(DB.asian.base, { subdir: DB.asian.subdir, ...opts }); return AH; }
-    async function getOverUnderData(opts = {}) { if (!OU) OU = await loadWithTrailingNumbers(DB.overUnder.base, { subdir: DB.overUnder.subdir, ...opts }); return OU; }
-    async function getEuropeanData(opts = {}) { if (!EU) EU = await loadWithTrailingNumbers(DB.european.base, { subdir: DB.european.subdir, ...opts }); return EU; }
+    async function getAsianData(opts = {}) {
+      if (!AH) AH = await loadWithTrailingNumbers(DB.asian.base, { subdir: DB.asian.subdir, ...opts });
+      return AH;
+    }
+    async function getOverUnderData(opts = {}) {
+      if (!OU) OU = await loadWithTrailingNumbers(DB.overUnder.base, { subdir: DB.overUnder.subdir, ...opts });
+      return OU;
+    }
+    async function getEuropeanData(opts = {}) {
+      if (!EU) EU = await loadWithTrailingNumbers(DB.european.base, { subdir: DB.european.subdir, ...opts });
+      return EU;
+    }
 
     function fillSelect(id, set) {
       const arr = Array.from(set).filter(v => v != null).sort((a, b) => a - b);
-      document.getElementById(id).innerHTML = '<option value="">--</option>' + arr.map(v => `<option value="${v}">${v}</option>`).join('');
+      document.getElementById(id).innerHTML =
+        '<option value="">--</option>' +
+        arr.map(v => `<option value="${v}">${v}</option>`).join('');
     }
 
     function initAll() {
-      if (!AH || !OU || !EU) { console.error("Data not loaded yet!"); return; }
+      if (!AH || !OU || !EU) {
+        console.error("Data not loaded yet!");
+        return;
+      }
       fillSelect('ahInitHand', new Set(AH.map(r => r.AH_open_handicap)));
       fillSelect('ahCloseHand', new Set(AH.map(r => r.AH_close_handicap)));
       fillSelect('ouInitLine', new Set(OU.map(r => r.OU_line)));
@@ -984,7 +1074,29 @@
         if (aMinC !== null && (r.AH_close_away_odds < aMinC || r.AH_close_away_odds > aMaxC)) return false;
         return true;
       });
-      processResults('ah', lastAhResult);
+
+      let w = 0, d = 0, l = 0;
+      lastAhResult.forEach(r => {
+        const [hs, as] = r.ft_score.split('-').map(Number);
+        const diff = hs + r.AH_close_handicap - as;
+        if (diff > 0) w++; else if (diff < 0) l++; else d++;
+      });
+
+      const tot = lastAhResult.length;
+      const resSec = document.getElementById('ahResultSection');
+      
+      document.getElementById('ahStat').innerHTML = generateStatsHTML(
+          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', tot, 'ah'
+      );
+      
+      resSec.style.display = 'block';
+      setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      
+      triggerCountUp(w, d, l, 'ah');
+      renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', '贏盤', '和盤', '輸盤', 'ah');
+      
+      document.getElementById('ahListSection').style.display = 'none';
+      populateSeasons('ah', lastAhResult);
     }
 
     function doOuSearch() {
@@ -1004,7 +1116,30 @@
         if (sMinC !== null && (r.OU_close_under_odds < sMinC || r.OU_close_under_odds > sMaxC)) return false;
         return true;
       });
-      processResults('ou', lastOuResult);
+
+      let over = 0, push = 0, under = 0;
+      lastOuResult.forEach(r => {
+        const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
+        if (sum > r.close_OU_line) over++;
+        else if (sum < r.close_OU_line) under++;
+        else push++;
+      });
+
+      const tot = lastOuResult.length;
+      const resSec = document.getElementById('ouResultSection');
+      
+      document.getElementById('ouStat').innerHTML = generateStatsHTML(
+          over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', tot, 'ou'
+      );
+      
+      resSec.style.display = 'block';
+      setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+      triggerCountUp(over, push, under, 'ou');
+      renderPieWithDelay(over, push, under, '#ef4444', '#22c55e', '#3b82f6', '大球', '走盤', '小球', 'ou');
+      
+      document.getElementById('ouListSection').style.display = 'none';
+      populateSeasons('ou', lastOuResult);
     }
 
     function doEuSearch() {
@@ -1024,51 +1159,43 @@
         const cA = getEU(r, 'close_away'); if (aMinC !== null && (cA < aMinC || cA > aMaxC)) return false;
         return true;
       });
-      processResults('eu', lastEuResult);
-    }
 
-    function processResults(type, data) {
-        let w=0, d=0, l=0;
-        // Calculation logic reused for stats
-        if(type==='ah') {
-            data.forEach(r => {
-                const [hs, as] = r.ft_score.split('-').map(Number);
-                const diff = hs + r.AH_close_handicap - as;
-                if(diff > 0) w++; else if(diff < 0) l++; else d++;
-            });
-        } else if(type==='ou') {
-            data.forEach(r => {
-                const sum = r.ft_score.split('-').reduce((a,b)=>+a+(+b),0);
-                if(sum > r.close_OU_line) w++; else if(sum < r.close_OU_line) l++; else d++;
-            });
+      let w = 0, d = 0, l = 0, d1 = 0, d2 = 0, d3 = 0;
+      lastEuResult.forEach(r => {
+        const [hs, as] = r.ft_score.split('-').map(Number);
+        const diff = hs - as;
+        if (diff > 0) {
+          w++;
+          if (diff === 1) d1++; else if (diff === 2) d2++; else d3++;
+        } else if (diff < 0) {
+          l++;
         } else {
-            data.forEach(r => {
-                const [hs, as] = r.ft_score.split('-').map(Number);
-                if(hs > as) w++; else if(hs < as) l++; else d++;
-            });
+          d++;
         }
+      });
 
-        const tot = data.length;
-        const resSec = document.getElementById(type+'ResultSection');
+      const tot = lastEuResult.length;
+      const extra = `總場數：${tot} <br> <small style="color:#d1fae5">主勝淨勝球 ➜ 1球:${d1} | 2球:${d2} | 3+球:${d3}</small>`;
+      const resSec = document.getElementById('euResultSection');
+      
+      document.getElementById('euStat').innerHTML = generateStatsHTML(
+          w, d, l, '#ef4444', '#22c55e', '#3b82f6', '主勝', '和局', '客勝', tot, 'eu', extra
+      );
+      
+      resSec.style.display = 'block';
+      setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+      triggerCountUp(w, d, l, 'eu');
+      renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', '主勝', '和局', '客勝', 'eu');
         
-        let labels = type==='ah' ? ['贏盤','和盤','輸盤'] : type==='ou' ? ['大球','走盤','小球'] : ['主勝','和局','客勝'];
-        
-        document.getElementById(type+'Stat').innerHTML = generateStatsHTML(w, d, l, '#ef4444', '#22c55e', '#3b82f6', labels[0], labels[1], labels[2], tot, type);
-        
-        resSec.style.display = 'block';
-        setTimeout(() => resSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-        
-        triggerCountUp(w, d, l, type);
-        renderPieWithDelay(w, d, l, '#ef4444', '#22c55e', '#3b82f6', labels[0], labels[1], labels[2], type);
-        
-        document.getElementById(type+'ListSection').style.display = 'none';
-        populateSeasons(type, data);
+      document.getElementById('euListSection').style.display = 'none';
+      populateSeasons('eu', lastEuResult);
     }
 
     /* === Multi-Select Logic (Fixed) === */
     function populateSeasons(type, data) {
-        // Reset Logic
         selectedSeasons.clear();
+        
         const seasons = [...new Set(data.map(d => d.season))].sort().reverse();
         const optContainer = document.getElementById(`seasonOptions_${type}`);
         
@@ -1078,8 +1205,8 @@
             </div>
         `).join('');
         
-        // Auto-select all by default internally
-        seasons.forEach(s => selectedSeasons.add(s));
+        // Auto-select all by default internally (Store as String for safety)
+        seasons.forEach(s => selectedSeasons.add(String(s)));
         updateSeasonBtnText(type);
     }
     
@@ -1091,7 +1218,7 @@
         // Purely UI toggle, NO render here
         const cb = div.querySelector('input');
         if (event.target !== cb) { cb.checked = !cb.checked; }
-        // We don't even need to update Set here, we will read from DOM on confirm
+        // We don't need to update Set here, we read from DOM on confirm
         updateSeasonBtnText(type); 
     }
     
@@ -1114,14 +1241,15 @@
     
     // === CRITICAL FIX: Confirm Logic ===
     function applySeasonFilter(type) {
-        // 1. Re-build the Set from DOM (Guarantees sync)
+        // 1. Re-build Set from DOM inputs (Ensuring sync)
         selectedSeasons.clear();
         const cbs = document.querySelectorAll(`#seasonOptions_${type} input:checked`);
-        cbs.forEach(cb => selectedSeasons.add(cb.value));
+        cbs.forEach(cb => selectedSeasons.add(cb.value)); // Value is string from HTML
         
         // 2. Filter Data
         const sourceData = type === 'ah' ? lastAhResult : (type === 'ou' ? lastOuResult : lastEuResult);
-        const filtered = sourceData.filter(r => selectedSeasons.has(r.season));
+        // CRITICAL FIX: Ensure type compatibility (String vs Number)
+        const filtered = sourceData.filter(r => selectedSeasons.has(String(r.season)));
         
         // 3. Render
         confirmAndRender(filtered, type + 'Table', null, true);
@@ -1137,7 +1265,8 @@
         if (sec.style.display === 'none') {
             sec.style.display = 'block';
             tableContainer.style.display = 'block';
-            applySeasonFilter(type); // Initial render
+            // Render using current selection set (initially all)
+            applySeasonFilter(type); 
             sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
             sec.style.display = 'none';
@@ -1151,20 +1280,19 @@
       
       const type = tableId.replace('Table', '');
       
-      // Inline Renderers for completeness
       if(!renderFn) {
           if(type === 'ah') {
               renderFn = r => {
                 const [hs, as] = r.ft_score.split('-').map(Number);
                 const diff = hs + r.AH_close_handicap - as;
                 const out = diff > 0 ? '<span class="badge-res bg-win">贏盤</span>' : diff < 0 ? '<span class="badge-res bg-lose">輸盤</span>' : '<span class="badge-res bg-draw">和盤</span>';
-                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.AH_open_handicap}</td><td style="color:#6ee7b7">${r.AH_open_home_odds}</td><td style="color:#6ee7b7">${r.AH_open_away_odds}</td><td>${r.AH_close_handicap}</td><td style="color:#6ee7b7">${r.AH_close_home_odds}</td><td style="color:#6ee7b7">${r.AH_close_away_odds}</td><td>${out}</td></tr>`;
+                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.AH_open_handicap}</td><td class="text-odds">${r.AH_open_home_odds}</td><td class="text-odds">${r.AH_open_away_odds}</td><td>${r.AH_close_handicap}</td><td class="text-odds">${r.AH_close_home_odds}</td><td class="text-odds">${r.AH_close_away_odds}</td><td>${out}</td></tr>`;
               };
           } else if (type === 'ou') {
               renderFn = r => {
                 const sum = r.ft_score.split('-').reduce((a, b) => +a + +b, 0);
                 const out = sum > r.close_OU_line ? '<span class="badge-res bg-win">大球</span>' : sum < r.close_OU_line ? '<span class="badge-res bg-lose">小球</span>' : '<span class="badge-res bg-draw">走盤</span>';
-                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.OU_line}</td><td style="color:#6ee7b7">${r.OU_open_over_odds}</td><td style="color:#6ee7b7">${r.OU_open_under_odds}</td><td>${r.close_OU_line}</td><td style="color:#6ee7b7">${r.OU_close_over_odds}</td><td style="color:#6ee7b7">${r.OU_close_under_odds}</td><td>${out}</td></tr>`;
+                return `<tr><td>${r.season}</td><td>${r.home_team} vs ${r.away_team}</td><td style="font-weight:bold;color:#fff;">${r.ft_score}</td><td>${r.OU_line}</td><td class="text-odds">${r.OU_open_over_odds}</td><td class="text-odds">${r.OU_open_under_odds}</td><td>${r.close_OU_line}</td><td class="text-odds">${r.OU_close_over_odds}</td><td class="text-odds">${r.OU_close_under_odds}</td><td>${out}</td></tr>`;
               };
           } else {
               renderFn = r => {
@@ -1179,7 +1307,13 @@
       const table = document.getElementById(tableId);
       const container = document.getElementById(type + 'TableContainer');
       const tbody = table.querySelector('tbody');
-      tbody.innerHTML = resultArray.map(r => renderFn(r)).join('');
+      
+      tbody.innerHTML = '';
+      const rowsHtml = resultArray.map(r => renderFn(r)).join('');
+      tbody.innerHTML = rowsHtml;
+      
+      // Removed copyToClipboard listener as requested
+
       table.style.display = 'table';
       container.style.display = 'block';
     }
@@ -1198,22 +1332,33 @@
             if (!isNaN(aNum) && !isNaN(bNum)) return isAsc ? aNum - bNum : bNum - aNum;
             return isAsc ? aText.localeCompare(bText) : bText.localeCompare(aText);
         });
+        
         table.setAttribute('data-order', isAsc ? 'desc' : 'asc');
         tbody.innerHTML = '';
         rows.forEach(tr => tbody.appendChild(tr));
     }
 
-    ['resetAhBtn', 'resetOuBtn', 'resetEuBtn'].forEach(id => document.getElementById(id).addEventListener('click', resetAll));
+    ['resetAhBtn', 'resetOuBtn', 'resetEuBtn'].forEach(id => {
+        document.getElementById(id).addEventListener('click', resetAll);
+    });
 
     (async function boot() {
       try {
         __showLoading();
-        await Promise.all([getAsianData({ maxParts: 10 }), getOverUnderData({ maxParts: 10 }), getEuropeanData({ maxParts: 10 })]);
+        await Promise.all([
+          getAsianData({ maxParts: 10 }),
+          getOverUnderData({ maxParts: 10 }),
+          getEuropeanData({ maxParts: 10 })
+        ]);
         initAll();
       } catch (e) {
+        console.error('資料載入失敗', e);
         document.querySelector('.spinner-ball').style.display = 'none';
-        document.querySelector('#loadingOverlay .loading-text').innerHTML = `<span style="color:#ef4444">⚠️ 數據載入失敗</span>`;
-      } finally { __hideLoading(); }
+        document.querySelector('#loadingOverlay .loading-text').innerHTML = 
+            `<span style="color:#ef4444">⚠️ 數據載入失敗<br><small style="font-size:0.8rem; opacity:0.8">請確保 .json 檔案在同一目錄<br>(${e.message})</small></span>`;
+      } finally {
+        __hideLoading();
+      }
     })();
     
     // Close dropdown on outside click
@@ -1221,7 +1366,9 @@
         if (!event.target.closest('.multi-select-container')) {
             const dds = document.getElementsByClassName("multi-select-dropdown");
             for (let i = 0; i < dds.length; i++) {
-                if (dds[i].classList.contains('show')) dds[i].classList.remove('show');
+                if (dds[i].classList.contains('show')) {
+                    dds[i].classList.remove('show');
+                }
             }
         }
     }
